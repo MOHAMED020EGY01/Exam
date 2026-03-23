@@ -7,10 +7,18 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Inertia\Inertia;
 use Laravel\Socialite\Facades\Socialite;
 
 class SocialiteController extends Controller
 {
+    public function logout(){
+        Auth::logout();
+        return Inertia::render('auth/login');
+    }
+    public function login(){
+        return Inertia::render('auth/login');
+    }
     public function redirect($provider)
     {
         return Socialite::driver($provider)->stateless()->redirect();

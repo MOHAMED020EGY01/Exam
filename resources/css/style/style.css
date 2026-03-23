@@ -1,0 +1,7 @@
+.bg-background-secondary{
+  background-color: var(--background-secondary);
+}
+
+.bg-background-light-dark{
+  background:linear-gradient(-45deg,var(--background),var(--background-secondary));
+} 

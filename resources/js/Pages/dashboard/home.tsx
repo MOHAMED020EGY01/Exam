@@ -1,4 +1,5 @@
-import { useAuth } from '@/hooks/useAuth'
+import {DashboardLayout} from '@/components/layout/dashboard';
+import { useAuth } from '@/hooks/use-auth'
 
 function home() {
   const { user } = useAuth()
@@ -10,5 +11,9 @@ function home() {
     </div>
   )
 }
+
+home.layout = (page: React.ReactNode) => (
+    <DashboardLayout>{page}</DashboardLayout>
+);
 
 export default home
