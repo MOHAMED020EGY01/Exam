@@ -17,15 +17,17 @@ class ExamController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Auth $user, Course $course)
+    public function index(Course $course)
     {
         $exam = Exam::where('course_id', $course->id)->get();
-        return Inertia::render('dashboard.exams.index', [
+        return Inertia::render('dashboard/exams/index', [
             'exams' => $exam,
         ]);
     }
 
+    public function all(){
 
+    }
 
     public function store(Request $request, Course $course)
     {
@@ -92,6 +94,7 @@ class ExamController extends Controller
 
         Exam::create([
             'name' => $request->name,
+            'user_id' => $user->id,
             'course_id' => $course->id,
             'questions_package' => "{$userSlug}/{$courseSlug}/{$examFolder}",
             'questions_count' => count($processedQuestions),

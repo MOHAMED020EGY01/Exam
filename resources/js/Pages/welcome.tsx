@@ -7,6 +7,7 @@ export default function Index() {
         <>
             <Head title="Welcome" />
             <h2>welcome page</h2>
+            <Link href="/home">home</Link>
         </>
     );
 }

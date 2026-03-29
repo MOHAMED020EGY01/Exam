@@ -5,3 +5,6 @@
 .bg-background-light-dark{
   background:linear-gradient(-45deg,var(--background),var(--background-secondary));
 } 
+.zoom{
+  transform: scale(1.5);
+}

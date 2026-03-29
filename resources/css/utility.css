@@ -12,5 +12,5 @@
   @apply transition-all duration-300;
 }
 @utility hamburger {
-  @apply w-6 h-1 bg-white rounded tran-300;
+  @apply w-6 h-1 bg-foreground rounded tran-300;
 }

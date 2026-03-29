@@ -40,7 +40,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(Course::class);
     }
-
+    public function exams()
+    {
+        return $this->hasMany(Exam::class);
+    }
     //* Attribute
     public function getProviderTokenAttribute($value)
     {

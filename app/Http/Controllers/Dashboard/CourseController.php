@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\CoursesResource;
+use App\Http\Resources\ExamResource;
 use App\Models\Course;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -11,40 +13,46 @@ use Inertia\Inertia;
 class CourseController extends Controller
 {
 
-    public function index(Auth $user)
+    public function index()
     {
-
-        $courses = Course::where('user_id', $user->user()->id)->get();
-        return Inertia::render('dashboard.courses.index', [
-            'courses' => $courses,
+        $user = Auth::user();
+        $courses = Course::where('user_id', $user->id)->with('exams')->paginate(5)->withQueryString();
+        return Inertia::render('dashboard/courses/index', [
+            'courses' => CoursesResource::collection($courses)->resolve(),
+            'links' => $courses->linkCollection()->toArray(),  
         ]);
     }
 
-    public function store(Request $request, Auth $user)
+    public function store(Request $request)
     {
+
         $request->validate([
-            'name' => ['required', 'string', 'max:255'],
+            'name' => ['required', 'string', 'max:255', 'unique:courses,name,id'],
+            'description' => ['required', 'string', 'max:255'],
         ]);
-
-        $course = Course::create([
+        $user = Auth::user();
+        Course::create([
             'name' => $request->name,
-            'user_id' => $user->user()->id,
+            'user_id' => $user->id,
+            'description' => $request->description,
         ]);
 
-        return redirect()->route('dashboard.courses.index');
+        return redirect()->back()->with('success','Create Courses successfuly');
     }
 
-    public function show(Auth $user, Course $course)
+    public function show(Course $course)
     {
-        $course->load('exams');
-        return Inertia::render('dashboard.courses.show', [
-            'course' => $course,
+        $exams = $course->load('exams')->paginate(1)->withQueryString();
+        return Inertia::render('dashboard/courses/exams/index', [
+            'exams' => ExamResource::collection($exams)->resolve(),
+            'links' =>$exams->linkCollection()->toArray(),  
         ]);
     }
 
-    public function update(Request $request,Auth $user, Course $course)
+    public function update(Request $request, Course $course)
     {
-        if($course->user_id !== $user->user()->id) {
+        $user = Auth::user();
+        if($course->user_id !== $user->id) {
             return back()->with('error', 'You are not authorized to update this course');
         }
         $request->validate([
@@ -59,9 +67,10 @@ class CourseController extends Controller
     }
 
 
-    public function destroy(Course $course,Auth $user)
+    public function destroy(Course $course)
     {
-        if($course->user_id !== $user->user()->id) {
+        $user = Auth::user();
+        if($course->user_id !== $user->id) {
             return back()->with('error', 'You are not authorized to delete this course');
         }
         $course->delete();

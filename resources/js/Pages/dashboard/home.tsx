@@ -1,19 +1,18 @@
-import {DashboardLayout} from '@/components/layout/dashboard';
-import { useAuth } from '@/hooks/use-auth'
+import { Head } from '@inertiajs/react';
+import { DashboardLayout } from '@/components/layout/dashboard';
 
-function home() {
-  const { user } = useAuth()
+
+function Home() {
   return (
-    <div>
-      <div>home page</div>
-      <div>{user?.name ?? 'N/A'}</div>
-      <div>{user?.email ?? 'N/A'}</div>
-    </div>
-  )
+    <>
+      <Head title="Home" />
+      
+    </>
+  );
 }
 
-home.layout = (page: React.ReactNode) => (
-    <DashboardLayout>{page}</DashboardLayout>
+Home.layout = (page: React.ReactNode) => (
+  <DashboardLayout>{page}</DashboardLayout>
 );
 
-export default home
+export default Home;

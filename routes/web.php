@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Dashboard\CourseController;
 use App\Http\Controllers\Dashboard\ExamController;
+use App\Http\Controllers\Dashboard\HomeController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -10,13 +11,12 @@ Route::get('/', function () {
 });
 Route::group([
     'middleware' => 'auth',
+    'prefix' => 'home',
 ], function () {
-    Route::get('/home', function () {
-        return Inertia::render('dashboard/home');
-    })->name('home');
-
+    Route::get('/', HomeController::class)->name('home');
     Route::apiResource('courses', CourseController::class);
     Route::apiResource('courses/{course}/exams', ExamController::class);
+    Route::get('exams/all', [ExamController::class, 'all'])->name('exams.all');
 });
 
 

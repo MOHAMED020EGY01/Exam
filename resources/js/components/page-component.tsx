@@ -1,45 +1,47 @@
 import { Link } from "@inertiajs/react";
 import { HomeIcon, InfoIcon, PhoneIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
-import {AvatarBadgeIcon, Hamburger} from "./utils";
-import { ModeToggleTheme } from "./ui/mode-toggle";
+import { ModeToggleTheme } from "@/components/ui/mode-toggle";
+import { openSetOpenInterface } from "@/interface/global";
+import { Hamburger } from "@/components/utils/hamburger";
+import { AvatarBadgeIcon } from "@/components/utils/avatar";
 
 const content = [
-    {icon: HomeIcon,name: "Home", link: "/"},
-    {icon: InfoIcon,name: "About", link: "/about"},
-    {icon: PhoneIcon,name: "Contact", link: "/contact"},
+    { icon: HomeIcon, name: "Home", link: route('home') },
+    { icon: InfoIcon, name: "Courses", link: route('courses.index') },
+    { icon: PhoneIcon, name: "Exam", link: route('exams.all') },
 ]
-interface Props {
-    open?:boolean;
-}
-const Sidebar = ({open = false}:Props) => {
-  return (
-    <div className={cn(
-    "card-page tran-300",
-        open ? 'w-64 p-4' : 'w-16 p-0 py-4'
-    )}>
-        <ul className="flex flex-col gap-4 ">
-            {content.map((item, index) => (
-                <li key={index} className="hover:bg-foreground/10 p-2 rounded-lg">
-                    <div className={cn(
-                        "flex items-center gap-2",
-                        open ? 'justify-start' : 'justify-center'
-                    )}>
-                    <item.icon />
-                    {open && <span>{item.name}</span>}
-                    </div>
-                </li>
-            ))}
-        </ul>
-    </div>
-  )
+
+const Sidebar = ({ open = false }: { open: boolean }) => {
+    return (
+        <div className={cn(
+            "card-page tran-300",
+            open ? 'w-64 p-4' : 'w-16 p-0 py-4'
+        )}>
+            <ul className="flex flex-col gap-4 ">
+                {content.map((item, index) => (
+                    <li key={index} className="hover:bg-foreground/10 p-2 rounded-lg">
+                        <Link href={item.link}>
+                            <div className={cn(
+                                "flex items-center gap-2",
+                                open ? 'justify-start' : 'justify-center'
+                            )}>
+                                <item.icon />
+                                {open && <span>{item.name}</span>}
+                            </div>
+                        </Link>
+                    </li>
+                ))}
+            </ul>
+        </div>
+    )
 }
 
 
 const footer = [
-    {text: "Privacy",href: "#"},
-    {text: "Terms",href: "#"},
-    {text: "Contact",href: "#"},
+    { text: "Privacy", href: "#" },
+    { text: "Terms", href: "#" },
+    { text: "Contact", href: "#" },
 ]
 
 const Footer = () => {
@@ -47,7 +49,7 @@ const Footer = () => {
     return (
         <footer className="w-full flex-just-bet-gap-4">
             <div className="text-mute">
-               &copy; {data.getFullYear()} Mohamed Hussein
+                &copy; {data.getFullYear()} Mohamed Hussein
             </div>
             <div className="flex gap-6">
                 {footer.map((item, index) => (
@@ -61,11 +63,8 @@ const Footer = () => {
 }
 
 
-interface NavbarProps {
-  open: boolean;
-  setOpen: (value: boolean) => void;
-}
-const Navbar = ({open, setOpen}: NavbarProps) => {
+
+const Navbar = ({ open, setOpen }: openSetOpenInterface) => {
     return (
         <div className="card-page text-xs">
             <div className="flex justify-between">
@@ -80,4 +79,4 @@ const Navbar = ({open, setOpen}: NavbarProps) => {
 };
 
 
-export {Footer , Sidebar, Navbar}
+export { Footer, Sidebar, Navbar }
