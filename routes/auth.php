@@ -2,7 +2,6 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\SocialiteController;
 
-Route::get('/login', [SocialiteController::class, 'login'])->name('login');
 Route::group([
     'middleware' => 'guest',
 ], function () {

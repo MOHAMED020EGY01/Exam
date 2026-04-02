@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\SocialiteController;
 use App\Http\Controllers\Dashboard\CourseController;
 use App\Http\Controllers\Dashboard\ExamController;
 use App\Http\Controllers\Dashboard\HomeController;
@@ -19,5 +20,6 @@ Route::group([
     Route::get('exams/all', [ExamController::class, 'all'])->name('exams.all');
 });
 
+Route::get('/login', [SocialiteController::class, 'login'])->name('login');
 
 require_once __DIR__ . '/auth.php';
