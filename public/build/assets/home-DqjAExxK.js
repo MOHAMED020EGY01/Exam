@@ -1,1 +1,0 @@
-import{j as t,H as r}from"./app-B0DDpTo_.js";import{D as a}from"./dashboard-3F7Hq0yq.js";import"./mode-toggle-BPnoHzA6.js";function e(){return t.jsx(t.Fragment,{children:t.jsx(r,{title:"Home"})})}e.layout=o=>t.jsx(a,{children:o});export{e as default};

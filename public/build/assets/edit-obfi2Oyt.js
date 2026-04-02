@@ -1,0 +1,1 @@
+import{j as t}from"./app-4ZFhNI9g.js";import{D as o}from"./dashboard-C1Pc9qno.js";import"./mode-toggle-CCwxo7T7.js";function i(){return t.jsx("div",{children:"edit"})}i.layout=r=>t.jsx(o,{children:r});export{i as default};

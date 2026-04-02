@@ -1,1 +1,0 @@
-import{j as o}from"./app-B0DDpTo_.js";import{D as t}from"./dashboard-3F7Hq0yq.js";import"./mode-toggle-BPnoHzA6.js";function s(){return o.jsx("div",{children:"show"})}s.layout=r=>o.jsx(t,{children:r});export{s as default};
