@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Dashboard;
 use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Models\Exam;
+use App\Rules\HasCorrectAnswer;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
@@ -14,31 +15,23 @@ use Inertia\Inertia;
 
 class ExamController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index(Course $course)
-    {
-        $exam = Exam::where('course_id', $course->id)->get();
-        return Inertia::render('dashboard/exams/index', [
-            'exams' => $exam,
+    public function create(Course $course){
+        return Inertia::render('dashboard/courses/exams/create', [
+            'course' => $course,
         ]);
     }
-
-    public function all(){
-
-    }
-
     public function store(Request $request, Course $course)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|unique:exams,name,id',
+            'description'=>'required|string|max:255',
             'questions' => 'required|array|min:1',
 
             'questions.*.text' => 'required|string',
             'questions.*.multiple' => 'required|boolean',
-            'questions.*.answers' => 'required|array|min:2|contains:is_correct',
             'questions.*.image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+    'questions.*.answers' => ['required', 'array', 'min:2',new HasCorrectAnswer('is_correct')
+    ],
             'questions.*.answers.*.text' => 'required|string',
             'questions.*.answers.*.image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'questions.*.answers.*.is_correct' => 'required|boolean',
@@ -94,6 +87,7 @@ class ExamController extends Controller
 
         Exam::create([
             'name' => $request->name,
+            'description'=>$request->description,
             'user_id' => $user->id,
             'course_id' => $course->id,
             'questions_package' => "{$userSlug}/{$courseSlug}/{$examFolder}",
@@ -127,6 +121,7 @@ class ExamController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
+            'description' => 'required|string|max:255',
             'questions' => 'required|array|min:1',
 
             'questions.*.text' => 'required|string',
@@ -182,6 +177,7 @@ class ExamController extends Controller
 
         $exam->update([
             'name' => $request->name,
+            'description'=>$request->description,
             'questions_count' => count($processedQuestions),
         ]);
 

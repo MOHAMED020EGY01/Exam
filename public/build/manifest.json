@@ -1,0 +1,174 @@
+{
+  "_dashboard-3F7Hq0yq.js": {
+    "file": "assets/dashboard-3F7Hq0yq.js",
+    "name": "dashboard",
+    "imports": [
+      "resources/js/app.tsx",
+      "_mode-toggle-BPnoHzA6.js"
+    ]
+  },
+  "_empty-function-DopgElg-.js": {
+    "file": "assets/empty-function-DopgElg-.js",
+    "name": "empty-function",
+    "imports": [
+      "_mode-toggle-BPnoHzA6.js",
+      "resources/js/app.tsx",
+      "_dashboard-3F7Hq0yq.js"
+    ]
+  },
+  "_label-WWbseUsX.js": {
+    "file": "assets/label-WWbseUsX.js",
+    "name": "label",
+    "imports": [
+      "resources/js/app.tsx",
+      "_mode-toggle-BPnoHzA6.js"
+    ]
+  },
+  "_mode-toggle-BPnoHzA6.js": {
+    "file": "assets/mode-toggle-BPnoHzA6.js",
+    "name": "mode-toggle",
+    "imports": [
+      "resources/js/app.tsx"
+    ]
+  },
+  "_spinner-Dv5t0ocI.js": {
+    "file": "assets/spinner-Dv5t0ocI.js",
+    "name": "spinner",
+    "imports": [
+      "resources/js/app.tsx",
+      "_mode-toggle-BPnoHzA6.js"
+    ]
+  },
+  "node_modules/@fontsource-variable/geist/files/geist-cyrillic-wght-normal.woff2": {
+    "file": "assets/geist-cyrillic-wght-normal-CHSlOQsW.woff2",
+    "src": "node_modules/@fontsource-variable/geist/files/geist-cyrillic-wght-normal.woff2"
+  },
+  "node_modules/@fontsource-variable/geist/files/geist-latin-ext-wght-normal.woff2": {
+    "file": "assets/geist-latin-ext-wght-normal-DMtmJ5ZE.woff2",
+    "src": "node_modules/@fontsource-variable/geist/files/geist-latin-ext-wght-normal.woff2"
+  },
+  "node_modules/@fontsource-variable/geist/files/geist-latin-wght-normal.woff2": {
+    "file": "assets/geist-latin-wght-normal-Dm3htQBi.woff2",
+    "src": "node_modules/@fontsource-variable/geist/files/geist-latin-wght-normal.woff2"
+  },
+  "resources/css/app.css": {
+    "file": "assets/app-Ciq2NKQS.css",
+    "src": "resources/css/app.css",
+    "isEntry": true
+  },
+  "resources/js/Pages/auth/login.tsx": {
+    "file": "assets/login-Br1f8FGu.js",
+    "name": "login",
+    "src": "resources/js/Pages/auth/login.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.tsx",
+      "_mode-toggle-BPnoHzA6.js",
+      "_spinner-Dv5t0ocI.js"
+    ]
+  },
+  "resources/js/Pages/dashboard/courses/exams/create.tsx": {
+    "file": "assets/create-gbZQtOTb.js",
+    "name": "create",
+    "src": "resources/js/Pages/dashboard/courses/exams/create.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.tsx",
+      "_dashboard-3F7Hq0yq.js",
+      "_mode-toggle-BPnoHzA6.js",
+      "_label-WWbseUsX.js"
+    ]
+  },
+  "resources/js/Pages/dashboard/courses/exams/edit.tsx": {
+    "file": "assets/edit-CvN1z6Gp.js",
+    "name": "edit",
+    "src": "resources/js/Pages/dashboard/courses/exams/edit.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.tsx",
+      "_dashboard-3F7Hq0yq.js",
+      "_mode-toggle-BPnoHzA6.js"
+    ]
+  },
+  "resources/js/Pages/dashboard/courses/exams/index.tsx": {
+    "file": "assets/index-B-9gV2wI.js",
+    "name": "index",
+    "src": "resources/js/Pages/dashboard/courses/exams/index.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.tsx",
+      "_empty-function-DopgElg-.js",
+      "_dashboard-3F7Hq0yq.js",
+      "_mode-toggle-BPnoHzA6.js"
+    ]
+  },
+  "resources/js/Pages/dashboard/courses/exams/show.tsx": {
+    "file": "assets/show-DEITxlOm.js",
+    "name": "show",
+    "src": "resources/js/Pages/dashboard/courses/exams/show.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.tsx",
+      "_dashboard-3F7Hq0yq.js",
+      "_mode-toggle-BPnoHzA6.js"
+    ]
+  },
+  "resources/js/Pages/dashboard/courses/index.tsx": {
+    "file": "assets/index-Bb54AH1w.js",
+    "name": "index",
+    "src": "resources/js/Pages/dashboard/courses/index.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.tsx",
+      "_empty-function-DopgElg-.js",
+      "_dashboard-3F7Hq0yq.js",
+      "_mode-toggle-BPnoHzA6.js",
+      "_label-WWbseUsX.js",
+      "_spinner-Dv5t0ocI.js"
+    ]
+  },
+  "resources/js/Pages/dashboard/home.tsx": {
+    "file": "assets/home-DqjAExxK.js",
+    "name": "home",
+    "src": "resources/js/Pages/dashboard/home.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.tsx",
+      "_dashboard-3F7Hq0yq.js",
+      "_mode-toggle-BPnoHzA6.js"
+    ]
+  },
+  "resources/js/Pages/welcome.tsx": {
+    "file": "assets/welcome-BnO-TQSV.js",
+    "name": "welcome",
+    "src": "resources/js/Pages/welcome.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.tsx"
+    ]
+  },
+  "resources/js/app.tsx": {
+    "file": "assets/app-B0DDpTo_.js",
+    "name": "app",
+    "src": "resources/js/app.tsx",
+    "isEntry": true,
+    "dynamicImports": [
+      "resources/js/Pages/auth/login.tsx",
+      "resources/js/Pages/dashboard/courses/exams/create.tsx",
+      "resources/js/Pages/dashboard/courses/exams/edit.tsx",
+      "resources/js/Pages/dashboard/courses/exams/index.tsx",
+      "resources/js/Pages/dashboard/courses/exams/show.tsx",
+      "resources/js/Pages/dashboard/courses/index.tsx",
+      "resources/js/Pages/dashboard/home.tsx",
+      "resources/js/Pages/welcome.tsx"
+    ],
+    "css": [
+      "assets/app-Ciq2NKQS.css"
+    ],
+    "assets": [
+      "assets/geist-cyrillic-wght-normal-CHSlOQsW.woff2",
+      "assets/geist-latin-ext-wght-normal-DMtmJ5ZE.woff2",
+      "assets/geist-latin-wght-normal-Dm3htQBi.woff2"
+    ]
+  }
+}

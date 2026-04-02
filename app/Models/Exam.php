@@ -9,6 +9,7 @@ class Exam extends Model
 {
     protected $fillable = [
         'name',
+        'description',
         'course_id',
         'user_id',
         'questions_package',

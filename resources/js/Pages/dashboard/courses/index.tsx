@@ -107,6 +107,7 @@ const Courses = ({ courses, links }: Props) => {
           </EmptyFunction>
         </div>
       )}
+      {open && 
       <ModalDynamic
         open={open}
         setOpen={() => setOpen(false)}
@@ -115,8 +116,9 @@ const Courses = ({ courses, links }: Props) => {
         title="Create Course"
         description="Create a new course"
         method='post'
-      />
-      {selectedCourse &&
+      />}
+
+      {(selectedCourse && openEdit) &&
         <ModalDynamic
           open={openEdit}
           setOpen={() => setOpenEdit(false)}
@@ -127,7 +129,7 @@ const Courses = ({ courses, links }: Props) => {
           method='put'
           dataForm={selectedCourse}
         />}
-      {selectedCourse &&
+      {(selectedCourse && openDelete) &&
         <ModalDynamic
           open={openDelete}
           setOpen={() => setOpenDelete(false)}

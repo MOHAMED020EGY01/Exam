@@ -17,6 +17,8 @@ class ExamResource extends JsonResource
         return [
             'id' => (string)$this->id,
             'name' => (string)$this->name,
+            'description'=>(string)$this->description,
+            'course_id'=>(string)$this->course_id,
             'questions_count' => (int)$this->questions_count,
             'created_at' => (string)$this->created_at?->format('Y-m-d H'),
             'diff_for_humans' => (string)$this->created_at?->diffForHumans(),

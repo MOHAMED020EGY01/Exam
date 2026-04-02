@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Button } from "../ui/button"
 import { DropdownItemInterface } from "@/interface/global"
-import { ReactNode } from "react"
+import { Fragment, ReactNode } from "react"
 import { Link } from "@inertiajs/react"
 interface Props{
     target:ReactNode
@@ -23,12 +23,12 @@ export const DropdownMenuDestructive = ({ target, items }: Props) => {
             <DropdownMenuContent align="start" >
                 <DropdownMenuGroup>
                     {items?.map((item, index) => (
-                        <>
+                        <Fragment key={index}>
                             {item.danger && (
                                 <DropdownMenuSeparator />
                             )}
                             {!item.openModal && (
-                                <DropdownMenuItem key={index} variant={item?.variant} asChild>
+                                <DropdownMenuItem variant={item?.variant} asChild>
                                 <Link
                                     className="w-full"
                                     href={item?.href} method={item?.method || "get"}>
@@ -51,7 +51,7 @@ export const DropdownMenuDestructive = ({ target, items }: Props) => {
                                     </Link>
                                 </DropdownMenuItem>
                             )}
-                        </>
+                        </Fragment>
                     ))}
                 </DropdownMenuGroup>
             </DropdownMenuContent>

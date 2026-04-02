@@ -19,7 +19,6 @@ import React from "react";
 import { ModalInterface } from "@/interface/modal-interface"
 
 const ModalDynamic= <T extends Record<string, any>>({ open, setOpen, inputForm, url, method, title, description, dataForm }: ModalInterface<T>) => {
-  console.log(dataForm)
   const inputFormSlice = inputForm?.reduce((acc, key) => {
     acc[key.field] = dataForm?.[key.field] ?? "";
     return acc;
@@ -68,7 +67,6 @@ const ModalDynamic= <T extends Record<string, any>>({ open, setOpen, inputForm, 
                     value={data[item.field]}
                     onChange={(e) => {
                       setData(item.field, e.target.value)
-                      console.log(e.target.value)
                     }} />
                   <Error message={errors[item.field]} />
                 </Field>

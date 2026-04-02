@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\CoursesResource;
 use App\Http\Resources\ExamResource;
 use App\Models\Course;
+use App\Models\Exam;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -42,9 +43,13 @@ class CourseController extends Controller
 
     public function show(Course $course)
     {
-        $exams = $course->load('exams')->paginate(1)->withQueryString();
+        $user = Auth::user();
+        $exams = Exam::where('course_id','=',$course->id)
+        ->where('user_id','=',$user->id)
+        ->paginate()->withQueryString();
         return Inertia::render('dashboard/courses/exams/index', [
             'exams' => ExamResource::collection($exams)->resolve(),
+            'course_id' => $course->id,
             'links' =>$exams->linkCollection()->toArray(),  
         ]);
     }

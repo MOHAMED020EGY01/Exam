@@ -24,8 +24,6 @@ export const Pagination = (props: { links: any[] }) => {
     } else {
         finalLinks = props.links;
     }
-
-    console.log(finalLinks);
     return (
         <nav className="flex items-center justify-center gap-1 mt-2">
             {finalLinks.map((link: any, index: number) => (
