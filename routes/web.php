@@ -20,6 +20,17 @@ Route::group([
     Route::get('exams/all', [ExamController::class, 'all'])->name('exams.all');
 });
 
-Route::get('/login', [SocialiteController::class, 'login'])->name('login');
 
-require_once __DIR__ . '/auth.php';
+Route::group([
+    'middleware' => 'guest',
+    ], function () {
+    Route::get('/login', [SocialiteController::class, 'login'])->name('login');
+    Route::get('auth/{provider}', [SocialiteController::class, 'redirect'])
+        ->name('auth.redirect');
+    Route::get('auth/{provider}/callback', [SocialiteController::class, 'callback'])
+        ->name('auth.callback');
+});
+
+Route::delete('logout', [SocialiteController::class, 'logout'])
+    ->middleware('auth')
+    ->name('logout');
