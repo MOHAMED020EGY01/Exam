@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Auth\SocialiteController;
 use App\Http\Controllers\Dashboard\CourseController;
 use App\Http\Controllers\Dashboard\ExamController;
 use App\Http\Controllers\Dashboard\HomeController;
@@ -21,16 +20,4 @@ Route::group([
 });
 
 
-Route::group([
-    'middleware' => 'guest',
-    ], function () {
-    Route::get('/login', [SocialiteController::class, 'login'])->name('login');
-    Route::get('auth/{provider}', [SocialiteController::class, 'redirect'])
-        ->name('auth.redirect');
-    Route::get('auth/{provider}/callback', [SocialiteController::class, 'callback'])
-        ->name('auth.callback');
-});
-
-Route::delete('logout', [SocialiteController::class, 'logout'])
-    ->middleware('auth')
-    ->name('logout');
+require __DIR__.'/auth.php';

@@ -2,9 +2,11 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\SocialiteController;
 
+
 Route::group([
     'middleware' => 'guest',
-], function () {
+    ], function () {
+    Route::get('/login', [SocialiteController::class, 'login'])->name('login');
     Route::get('auth/{provider}', [SocialiteController::class, 'redirect'])
         ->name('auth.redirect');
     Route::get('auth/{provider}/callback', [SocialiteController::class, 'callback'])
