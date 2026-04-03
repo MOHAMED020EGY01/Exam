@@ -1,0 +1,6 @@
+import{j as o}from"./app-4ZFhNI9g.js";import{c as r,a as s}from"./mode-toggle-CCwxo7T7.js";/**
+ * @license lucide-react v0.577.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */const i=[["path",{d:"M21 12a9 9 0 1 1-6.219-8.56",key:"13zald"}]],n=r("loader-circle",i);function l({className:a,...e}){return o.jsx(n,{role:"status","aria-label":"Loading",className:s("size-4 animate-spin",a),...e})}export{l as S};

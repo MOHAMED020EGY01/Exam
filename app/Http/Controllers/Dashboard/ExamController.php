@@ -1,0 +1,195 @@
+<?php
+
+namespace App\Http\Controllers\Dashboard;
+
+use App\Http\Controllers\Controller;
+use App\Models\Course;
+use App\Models\Exam;
+use App\Rules\HasCorrectAnswer;
+use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
+use Inertia\Inertia;
+
+class ExamController extends Controller
+{
+    public function create(Course $course){
+        return Inertia::render('dashboard/courses/exams/create', [
+            'course' => $course,
+        ]);
+    }
+    public function store(Request $request, Course $course)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255|unique:exams,name,id',
+            'description'=>'required|string|max:255',
+            'questions' => 'required|array|min:1',
+
+            'questions.*.text' => 'required|string',
+            'questions.*.multiple' => 'required|boolean',
+            'questions.*.image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+    'questions.*.answers' => ['required', 'array', 'min:2',new HasCorrectAnswer('is_correct')
+    ],
+            'questions.*.answers.*.text' => 'required|string',
+            'questions.*.answers.*.image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'questions.*.answers.*.is_correct' => 'required|boolean',
+        ]);
+
+        $user = Auth::user();
+        $userSlug = Str::slug($user->name . '_' . $user->id);
+        $courseSlug = Str::slug($course->name . '_' . $course->id);
+        $examFolder = 'exam_' . time();
+
+        $baseDirectory = storage_path("app/public/users/{$userSlug}/{$courseSlug}/{$examFolder}");
+
+        if (!File::exists($baseDirectory)) {
+            File::makeDirectory($baseDirectory, 0755, true, true);
+        }
+
+        $processedQuestions = [];
+        foreach ($request->questions as $question) {
+            $answers = [];
+            foreach ($question['answers'] as $answer) {
+
+                $answerData = [
+                    'text' => $answer['text'],
+                    'image' => null,
+                    'is_correct' => $answer['is_correct'],
+                ];
+
+                if (isset($answer['image']) && $answer['image'] instanceof UploadedFile) {
+                    $imageContent = file_get_contents($answer['image']->getRealPath());
+                    $answerData['image'] = base64_encode($imageContent);
+                }
+
+                $answers[] = $answerData;
+            }
+            $questionData = [
+                'text' => $question['text'],
+                'multiple' => $question['multiple'],
+                'answers' => $answers,
+                'image' => null,
+            ];
+
+
+            if (isset($question['image']) && $question['image'] instanceof UploadedFile) {
+                $imageContent = file_get_contents($question['image']->getRealPath());
+                $questionData['image'] = base64_encode($imageContent);
+            }
+
+            $processedQuestions[] = $questionData;
+        }
+
+        $jsonPath = $baseDirectory . '/questions.json';
+        File::put($jsonPath, json_encode($processedQuestions, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR));
+
+        Exam::create([
+            'name' => $request->name,
+            'description'=>$request->description,
+            'user_id' => $user->id,
+            'course_id' => $course->id,
+            'questions_package' => "{$userSlug}/{$courseSlug}/{$examFolder}",
+            'questions_count' => count($processedQuestions),
+        ]);
+
+        return back()->with('success', 'Create Exam successfully');
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(Course $course, Exam $exam) {
+        $questionsPackage = $exam->questions_package;
+        $jsonPath = $questionsPackage . '/questions.json';
+        $questions = json_decode(File::get($jsonPath), true);
+        
+        return Inertia::render('dashboard.exams.show', [
+            'course' => $course,
+            'exam' => $exam,
+            'questions' => $questions,
+        ]);
+    }
+
+
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, Course $course, Exam $exam)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'required|string|max:255',
+            'questions' => 'required|array|min:1',
+
+            'questions.*.text' => 'required|string',
+            'questions.*.multiple' => 'required|boolean',
+            'questions.*.answers' => 'required|array|min:2|contains:is_correct',
+            'questions.*.image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'questions.*.answers.*.text' => 'required|string',
+            'questions.*.answers.*.image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'questions.*.answers.*.is_correct' => 'required|boolean',
+        ]);
+        $baseDirectory =  $exam->questions_package;
+
+        if (!File::exists($baseDirectory)) {
+            File::makeDirectory($baseDirectory, 0755, true, true);
+        }
+
+        $processedQuestions = [];
+        foreach ($request->questions as $question) {
+            $answers = [];
+            foreach ($question['answers'] as $answer) {
+
+                $answerData = [
+                    'text' => $answer['text'],
+                    'image' => null,
+                    'is_correct' => $answer['is_correct'],
+                ];
+
+                if (isset($answer['image']) && $answer['image'] instanceof UploadedFile) {
+                    $imageContent = file_get_contents($answer['image']->getRealPath());
+                    $answerData['image'] = base64_encode($imageContent);
+                }
+
+                $answers[] = $answerData;
+            }
+            $questionData = [
+                'text' => $question['text'],
+                'multiple' => $question['multiple'],
+                'answers' => $answers,
+                'image' => null,
+            ];
+
+
+            if (isset($question['image']) && $question['image'] instanceof UploadedFile) {
+                $imageContent = file_get_contents($question['image']->getRealPath());
+                $questionData['image'] = base64_encode($imageContent);
+            }
+
+            $processedQuestions[] = $questionData;
+        }
+
+        $jsonPath = $baseDirectory . '/questions.json';
+        File::put($jsonPath, json_encode($processedQuestions, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR));
+
+        $exam->update([
+            'name' => $request->name,
+            'description'=>$request->description,
+            'questions_count' => count($processedQuestions),
+        ]);
+
+        return back()->with('success', 'Create Exam successfully');
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy( Course $course, Exam $exam)
+    {
+        $exam->delete();
+        return back()->with('success', 'Delete Exam successfully');
+    }
+}

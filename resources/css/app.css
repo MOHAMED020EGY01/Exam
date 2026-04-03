@@ -1,0 +1,32 @@
+@import 'tailwindcss';
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "@fontsource-variable/geist";
+
+@import "./utility.css";
+@import "./style/style.css";
+@import "./style/base.css";
+@import "./style/color.css";
+
+
+
+:root {
+    --radius: 0.625rem;
+    --on-px: 1px;
+}
+
+
+@theme inline {
+    --font-sans: 'Geist Variable', sans-serif;
+    --radius-sm: calc(var(--radius) * 0.6);
+    --radius-md: calc(var(--radius) * 0.8);
+    --radius-lg: var(--radius);
+    --radius-xl: calc(var(--radius) * 1.4);
+    --radius-2xl: calc(var(--radius) * 1.8);
+    --radius-3xl: calc(var(--radius) * 2.2);
+    --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+
+
+

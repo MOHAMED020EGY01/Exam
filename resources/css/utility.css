@@ -1,0 +1,16 @@
+@utility text-mute {
+  @apply text-muted-foreground hover:text-foreground transition-colors text-xs;
+}
+
+@utility flex-just-bet-gap-4 {
+  @apply flex justify-between gap-4;
+}
+@utility card-page {
+  @apply rounded-2xl shadow p-4 bg-background;
+}
+@utility tran-300 {
+  @apply transition-all duration-300;
+}
+@utility hamburger {
+  @apply w-6 h-1 bg-foreground rounded tran-300;
+}
