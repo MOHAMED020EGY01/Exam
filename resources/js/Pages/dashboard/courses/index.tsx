@@ -1,6 +1,7 @@
-import { CardSmall } from "@/components/card";
+import { CardCreate, CardSmall } from "@/components/card";
 import { DashboardLayout } from "@/components/layout/dashboard";
 import { ModalDynamic } from "@/components/modal";
+import { CoursesCard } from "@/components/page-componets/corses-components";
 import { Button } from "@/components/ui/button";
 import { DropdownMenuDestructive } from "@/components/utils/dropdown-menu";
 import { EmptyFunction } from "@/components/utils/empty-function";
@@ -76,20 +77,11 @@ const Courses = ({ courses, links }: Props) => {
       {courses.length > 0 ? (
         <>
           <div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4'>
-            <CardSmall isCreate={true} onClick={() => setOpen(true)} />
+            <CardCreate title="Create Courses" onClick={ () => setOpen(true)} isLinK={false} />
             {courses.map((item) => (
-              <CardSmall
-                key={item.id}
-                courses={item}
-                footer={
-                  <>
-                    <DropdownMenuDestructive
-                      target={<Button>Action</Button>}
-                      items={itemAction(item,handleEditClick,handleDeleteClick)} 
-                      />
-                  </>
-                }
-              />
+              <CardSmall>
+                  <CoursesCard courses={item} items={itemAction(item,handleEditClick,handleDeleteClick)} />
+                </CardSmall>
             ))}
           </div>
           <Pagination links={links} />

@@ -1,13 +1,17 @@
-import { Head, Link, useForm } from "@inertiajs/react";
+import { WelcomeLayout } from "@/components/layout/dashboard";
+import { Head, Link} from "@inertiajs/react";
 
-
-export default function Index() {
+ function Welcome() {
 
     return (
         <>
             <Head title="Welcome" />
-            <h2>welcome page</h2>
-            <Link href="/home">home</Link>
         </>
     );
 }
+
+Welcome.layout = (page: React.ReactNode) => (
+  <WelcomeLayout>{page}</WelcomeLayout>
+);
+
+export default Welcome;

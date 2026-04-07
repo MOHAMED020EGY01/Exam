@@ -15,7 +15,8 @@ use Inertia\Inertia;
 
 class ExamController extends Controller
 {
-    public function create(Course $course){
+    public function create(Course $course)
+    {
         return Inertia::render('dashboard/courses/exams/create', [
             'course' => $course,
         ]);
@@ -24,14 +25,18 @@ class ExamController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255|unique:exams,name,id',
-            'description'=>'required|string|max:255',
+            'description' => 'required|string|max:255',
             'questions' => 'required|array|min:1',
 
             'questions.*.text' => 'required|string',
             'questions.*.multiple' => 'required|boolean',
             'questions.*.image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-    'questions.*.answers' => ['required', 'array', 'min:2',new HasCorrectAnswer('is_correct')
-    ],
+            'questions.*.answers' => [
+                'required',
+                'array',
+                'min:2',
+                new HasCorrectAnswer('is_correct')
+            ],
             'questions.*.answers.*.text' => 'required|string',
             'questions.*.answers.*.image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'questions.*.answers.*.is_correct' => 'required|boolean',
@@ -87,24 +92,25 @@ class ExamController extends Controller
 
         Exam::create([
             'name' => $request->name,
-            'description'=>$request->description,
+            'description' => $request->description,
             'user_id' => $user->id,
             'course_id' => $course->id,
             'questions_package' => "{$userSlug}/{$courseSlug}/{$examFolder}",
             'questions_count' => count($processedQuestions),
         ]);
 
-        return back()->with('success', 'Create Exam successfully');
+        return redirect()->route('courses.show', $course->id)->with('success', 'Create Exam successfully');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Course $course, Exam $exam) {
+    public function show(Course $course, Exam $exam)
+    {
         $questionsPackage = $exam->questions_package;
         $jsonPath = $questionsPackage . '/questions.json';
         $questions = json_decode(File::get($jsonPath), true);
-        
+
         return Inertia::render('dashboard.exams.show', [
             'course' => $course,
             'exam' => $exam,
@@ -177,7 +183,7 @@ class ExamController extends Controller
 
         $exam->update([
             'name' => $request->name,
-            'description'=>$request->description,
+            'description' => $request->description,
             'questions_count' => count($processedQuestions),
         ]);
 
@@ -187,7 +193,7 @@ class ExamController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy( Course $course, Exam $exam)
+    public function destroy(Course $course, Exam $exam)
     {
         $exam->delete();
         return back()->with('success', 'Delete Exam successfully');

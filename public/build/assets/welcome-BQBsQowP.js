@@ -1,1 +1,0 @@
-import{j as e,H as t,L as r}from"./app-4ZFhNI9g.js";function a(){return e.jsxs(e.Fragment,{children:[e.jsx(t,{title:"Welcome"}),e.jsx("h2",{children:"welcome page"}),e.jsx(r,{href:"/home",children:"home"})]})}export{a as default};

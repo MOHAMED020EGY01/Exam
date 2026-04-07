@@ -5,6 +5,8 @@ import { ModeToggleTheme } from "@/components/ui/mode-toggle";
 import { openSetOpenInterface } from "@/interface/global";
 import { Hamburger } from "@/components/utils/hamburger";
 import { AvatarBadgeIcon } from "@/components/utils/avatar";
+import { useAuth } from "@/hooks/use-auth";
+import { Button } from "./ui/button";
 
 const content = [
     { icon: HomeIcon, name: "Home", link: route('home') },
@@ -65,14 +67,26 @@ const Footer = () => {
 
 
 const Navbar = ({ open, setOpen }: openSetOpenInterface) => {
+    const user = useAuth();
     return (
         <div className="card-page text-xs">
             <div className="flex justify-between">
-                <Hamburger open={open} setOpen={setOpen} />
-                <div className="flex items-center gap-2">
-                    <ModeToggleTheme />
-                    <AvatarBadgeIcon />
-                </div>
+                {user?.isAuth && <Hamburger open={open} setOpen={setOpen} />}
+                {user?.isAuth ? (
+                    <div className="flex items-center gap-2">
+                        <ModeToggleTheme />
+                        <AvatarBadgeIcon />
+                    </div>
+                ) : (
+                    <div className="flex gap-2 ml-auto">
+                        <Button asChild>
+                            <Link
+                            href={route('login')}>
+                                Login
+                            </Link>
+                        </Button>
+                    </div>
+                )}
             </div>
         </div>
     );
