@@ -1,26 +1,28 @@
 import { DashboardLayout } from "@/components/layout/dashboard";
 import { useForm } from "@inertiajs/react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { cn } from "@/lib/utils";
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { Answer, Questions, Question } from "@/components/class/question";
-import { CheckboxInvalid } from "@/components/utils/checkbox-demo";
-import { RadioGroupDemo } from "@/components/utils/radio";
 import { ExamFormQuestions } from "@/components/page-componets/exam-components";
 import ExamData from "@/components/page-componets/exam-form-questions/exam-data";
 import {
     Card,
-    CardAction,
     CardContent,
     CardDescription,
     CardFooter,
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-/* ================= TYPES ================= */
 
+import { Stepper } from "@/components/utils/stepper/Stepper";
+import { Step } from "@/components/utils/stepper/types";
+
+
+/* ================= TYPES ================= */
+const steps: Step[] = [
+    { id: "1", title: "Account Info", isValid: true },
+    { id: "2", title: "Personal Details", isValid: true },
+];
 type FormData = {
     name: string;
     description: string;
@@ -32,6 +34,7 @@ interface Props {
     course: any;
 }
 function Create({ course }: Props) {
+    const [activeStep, setActiveStep] = useState(0);
     const { data, setData, post, processing, resetAndClearErrors, errors } =
         useForm<FormData>({
             name: "",
@@ -92,34 +95,50 @@ function Create({ course }: Props) {
     /* ================= UI ================= */
 
     return (
-        <Card className="max-w-md mx-auto">
+        <Card className="max-w-lg mx-auto">
             <CardHeader>
                 <CardTitle>Create Exam</CardTitle>
                 <CardDescription>
                     Create a new exam for this course {course.name}
                 </CardDescription>
             </CardHeader>
+
             <form onSubmit={handleSubmit} className="space-y-6">
-                <CardContent>
-                    <ExamData data={data} errors={errors} setData={setData} />
-                    <ExamFormQuestions
-                        data={data}
-                        errors={errors}
-                        updateQuestion={updateQuestion}
-                        updateAnswer={updateAnswer}
-                        addQuestion={addQuestion}
-                        removeQuestion={removeQuestion}
-                        addAnswer={addAnswer}
-                        removeAnswer={removeAnswer}
-                        toggleCorrect={toggleCorrect}
-                    />
+                <CardContent className="space-y-4">
+                    <div className="flex justify-between">
+                        <Button type="button" onClick={() => setActiveStep(0)}>
+                            Previous
+                        </Button>
+                        <Button type="button" onClick={() => setActiveStep(1)}>
+                            Next
+                        </Button>
+                    </div>
+                    <div className="space-y-4">
+                        {activeStep === 0 ?(
+                            <ExamData data={data} errors={errors} setData={setData} />
+                        ):(
+                            <ExamFormQuestions
+                                data={data}
+                                errors={errors}
+                                updateQuestion={updateQuestion}
+                                updateAnswer={updateAnswer}
+                                addQuestion={addQuestion}
+                                removeQuestion={removeQuestion}
+                                addAnswer={addAnswer}
+                                removeAnswer={removeAnswer}
+                                toggleCorrect={toggleCorrect}
+                            />
+                        )}
+                    </div>
                 </CardContent>
 
-                <CardFooter>
+                <CardFooter className="flex gap-2">
                     <Button type="submit" disabled={processing}>
                         Create Exam
                     </Button>
-                    <Button type="button" onClick={addQuestion}>
+                    <Button type="button"
+                        variant={"secondary"}
+                        onClick={addQuestion}>
                         Add Questions +
                     </Button>
                 </CardFooter>

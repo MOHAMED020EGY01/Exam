@@ -1,10 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { RadioGroupItem } from "@/components/ui/radio-group";
-import { RadioGroupDemo } from "@/components/utils/radio";
 import { cn } from "@/lib/utils";
-import React from "react";
+import { Trash } from "lucide-react";
 interface Props {
     questionIndex: number;
     answer: any;
@@ -25,6 +23,8 @@ function ExamAnswers({
         <div>
             <div key={answerIndex} className="flex gap-2 items-center">
                 <div>
+                    <div className="flex justify-center items-center gap-1">
+
                     <Input
                         placeholder="Answer"
                         value={answer.text}
@@ -38,37 +38,36 @@ function ExamAnswers({
                         }
                         className={cn(
                             errors[
-                                `questions.${questionIndex}.answers.${answerIndex}.text`
+                            `questions.${questionIndex}.answers.${answerIndex}.text`
                             ] && "border-red-400",
                         )}
                     />
+                    {/* is_correct */}
+                    <div className="flex justify-center items-center">
+                        <RadioGroupItem value={`${answerIndex}`} id={`option-${answerIndex}`} />
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            className="text-destructive hover:text-destructive"
+                            onClick={() => removeAnswer(questionIndex, answerIndex)}>
+                            <Trash />
+                        </Button>
+                    </div>
+                    </div>
                     {errors[
                         `questions.${questionIndex}.answers.${answerIndex}.text`
                     ] && (
-                        <p className="text-red-400 text-sm">
-                            {
-                                errors[
+                            <p className="text-red-400 text-sm">
+                                {
+                                    errors[
                                     `questions.${questionIndex}.answers.${answerIndex}.text`
-                                ]
-                            }
-                        </p>
-                    )}
+                                    ]
+                                }
+                            </p>
+                        )}
                 </div>
 
-                {/* is_correct */}
-                <div>
-                    <div className="flex items-center gap-3">
-                        <RadioGroupItem value={`${answerIndex}`} id={`option-${answerIndex}`} />
-                        <Label htmlFor={`option-${answerIndex}`}>Option One</Label>
-                    </div>
-                </div>
-                <Button
-                    type="button"
-                    variant="destructive"
-                    onClick={() => removeAnswer(questionIndex, answerIndex)}
-                >
-                    X
-                </Button>
+
             </div>
         </div>
     );

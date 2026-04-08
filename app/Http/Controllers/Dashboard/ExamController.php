@@ -40,6 +40,8 @@ class ExamController extends Controller
             'questions.*.answers.*.text' => 'required|string',
             'questions.*.answers.*.image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'questions.*.answers.*.is_correct' => 'required|boolean',
+        ],[
+            'questions.*.answers.*.text.required' => 'required'
         ]);
 
         $user = Auth::user();

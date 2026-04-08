@@ -10,12 +10,13 @@ interface Props {
 }
 function ExamQuestions({ question, questionIndex, updateQuestion, errors }: Props) {
     return (
-        <div>
+        <div className="flex flex-col gap-2">
             {/* Question Text */}
-            <div>
+            <div className="flex flex-col gap-2">
                 <Label>Question</Label>
                 <Input
                     value={question.text}
+                    placeholder="Question ... ?"
                     onChange={(e) =>
                         updateQuestion(questionIndex, "text", e.target.value)
                     }

@@ -3,10 +3,12 @@ import { Badge } from "../ui/badge";
 import { CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card";
 import { DropdownMenuDestructive } from "../utils/dropdown-menu";
 import { Button } from "../ui/button";
-import ExamData from "./exam-form-questions/exam-data";
 import ExamQuestions from "./exam-form-questions/exam-questions";
 import ExamAnswers from "./exam-form-questions/exam-answers";
 import { RadioGroup } from "../ui/radio-group";
+import { useState } from "react";
+import { Progress } from "@/components/ui/progress"
+import { cn } from "@/lib/utils";
 
 function ExamCard({ exam, items }: { exam: any; items: any }) {
     return (
@@ -58,6 +60,7 @@ function ExamCard({ exam, items }: { exam: any; items: any }) {
         </div>
     );
 }
+
 interface ExamFormQuestionsProps {
     data: any;
     errors: any;
@@ -78,62 +81,112 @@ function ExamFormQuestions({
     removeAnswer,
     toggleCorrect,
 }: ExamFormQuestionsProps) {
+    const [questionCurrent, setQuestionCurrent] = useState(0);
+    let newIndex = questionCurrent || 0;
+    const currentQuestion = data.questions[questionCurrent];
+    const totalQuestions = data.questions.length;
+    const progressQuestions = Math.floor((Number(newIndex) + 1) / Number(totalQuestions) * 100);
+    const handleNext = () => {
+        if (!(totalQuestions <= newIndex + 1))
+            setQuestionCurrent(++newIndex);
+    }
+    const handlePrevious = () => {
+        if (!(newIndex - 1 < 0))
+            setQuestionCurrent(--newIndex);
+    }
     return (
         <>
-            {/* 🔥 Questions */}
-            {data.questions.map((question, questionIndex) => (
-                <div
-                    key={questionIndex}
-                    className="border-3 border-dashed dash rounded-xl p-4 space-y-4"
-                >
-                    <ExamQuestions
-                        question={question}
-                        questionIndex={questionIndex}
-                        updateQuestion={updateQuestion}
-                        errors={errors}
-                    />
-
-                    <RadioGroup
-                        value={question.answers
-                            .findIndex((a) => a.is_correct)
-                            .toString()}
-                        onValueChange={(value) =>
-                            toggleCorrect(questionIndex, Number(value))
-                        }
-                        className="space-y-2"
+            {currentQuestion &&
+                <>
+                    <div
+                        key={questionCurrent}
+                        className="border-3 border-dashed dash rounded-xl p-4 space-y-4 animate-in fade-in-5 slide-in-from-right-30 duration-700"
                     >
-                        {question.answers.map((answer, answerIndex) => (
-                            <ExamAnswers
-                                questionIndex={questionIndex}
-                                answer={answer}
-                                answerIndex={answerIndex}
-                                updateAnswer={updateAnswer}
-                                removeAnswer={removeAnswer}
-                                errors={errors}
-                            />
-                        ))}
-                    </RadioGroup>
-                    {errors[`questions.${questionIndex}.answers`] && (
-                        <p className="text-red-400 text-sm">
-                            {errors[`questions.${questionIndex}.answers`]}
+                        <p className="text-mute">
+                            Questions: ({newIndex + 1} of {totalQuestions})
                         </p>
-                    )}
-                    <Button
-                        type="button"
-                        onClick={() => addAnswer(questionIndex)}
-                    >
-                        + Add Answer
-                    </Button>
+                        <Progress value={progressQuestions} />
 
-                    <Button
-                        type="button"
-                        variant="destructive"
-                        onClick={() => removeQuestion(questionIndex)}
-                    >
-                        - Delete Question
-                    </Button>
-                </div>
-            ))}
+                        <ExamQuestions
+                            question={currentQuestion}
+                            questionIndex={questionCurrent}
+                            updateQuestion={updateQuestion}
+                            errors={errors}
+                        />
+
+                        <RadioGroup
+                            value={currentQuestion.answers
+                                .findIndex((a) => a.is_correct)
+                                .toString()}
+                            onValueChange={(value) =>
+                                toggleCorrect(questionCurrent, Number(value))
+                            }
+                            className="space-y-2"
+                        >
+                            <div className="grid grid-cols-2 gap-4">
+
+                                {currentQuestion.answers.map((answer, answerIndex) => (
+                                    <ExamAnswers
+                                        key={answerIndex}
+                                        questionIndex={questionCurrent}
+                                        answer={answer}
+                                        answerIndex={answerIndex}
+                                        updateAnswer={updateAnswer}
+                                        removeAnswer={removeAnswer}
+                                        errors={errors}
+                                    />
+                                ))}
+                            </div>
+                        </RadioGroup>
+                        {errors[`questions.${questionCurrent}.answers`] && (
+                            <p className="text-red-400 text-sm">
+                                {errors[`questions.${questionCurrent}.answers`]}
+                            </p>
+                        )}
+                        <div className="flex justify-between">
+                            <Button
+                                type="button"
+                                variant="destructive"
+                                onClick={() => removeQuestion(questionCurrent)}>
+                                - Delete Question
+                            </Button>
+                            <Button
+                                type="button"
+                                onClick={() => addAnswer(questionCurrent)} >
+                                + Add Answer
+                            </Button>
+                        </div>
+                        <div className="flex gap-2">
+                            <Button
+                                type="button"
+                                onClick={() => handlePrevious()}
+                                disabled={!!(newIndex - 1 < 0)}>
+                                Previous
+                            </Button>
+                            <Button
+                                type="button"
+                                onClick={() => handleNext()}
+                                disabled={!!(totalQuestions <= newIndex + 1)}>
+                                Next
+                            </Button>
+
+                        </div>
+                        <div className="flex flex-wrap gap-2">
+                            {
+                                Array.from({ length: totalQuestions }, (_, i) => (
+                                    <Button
+                                        type="button"
+                                        key={i}
+                                        onClick={() => setQuestionCurrent(i)}
+                                        className={cn("w-8 h-8 p-2 rounded-full", newIndex == i ? "bg-accent-foreground" : "bg-accent")}>
+                                        {i + 1}
+                                    </Button>
+                                ))
+                            }
+                        </div>
+                    </div>
+                </>
+            }
         </>
     );
 }
