@@ -12,4 +12,5 @@ export interface ModalInterface<T> {
   description: string;
   inputForm?: FieldForm[];
   dataForm?: T;
+  children?: React.ReactNode;
 }

@@ -9,25 +9,32 @@ import { useAuth } from "@/hooks/use-auth";
 import { Button } from "./ui/button";
 
 const content = [
-    { icon: HomeIcon, name: "Home", link: route('home') },
-    { icon: InfoIcon, name: "Courses", link: route('courses.index') },
-    { icon: PhoneIcon, name: "Exam", link: route('exams.all') },
-]
+    { icon: HomeIcon, name: "Home", link: route("home") },
+    { icon: InfoIcon, name: "Courses", link: route("courses.index") },
+    { icon: PhoneIcon, name: "Exam", link: route("exams.all") },
+];
 
 const Sidebar = ({ open = false }: { open: boolean }) => {
     return (
-        <div className={cn(
-            "card-page tran-300",
-            open ? 'w-64 p-4' : 'w-16 p-0 py-4'
-        )}>
+        <div
+            className={cn(
+                "card-page",
+                open ? "w-64 p-4" : "w-16 p-0 py-4",
+            )}
+        >
             <ul className="flex flex-col gap-4 ">
                 {content.map((item, index) => (
-                    <li key={index} className="hover:bg-foreground/10 p-2 rounded-lg">
+                    <li
+                        key={index}
+                        className="hover:bg-foreground/10 p-2 rounded-lg"
+                    >
                         <Link href={item.link}>
-                            <div className={cn(
-                                "flex items-center gap-2",
-                                open ? 'justify-start' : 'justify-center'
-                            )}>
+                            <div
+                                className={cn(
+                                    "flex items-center gap-2",
+                                    open ? "justify-start" : "justify-center",
+                                )}
+                            >
                                 <item.icon />
                                 {open && <span>{item.name}</span>}
                             </div>
@@ -36,15 +43,14 @@ const Sidebar = ({ open = false }: { open: boolean }) => {
                 ))}
             </ul>
         </div>
-    )
-}
-
+    );
+};
 
 const footer = [
     { text: "Privacy", href: "#" },
     { text: "Terms", href: "#" },
     { text: "Contact", href: "#" },
-]
+];
 
 const Footer = () => {
     const data = new Date();
@@ -62,9 +68,7 @@ const Footer = () => {
             </div>
         </footer>
     );
-}
-
-
+};
 
 const Navbar = ({ open, setOpen }: openSetOpenInterface) => {
     const user = useAuth();
@@ -80,10 +84,9 @@ const Navbar = ({ open, setOpen }: openSetOpenInterface) => {
                 ) : (
                     <div className="flex gap-2 ml-auto">
                         <Button asChild>
-                            <Link
-                            href={route('login')}>
-                                Login
-                            </Link>
+                            <div>
+                                <Link href={route("login")}>Login</Link>
+                            </div>
                         </Button>
                     </div>
                 )}
@@ -92,5 +95,4 @@ const Navbar = ({ open, setOpen }: openSetOpenInterface) => {
     );
 };
 
-
-export { Footer, Sidebar, Navbar }
+export { Footer, Sidebar, Navbar };

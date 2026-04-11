@@ -15,7 +15,7 @@ Route::group([
 ], function () {
     Route::get('/', HomeController::class)->name('home');
     Route::apiResource('courses', CourseController::class);
-    Route::resource('courses/{course}/exams', ExamController::class);
+    Route::apiResource('courses/{course}/exams', ExamController::class)->except(['index']);
     Route::get('exams/all', [ExamController::class, 'all'])->name('exams.all');
 });
 

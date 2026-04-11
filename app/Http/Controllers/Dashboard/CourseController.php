@@ -20,7 +20,7 @@ class CourseController extends Controller
         $courses = Course::where('user_id', $user->id)->with('exams')->paginate(5)->withQueryString();
         return Inertia::render('dashboard/courses/index', [
             'courses' => CoursesResource::collection($courses)->resolve(),
-            'links' => $courses->linkCollection()->toArray(),  
+            'links' => $courses->linkCollection()->toArray(),
         ]);
     }
 
@@ -49,8 +49,8 @@ class CourseController extends Controller
         ->paginate()->withQueryString();
         return Inertia::render('dashboard/courses/exams/index', [
             'exams' => ExamResource::collection($exams)->resolve(),
-            'course_id' => $course->id,
-            'links' =>$exams->linkCollection()->toArray(),  
+            'course' => $course,
+            'links' =>$exams->linkCollection()->toArray(),
         ]);
     }
 
@@ -63,11 +63,11 @@ class CourseController extends Controller
         $request->validate([
             'name' => ['required ','string', 'max:255'],
         ]);
-        
+
         $course->update([
             'name' => $request->name,
         ]);
-        
+
         return back()->with('success', 'Course updated successfully');
     }
 

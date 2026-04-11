@@ -45,4 +45,4 @@ function ExamData({  errors , data , setData }: Props) {
     );
 }
 
-export default ExamData;
+export  {ExamData};

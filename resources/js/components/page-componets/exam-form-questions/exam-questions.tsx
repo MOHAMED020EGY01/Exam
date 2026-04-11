@@ -1,7 +1,7 @@
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
-import React from "react";
 interface Props {
     question: any;
     questionIndex: number;
@@ -22,11 +22,11 @@ function ExamQuestions({ question, questionIndex, updateQuestion, errors }: Prop
                     }
                     className={cn(
                         errors[`questions.${questionIndex}.text`] &&
-                            "border-red-400",
+                            "border-destructive",
                     )}
                 />
                 {errors[`questions.${questionIndex}.text`] && (
-                    <p className="text-red-400 text-sm">
+                    <p className="text-destructive text-sm">
                         {errors[`questions.${questionIndex}.text`]}
                     </p>
                 )}
@@ -34,14 +34,13 @@ function ExamQuestions({ question, questionIndex, updateQuestion, errors }: Prop
 
             {/* Multiple */}
             <label className="flex items-center gap-2">
-                <input
-                    type="checkbox"
+                <Checkbox
                     checked={question.multiple}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    onCheckedChange={(e: boolean) =>
                         updateQuestion(
                             questionIndex,
                             "multiple",
-                            e.target.checked,
+                            e,
                         )
                     }
                 />

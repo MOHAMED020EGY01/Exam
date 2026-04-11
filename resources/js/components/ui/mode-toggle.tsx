@@ -15,12 +15,12 @@ export function ModeToggleTheme({ className }: { className?: string }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-          <Button 
+          <Button
           className={cn(
             "p-3 rounded-full",
             className
           )}
-        variant="ghost" size="lg" onClick={() => setTheme("light")}>
+        variant="ghost" size="lg">
           {theme === "light" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
         </Button>
       </DropdownMenuTrigger>
