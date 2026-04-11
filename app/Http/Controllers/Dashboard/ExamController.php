@@ -9,8 +9,8 @@ use App\Models\Course;
 use App\Models\Exam;
 use App\Services\ExamServices;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 
@@ -41,25 +41,24 @@ class ExamController extends Controller
         $courseSlug = Str::slug($course->name . '_' . $course->id);
         $examFolder = 'exam_' . time();
 
-        $baseDirectory = storage_path("app/public/users/{$userSlug}/{$courseSlug}/{$examFolder}");
-        if (!File::exists($baseDirectory)) {
-            File::makeDirectory($baseDirectory, 0755, true, true);
-        }
-
-        $processedQuestions = ExamServices::processExamData($request);
-
-        $jsonPath = $baseDirectory . '/questions.json';
-        ExamServices::saveFile($jsonPath, $processedQuestions);
-        $exam = Exam::create([
-            'name' => $request->name,
-            'description' => $request->description,
-            'user_id' => $user->id,
-            'course_id' => $course->id,
-            'questions_package' => "users/{$userSlug}/{$courseSlug}/{$examFolder}/questions.json",
-            'questions_count' => count($processedQuestions),
-        ]);
-
-        return self::HelperMessageFlash('Create', $exam->name, $course->name);
+        return DB::transaction(function () use ($request, $course, $user, $userSlug, $courseSlug, $examFolder) {
+            $baseDirectory = storage_path("app/public/users/{$userSlug}/{$courseSlug}/{$examFolder}");
+            if (!File::exists($baseDirectory)) {
+                File::makeDirectory($baseDirectory, 0755, true, true);
+            }
+            $processedQuestions = ExamServices::processExamData($request);
+            $jsonPath = $baseDirectory . '/questions.json';
+            ExamServices::saveFile($jsonPath, $processedQuestions);
+            $exam = Exam::create([
+                'name' => $request->name,
+                'description' => $request->description,
+                'user_id' => $user->id,
+                'course_id' => $course->id,
+                'questions_package' => "users/{$userSlug}/{$courseSlug}/{$examFolder}/questions.json",
+                'questions_count' => count($processedQuestions),
+            ]);
+            return self::HelperMessageFlash('Create', $exam->name, $course->name);
+        });
     }
 
     /**
@@ -67,7 +66,7 @@ class ExamController extends Controller
      */
     public function show(Course $course, Exam $exam)
     {
-        $questionsPackage = $exam->questions_package;
+        $questionsPackage = storage_path("app/public/$exam->questions_package");
         $jsonPath = $questionsPackage . '/questions.json';
         $questions = json_decode(File::get($jsonPath), true);
 
@@ -80,38 +79,34 @@ class ExamController extends Controller
 
     public function update(ExamRequest $request, Course $course, Exam $exam)
     {
-        $baseDirectory = $exam->questions_package;
+        return DB::transaction(function () use ($request, $course, $exam) {
+            $baseDirectory = storage_path("app/public/$exam->questions_package");
 
-        if (!File::exists($baseDirectory)) {
-            File::makeDirectory($baseDirectory, 0755, true, true);
-        }
-        $processedQuestions = ExamServices::processExamData($request);
+            if (!File::exists($baseDirectory)) {
+                File::makeDirectory($baseDirectory, 0755, true, true);
+            }
+            $processedQuestions = ExamServices::processExamData($request);
 
-        $jsonPath = $baseDirectory . '/questions.json';
-        ExamServices::saveFile($jsonPath, $processedQuestions);
+            $jsonPath = $baseDirectory;
+            ExamServices::saveFile($jsonPath, $processedQuestions);
 
-        $exam->update([
-            'name' => $request->name,
-            'description' => $request->description,
-            'questions_count' => count($processedQuestions),
-        ]);
+            $exam->update([
+                'name' => $request->name,
+                'description' => $request->description,
+                'questions_count' => count($processedQuestions),
+            ]);
 
-        return self::HelperMessageFlash('Update', $exam->name, $course->name);
+            return self::HelperMessageFlash('Update', $exam->name, $course->name);
+        });
     }
 
 
     public function destroy(Course $course, Exam $exam)
     {
-        $oldPackagePath = public_path('storage/' . $exam->questions_package);
-        $exam->delete();
-        if (File::exists($oldPackagePath)) {
-            File::delete($oldPackagePath);
-            $oldDirectory = dirname($oldPackagePath);
-            if (File::exists($oldDirectory)) {
-                File::deleteDirectory($oldDirectory);
-            }
-        }
-        return self::HelperMessageFlash('Delete', $exam->name, $course->name);
+        return DB::transaction(function () use ($course, $exam) {
+            ExamServices::deleteExamPackage($exam);
+            $exam->delete();
+            return self::HelperMessageFlash('Delete', $exam->name, $course->name);
+        });
     }
-
 }

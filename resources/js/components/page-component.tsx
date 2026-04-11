@@ -1,5 +1,5 @@
 import { Link } from "@inertiajs/react";
-import { HomeIcon, InfoIcon, PhoneIcon } from "lucide-react";
+import { Book, HomeIcon, InfoIcon, PhoneIcon, Sheet } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ModeToggleTheme } from "@/components/ui/mode-toggle";
 import { openSetOpenInterface } from "@/interface/global";
@@ -7,21 +7,17 @@ import { Hamburger } from "@/components/utils/hamburger";
 import { AvatarBadgeIcon } from "@/components/utils/avatar";
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "./ui/button";
+import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 
 const content = [
     { icon: HomeIcon, name: "Home", link: route("home") },
-    { icon: InfoIcon, name: "Courses", link: route("courses.index") },
-    { icon: PhoneIcon, name: "Exam", link: route("exams.all") },
+    { icon: Book, name: "Courses", link: route("courses.index") },
+    { icon: Sheet, name: "Exam", link: route("exams.all") },
 ];
 
 const Sidebar = ({ open = false }: { open: boolean }) => {
     return (
-        <div
-            className={cn(
-                "card-page",
-                open ? "w-64 p-4" : "w-16 p-0 py-4",
-            )}
-        >
+        <div className={cn("card-page", open ? "w-64 p-4" : "w-16 p-0 py-4")}>
             <ul className="flex flex-col gap-4 ">
                 {content.map((item, index) => (
                     <li
@@ -35,7 +31,16 @@ const Sidebar = ({ open = false }: { open: boolean }) => {
                                     open ? "justify-start" : "justify-center",
                                 )}
                             >
-                                <item.icon />
+                                <Tooltip>
+                                    <TooltipTrigger>
+                                        <item.icon />
+                                    </TooltipTrigger>
+                                    {!open && (
+                                        <TooltipContent side="right">
+                                            {<span>{item.name}</span>}
+                                        </TooltipContent>
+                                    )}
+                                </Tooltip>
                                 {open && <span>{item.name}</span>}
                             </div>
                         </Link>

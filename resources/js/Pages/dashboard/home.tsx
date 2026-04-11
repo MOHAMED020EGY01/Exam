@@ -7,7 +7,6 @@ function Home() {
   return (
     <>
       <Head title="Home" />
-      <SonnerTypes />
     </>
   );
 }

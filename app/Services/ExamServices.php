@@ -53,4 +53,16 @@ class ExamServices
         }
         return $questionContent;
     }
+
+    public static function deleteExamPackage($exam)
+    {
+        $oldPackagePath = public_path('storage/' . $exam->questions_package);
+        if (File::exists($oldPackagePath)) {
+            File::delete($oldPackagePath);
+            $oldDirectory = dirname($oldPackagePath);
+            if (File::exists($oldDirectory)) {
+                File::deleteDirectory($oldDirectory);
+            }
+        }
+    }
 }

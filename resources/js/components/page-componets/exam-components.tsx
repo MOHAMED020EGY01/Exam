@@ -60,7 +60,7 @@ function ExamCard({ exam, items }: { exam: any; items: any }) {
                         Questions:
                     </span>
                     <span className="text-xs font-semibold text-foreground">
-                        {exam.exam_count}
+                        {exam.questions_count}
                     </span>
                 </div>
                 <div className="text-xs text-muted-foreground">
@@ -72,16 +72,20 @@ function ExamCard({ exam, items }: { exam: any; items: any }) {
 }
 
 function ExamModalFormQuestions({
-    course,
     setOpen,
+    submitForm = "Save Changes",
     exam =null,
+    method = "post",
+    url ="#",
 }: {
-    course: any;
     setOpen: (open: boolean) => void;
+    submitForm?:string
     exam?: any;
+    method?:any;
+    url?:any;
 }) {
     const [activeStep, setActiveStep] = useState(0);
-    const { data, setData, post, processing, resetAndClearErrors, errors } =
+    const { data, setData, submit, processing, resetAndClearErrors, errors } =
         useForm<FormData>({
             name: exam?.name ? exam.name : "",
             description: exam?.description ? exam.description : "",
@@ -132,7 +136,7 @@ function ExamModalFormQuestions({
 
     const handleSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
         e.preventDefault();
-        post(route("exams.store", course.id), {
+        submit(method,url, {
             onSuccess: () => {
                 resetAndClearErrors();
                 setOpen(false);
@@ -193,7 +197,7 @@ function ExamModalFormQuestions({
             <div className="flex justify-between">
                 <div className="flex gap-2">
                     <Button type="submit" disabled={processing}>
-                        Create Exam
+                        {submitForm}
                     </Button>
                     <Button
                         type="button"

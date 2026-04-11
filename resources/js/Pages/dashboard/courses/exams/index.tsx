@@ -1,20 +1,17 @@
+import {
+    ExamCard,
+    ExamModalFormQuestions,
+} from "@/components/page-componets/exam-components";
 import { CardCreate, CardSmall } from "@/components/card";
 import { DashboardLayout } from "@/components/layout/dashboard";
-import React, { useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Pagination } from "@/components/utils/pagination";
 import { EmptyFunction } from "@/components/utils/empty-function";
 import { DropdownItemInterface } from "@/interface/global";
 import { Pen, Sheet, Trash } from "lucide-react";
-import {
-    ExamCard,
-    ExamModalFormQuestions,
-} from "@/components/page-componets/exam-components";
 import { ModalDynamic } from "@/components/modal";
 import { ModalDynamicAdvanced } from "@/components/utils/modal-advanced";
-import { usePage } from "@inertiajs/react";
-import { useFlashMessage } from "@/hooks/use-flash-message";
-import { SonnerTypes } from "@/components/utils/flash-message/flash-helper";
 interface Data {
     id: string;
     name: string;
@@ -28,9 +25,8 @@ interface Props {
     exams: Data[];
     course: any;
     links: any;
-
 }
-const itemDromDown = (
+const itemDropDown = (
     exam: Data,
     course: any,
     handleDeleteClick: (course: Data) => void,
@@ -62,8 +58,7 @@ const itemDromDown = (
         },
     ];
 };
-function Index({ exams, links, course, }: Props) {
-
+function Index({ exams, links, course }: Props) {
     const [openModalExam, setOpenModalExam] = useState(false);
     const [editModal, setEditModal] = useState(false);
     const [deleteModal, setDeleteModal] = useState(false);
@@ -80,14 +75,17 @@ function Index({ exams, links, course, }: Props) {
     const handleEditClick = (item: Data) => {
         setSelectedEditModal(item);
         setEditModal(true);
-    }
+    };
 
     return (
         <>
-        
+            <h3 className="text-xl font-bold">Exam</h3>
+            <p className="text-foreground/80">
+                Here you can manage your Exam and view their details.
+            </p>
             {exams.length > 0 ? (
                 <>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 py-4">
                         <CardCreate
                             isLinK={false}
                             title="Create exam"
@@ -97,7 +95,7 @@ function Index({ exams, links, course, }: Props) {
                             <CardSmall key={item.id}>
                                 <ExamCard
                                     exam={item}
-                                    items={itemDromDown(
+                                    items={itemDropDown(
                                         item,
                                         course,
                                         handleDeleteClick,
@@ -115,9 +113,7 @@ function Index({ exams, links, course, }: Props) {
                         title="No Exam Yet"
                         description="You haven't created any exams yet..."
                     >
-                        <Button
-                            onClick={() => setOpenModalExam(true)}
-                        >
+                        <Button onClick={() => setOpenModalExam(true)}>
                             Create Exam
                         </Button>
                     </EmptyFunction>
@@ -141,7 +137,9 @@ function Index({ exams, links, course, }: Props) {
                 open={openModalExam}
                 children={
                     <ExamModalFormQuestions
-                        course={course}
+                        submitForm="Create Exam"
+                        method="post"
+                        url={route("exams.store", course.id)}
                         setOpen={setOpenModalExam}
                     />
                 }
@@ -151,12 +149,16 @@ function Index({ exams, links, course, }: Props) {
                     open={editModal}
                     children={
                         <ExamModalFormQuestions
-                            course={course}
+                            submitForm="Update Exam"
+                            method={"put"}
+                            url={route("exams.update", {
+                                course: course.id,
+                                exam: selectedEditModal.id,
+                            })}
                             setOpen={setEditModal}
                             exam={selectedEditModal}
                         />
                     }
-
                 />
             )}
         </>
