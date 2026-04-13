@@ -6,6 +6,7 @@ namespace App\Services;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
 use Intervention\Image\Encoders\JpegEncoder;
@@ -19,41 +20,49 @@ class ExamServices
     public static function processExamData($request, $exam = null)
     {
         $processedQuestions = [];
-        $index = $exam ? count(json_decode(self::disk()->get($exam->questions_package), true)) : 0;
+        $usedIds = [];
+        if ($exam) {
+            $getOldQuestions = self::disk()->get($exam->questions_package);
+            $oldQuestions = json_decode($getOldQuestions, true);
+            $usedIds = collect($oldQuestions)->pluck('id')->toArray();
+        }
         foreach ($request->questions as $question) {
-            $question['id'] = $index++;
+            $questionId = $question['id'] ?? null;
+            if (!$questionId || !in_array($questionId, $usedIds)) {
+                $questionId = Str::uuid()->toString();
+            }
             $answers = [];
+
             if (isset($question['image']) && $question['image']) {
                 $question['image'] = self::compressImageConvertBase64($question['image']);
             } else {
                 if ($exam) {
-                    $getOldQuestions = self::disk()->get($exam->questions_package);
-                    $oldQuestions = json_decode($getOldQuestions, true);
-                    $question['image'] = $oldQuestions[$question['id']]['image'] ?? null;
+                    $oldQuestion = collect($oldQuestions)?->firstWhere('id', $questionId);
+                    $question['image'] = $oldQuestion['image'] ?? null;
                 }
             }
 
             foreach ($question['answers'] as $answer) {
-
                 $answerData = [
                     'text' => $answer['text'],
-                    'image' => null,
+                    'image' => isset($answer['image'])
+                        ? self::compressImageConvertBase64($answer['image'])
+                        : null,
                     'is_correct' => (bool) $answer['is_correct'],
                 ];
 
-
-                $answerData['image'] = self::compressImageConvertBase64($answer['image']);
                 $answers[] = $answerData;
             }
-            $questionData = [
-                'id' => $question['id'],
+
+            $processedQuestions[] = [
+                'id' => $questionId,
                 'text' => $question['text'],
-                'multiple' => $question['multiple'],
+                'multiple' => (bool) $question['multiple'],
                 'answers' => $answers,
                 'image' => $question['image'] ?? null,
             ];
-            $processedQuestions[] = $questionData;
         }
+
         return $processedQuestions;
     }
     public static function saveFile($jsonPath, $processedQuestions)

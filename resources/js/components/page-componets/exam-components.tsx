@@ -157,6 +157,9 @@ function ExamModalFormQuestions({
         });
 
         submit("post", url, {
+            onBefore: () => {
+                console.log("Before",data.questions);
+            },
             onSuccess: () => {
                 resetAndClearErrors();
                 setOpen(false);
