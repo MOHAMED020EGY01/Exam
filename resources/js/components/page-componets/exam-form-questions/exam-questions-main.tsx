@@ -27,6 +27,9 @@ function ExamFormQuestions({
     toggleCorrect,
 }: ExamFormQuestionsProps) {
     const [questionCurrent, setQuestionCurrent] = useState(0);
+    const [multiChosen, setMultiChosen] = useState(
+        data.questions[questionCurrent]?.multiple || false,
+    );
     let newIndex = questionCurrent || 0;
     const currentQuestion = data.questions[questionCurrent];
     const totalQuestions = data.questions.length;
@@ -78,20 +81,21 @@ function ExamFormQuestions({
                             questionIndex={questionCurrent}
                             updateQuestion={updateQuestion}
                             errors={errors}
+                            multiChosen={multiChosen}
+                            setMultiChosen={setMultiChosen}
                         />
 
                         <RadioGroup
                             value={currentQuestion.answers
-                                .findIndex((a) => a.is_correct)
+                                .findIndex((a: any) => a.is_correct)
                                 .toString()}
                             onValueChange={(value) =>
                                 toggleCorrect(questionCurrent, Number(value))
                             }
-                            className="space-y-2"
-                        >
+                            className="space-y-2">
                             <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-4">
                                 {currentQuestion.answers.map(
-                                    (answer, answerIndex) => (
+                                    (answer: any, answerIndex: number) => (
                                         <ExamAnswers
                                             key={answerIndex}
                                             questionIndex={questionCurrent}
@@ -100,6 +104,7 @@ function ExamFormQuestions({
                                             updateAnswer={updateAnswer}
                                             removeAnswer={removeAnswer}
                                             errors={errors}
+                                            multiChosen={multiChosen}
                                         />
                                     ),
                                 )}
@@ -153,10 +158,10 @@ function ExamFormQuestions({
                                         className={cn(
                                             "w-8 h-8 p-2 rounded-full text-foreground bg-background",
                                             newIndex === i &&
-                                                "border-4 border-primary",
+                                            "border-4 border-primary",
                                             newIndex !== i &&
-                                                hasError &&
-                                                "border-4 border-destructive animate-pulse",
+                                            hasError &&
+                                            "border-4 border-destructive animate-pulse",
                                         )}
                                     >
                                         {i + 1}

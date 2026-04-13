@@ -1,35 +1,56 @@
 <?php
+
 namespace App\Services;
+
+
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
+use Intervention\Image\Encoders\JpegEncoder;
+
 class ExamServices
 {
-    private static $basePath = 'storage/';
-    public static function processExamData($request)
+    private static function disk()
+    {
+        return Storage::disk('local');
+    }
+    public static function processExamData($request, $exam = null)
     {
         $processedQuestions = [];
+        $index = $exam ? count(json_decode(self::disk()->get($exam->questions_package), true)) : 0;
         foreach ($request->questions as $question) {
+            $question['id'] = $index++;
             $answers = [];
+            if (isset($question['image']) && $question['image']) {
+                $question['image'] = self::compressImageConvertBase64($question['image']);
+            } else {
+                if ($exam) {
+                    $getOldQuestions = self::disk()->get($exam->questions_package);
+                    $oldQuestions = json_decode($getOldQuestions, true);
+                    $question['image'] = $oldQuestions[$question['id']]['image'] ?? null;
+                }
+            }
+
             foreach ($question['answers'] as $answer) {
 
                 $answerData = [
                     'text' => $answer['text'],
                     'image' => null,
-                    'is_correct' => $answer['is_correct'],
+                    'is_correct' => (bool) $answer['is_correct'],
                 ];
 
-                if (isset($answer['image']) && $answer['image'] instanceof UploadedFile) {
-                    $imageContent = file_get_contents($answer['image']->getRealPath());
-                    $answerData['image'] = base64_encode($imageContent);
-                }
 
+                $answerData['image'] = self::compressImageConvertBase64($answer['image']);
                 $answers[] = $answerData;
             }
             $questionData = [
+                'id' => $question['id'],
                 'text' => $question['text'],
                 'multiple' => $question['multiple'],
                 'answers' => $answers,
-                'image' => null,
+                'image' => $question['image'] ?? null,
             ];
             $processedQuestions[] = $questionData;
         }
@@ -44,10 +65,9 @@ class ExamServices
     }
     public static function responseFileJson($questions_package)
     {
-
         $question = $questions_package;
-        if (File::exists(self::$basePath . $question)) {
-            $questionContent = file_get_contents(self::$basePath . $question);
+        if (self::disk()->exists($question)) {
+            $questionContent = self::disk()->get($question);
         } else {
             $questionContent = null;
         }
@@ -56,13 +76,31 @@ class ExamServices
 
     public static function deleteExamPackage($exam)
     {
-        $oldPackagePath = public_path('storage/' . $exam->questions_package);
-        if (File::exists($oldPackagePath)) {
-            File::delete($oldPackagePath);
+        $oldPackagePath = $exam->questions_package;
+        if (self::disk()->exists($oldPackagePath)) {
+            self::disk()->delete($oldPackagePath);
             $oldDirectory = dirname($oldPackagePath);
-            if (File::exists($oldDirectory)) {
-                File::deleteDirectory($oldDirectory);
+            if (self::disk()->exists($oldDirectory)) {
+                self::disk()->deleteDirectory($oldDirectory);
             }
         }
+    }
+
+    public static function compressImageConvertBase64($image)
+    {
+        if ($image instanceof UploadedFile) {
+
+            $manager = new ImageManager(new Driver());
+
+            // قراءة الصورة
+            $imageCompress = $manager->read($image->getRealPath());
+
+            // ضغط وتحويل إلى JPEG
+            $encoded = $imageCompress->encode(new JpegEncoder(quality: 65));
+
+            // تحويل مباشرة إلى Base64
+            return base64_encode($encoded->toString());
+        }
+        return null;
     }
 }

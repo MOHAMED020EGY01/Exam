@@ -11,6 +11,7 @@ use App\Services\ExamServices;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 
@@ -33,6 +34,9 @@ class ExamController extends Controller
                 201
             ));
     }
+    private static function disk(){
+        return Storage::disk('local');
+    }
 
     public function store(ExamRequest $request, Course $course)
     {
@@ -42,7 +46,7 @@ class ExamController extends Controller
         $examFolder = 'exam_' . time();
 
         return DB::transaction(function () use ($request, $course, $user, $userSlug, $courseSlug, $examFolder) {
-            $baseDirectory = storage_path("app/public/users/{$userSlug}/{$courseSlug}/{$examFolder}");
+            $baseDirectory = self::disk()->path("users/{$userSlug}/{$courseSlug}/{$examFolder}");
             if (!File::exists($baseDirectory)) {
                 File::makeDirectory($baseDirectory, 0755, true, true);
             }
@@ -66,7 +70,7 @@ class ExamController extends Controller
      */
     public function show(Course $course, Exam $exam)
     {
-        $questionsPackage = storage_path("app/public/$exam->questions_package");
+        $questionsPackage = self::disk()->path($exam->questions_package);
         $jsonPath = $questionsPackage . '/questions.json';
         $questions = json_decode(File::get($jsonPath), true);
 
@@ -80,16 +84,14 @@ class ExamController extends Controller
     public function update(ExamRequest $request, Course $course, Exam $exam)
     {
         return DB::transaction(function () use ($request, $course, $exam) {
-            $baseDirectory = storage_path("app/public/$exam->questions_package");
-
+            $baseDirectory = self::disk()->path($exam->questions_package);
             if (!File::exists($baseDirectory)) {
                 File::makeDirectory($baseDirectory, 0755, true, true);
             }
-            $processedQuestions = ExamServices::processExamData($request);
+            $processedQuestions = ExamServices::processExamData($request,$exam);
 
             $jsonPath = $baseDirectory;
             ExamServices::saveFile($jsonPath, $processedQuestions);
-
             $exam->update([
                 'name' => $request->name,
                 'description' => $request->description,

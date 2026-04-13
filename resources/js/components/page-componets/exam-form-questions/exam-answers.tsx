@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
-import { InputGroup } from "@/components/ui/input-group";
 import { RadioGroupItem } from "@/components/ui/radio-group";
 import { cn } from "@/lib/utils";
 import { Trash } from "lucide-react";
@@ -12,6 +12,7 @@ interface Props {
     updateAnswer: any;
     removeAnswer: any;
     errors: any;
+    multiChosen: boolean;
 }
 function ExamAnswers({
     questionIndex,
@@ -20,6 +21,7 @@ function ExamAnswers({
     updateAnswer,
     removeAnswer,
     errors,
+    multiChosen,
 }: Props) {
     return (
         <div>
@@ -46,12 +48,30 @@ function ExamAnswers({
                                 )}
                             />
                             <Button asChild variant="outline" type="button">
-                                <div>
-                                    <RadioGroupItem
-                                        value={`${answerIndex}`}
-                                        id={`option-${answerIndex}`}
-                                    />
-                                </div>
+                                {!multiChosen ? (
+                                    <div>
+                                        <RadioGroupItem
+                                            value={`${answerIndex}`}
+                                            id={`option-${answerIndex}`}
+                                        />
+                                    </div>
+                                ) : (
+                                    <div>
+                                        <Checkbox
+                                            checked={answer.is_correct}
+                                            onCheckedChange={(e: boolean) =>
+                                                updateAnswer(
+                                                    questionIndex,
+                                                    answerIndex,
+                                                    "is_correct",
+                                                    e,
+                                                )
+                                            }
+                                            value={`${answerIndex}`}
+                                            id={`option-${answerIndex}`}
+                                        />
+                                    </div>
+                                )}
                             </Button>
                             <Button
                                 type="button"

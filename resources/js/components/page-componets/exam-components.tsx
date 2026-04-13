@@ -1,8 +1,6 @@
 import { Book, EllipsisVertical, Plus } from "lucide-react";
 import { Badge } from "../ui/badge";
 import {
-    Card,
-    CardContent,
     CardDescription,
     CardFooter,
     CardHeader,
@@ -15,6 +13,7 @@ import { useForm } from "@inertiajs/react";
 import { Answer, Question, Questions } from "../class/question";
 import { ExamData } from "./exam-form-questions/exam-data";
 import { ExamFormQuestions } from "./exam-form-questions/exam-questions-main";
+import { Spinner } from "../ui/spinner";
 type FormData = {
     name: string;
     description: string;
@@ -73,27 +72,27 @@ function ExamCard({ exam, items }: { exam: any; items: any }) {
 
 function ExamModalFormQuestions({
     setOpen,
-    submitForm = "Save Changes",
-    exam =null,
+    label,
+    exam = null,
     method = "post",
-    url ="#",
+    url = "#",
 }: {
     setOpen: (open: boolean) => void;
-    submitForm?:string
+    label: string
     exam?: any;
-    method?:any;
-    url?:any;
+    method?: any;
+    url?: any;
 }) {
     const [activeStep, setActiveStep] = useState(0);
     const { data, setData, submit, processing, resetAndClearErrors, errors } =
         useForm<FormData>({
             name: exam?.name ? exam.name : "",
             description: exam?.description ? exam.description : "",
-            questions: exam?.questions_package ? exam.questions_package : [],
+            questions: exam?.questions_package ? exam.questions_package.map(({ image, ...rest }) => rest) : [],
         });
-        console.log(data.questions);
+    console.log(data.questions);
     const questionsManager = useMemo(() => {
-        return new Questions(structuredClone(data.questions));
+        return new Questions(data.questions.map(q => ({ ...q })));
     }, [data.questions]);
 
     const addQuestion = () => {
@@ -136,7 +135,28 @@ function ExamModalFormQuestions({
 
     const handleSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
         e.preventDefault();
-        submit(method,url, {
+
+        const formData = new FormData();
+        formData.append("name", data.name);
+        formData.append("description", data.description);
+
+        data.questions.forEach((question, qi) => {
+            formData.append(`questions[${qi}][text]`, question.text);
+            formData.append(`questions[${qi}][multiple]`, question.multiple ? "1" : "0");
+            if (question.image) {
+                formData.append(`questions[${qi}][image]`, question.image);
+            }
+
+            question.answers.forEach((answer, ai) => {
+                formData.append(`questions[${qi}][answers][${ai}][text]`, answer.text);
+                formData.append(`questions[${qi}][answers][${ai}][is_correct]`, answer.is_correct ? "1" : "0");
+                if (answer.image) {
+                    formData.append(`questions[${qi}][answers][${ai}][image]`, answer.image);
+                }
+            });
+        });
+
+        submit("post", url, {
             onSuccess: () => {
                 resetAndClearErrors();
                 setOpen(false);
@@ -155,7 +175,7 @@ function ExamModalFormQuestions({
                 <div className="flex justify-between">
                     {activeStep === 1 && (
                         <Button type="button" onClick={() => setActiveStep(0)}>
-                            Back to edit exam data
+                            Back to {label} exam data
                         </Button>
                     )}
                     {activeStep === 0 && (
@@ -168,7 +188,7 @@ function ExamModalFormQuestions({
                                 }
                             }}
                         >
-                            Show Questions
+                            {label} Questions
                         </Button>
                     )}
                 </div>
@@ -197,7 +217,7 @@ function ExamModalFormQuestions({
             <div className="flex justify-between">
                 <div className="flex gap-2">
                     <Button type="submit" disabled={processing}>
-                        {submitForm}
+                        {label} Exam {processing && <Spinner />}
                     </Button>
                     <Button
                         type="button"

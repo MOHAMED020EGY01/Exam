@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Rules\HasCorrectAnswer;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 
 class ExamRequest extends FormRequest
@@ -18,6 +19,7 @@ class ExamRequest extends FormRequest
 
     public function rules(): array
     {
+        //dd($this->all());
         $examId = $this->route('exam') ? $this->route('exam')->id : null;
         return [
             'name' => [

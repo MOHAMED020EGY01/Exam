@@ -38,34 +38,36 @@ class CourseController extends Controller
             'description' => $request->description,
         ]);
 
-        return redirect()->back()->with('success','Create Courses successfuly');
+        return redirect()->back()->with('success', 'Create Courses successfuly');
     }
 
     public function show(Course $course)
     {
         $user = Auth::user();
-        $exams = Exam::where('course_id','=',$course->id)
-        ->where('user_id','=',$user->id)
-        ->paginate()->withQueryString();
+        $exams = Exam::where('course_id', '=', $course->id)
+            ->where('user_id', '=', $user->id)
+            ->paginate()->withQueryString();
         return Inertia::render('dashboard/courses/exams/index', [
             'exams' => ExamResource::collection($exams)->resolve(),
             'course' => $course,
-            'links' =>$exams->linkCollection()->toArray(),
+            'links' => $exams->linkCollection()->toArray(),
         ]);
     }
 
     public function update(Request $request, Course $course)
     {
         $user = Auth::user();
-        if($course->user_id !== $user->id) {
+        if ($course->user_id !== $user->id) {
             return back()->with('error', 'You are not authorized to update this course');
         }
         $request->validate([
-            'name' => ['required ','string', 'max:255'],
+            'name' => ['required ', 'string', 'max:255'],
+            'description' => ['required', 'string', 'max:255'],
         ]);
 
         $course->update([
             'name' => $request->name,
+            'description' => $request->description,
         ]);
 
         return back()->with('success', 'Course updated successfully');
@@ -75,7 +77,7 @@ class CourseController extends Controller
     public function destroy(Course $course)
     {
         $user = Auth::user();
-        if($course->user_id !== $user->id) {
+        if ($course->user_id !== $user->id) {
             return back()->with('error', 'You are not authorized to delete this course');
         }
         $course->delete();

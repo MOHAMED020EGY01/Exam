@@ -134,10 +134,12 @@ function Index({ exams, links, course }: Props) {
                 />
             )}
             <ModalDynamicAdvanced
+                label="Create Exam"
                 open={openModalExam}
+                onOpenChange={setOpenModalExam}
                 children={
                     <ExamModalFormQuestions
-                        submitForm="Create Exam"
+                        label="Create"
                         method="post"
                         url={route("exams.store", course.id)}
                         setOpen={setOpenModalExam}
@@ -147,9 +149,11 @@ function Index({ exams, links, course }: Props) {
             {selectedEditModal && editModal && (
                 <ModalDynamicAdvanced
                     open={editModal}
+                    label="Update Exam"
+                    onOpenChange={setEditModal}
                     children={
                         <ExamModalFormQuestions
-                            submitForm="Update Exam"
+                            label="Update"
                             method={"put"}
                             url={route("exams.update", {
                                 course: course.id,
