@@ -30,8 +30,8 @@ function ExamAnswers({
         updateAnswer(questionIndex, answerIndex, "image", null);
     };
     return (
-        <div className="space-y-2 flex space-x-3">
-            <div className="w-16 h-16">
+        <div className="space-y-2 flex justify-between space-x-3">
+            <div className="w-20 h-16">
                 <ImagePreview image={answer.image} className="relative">
                     {answer.image && (
                         <Button
@@ -44,12 +44,13 @@ function ExamAnswers({
                     )}
                 </ImagePreview>
             </div>
-            <div className="flex flex-col justify-center items-center">
+            <div className="flex w-full flex-col justify-center items-center">
                 {/* is_correct */}
-                <ButtonGroup>
+                <ButtonGroup className="w-full">
                     <Input
                         placeholder="Answer"
                         value={answer.text}
+                        
                         onChange={(e) =>
                             updateAnswer(
                                 questionIndex,
@@ -59,6 +60,7 @@ function ExamAnswers({
                             )
                         }
                         className={cn(
+                            "w-full",
                             errors[
                                 `questions.${questionIndex}.answers.${answerIndex}.text`
                             ] && "border-destructive",

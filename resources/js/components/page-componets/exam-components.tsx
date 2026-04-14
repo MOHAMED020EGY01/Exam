@@ -214,7 +214,6 @@ useEffect(() => {
                     ))}
                 </div>
             )}
-            {console.log(Object.entries(errors).length > 0)}
             <div className="space-y-4  ">
                 <div className="flex justify-between">
                     {activeStep === 1 && (
@@ -250,13 +249,13 @@ useEffect(() => {
                                     {errors[`questions`]}
                                 </p>
                             )}
-                            <div className="scroll-auto h-80 overflow-y-auto">
+                            <div className="scroll-auto h-115 overflow-y-auto">
                                 <ExamFormQuestions
+                                    backSelf={setActiveStep}
                                     data={data}
                                     errors={errors}
                                     updateQuestion={updateQuestion}
                                     updateAnswer={updateAnswer}
-                                    addQuestion={addQuestion}
                                     removeQuestion={removeQuestion}
                                     addAnswer={addAnswer}
                                     removeAnswer={removeAnswer}
