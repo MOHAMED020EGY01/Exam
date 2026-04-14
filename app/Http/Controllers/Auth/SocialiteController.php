@@ -26,14 +26,14 @@ class SocialiteController extends Controller
 
     public function callback($provider)
     {
-        
         $provider_user = Socialite::driver($provider)->stateless()->user();
         $user = User::where([
             'provider' => $provider,
             'provider_id' => $provider_user->id,
-        ])->first();
-        if (!$user) {
+            ])->first();
+            if (!$user) {
             $user = User::create([
+                'avatar' => $provider_user->avatar,
                 'name' => $provider_user->name,
                 'email' => $provider_user->email,
                 'password' => Hash::make(Str::random(10)),

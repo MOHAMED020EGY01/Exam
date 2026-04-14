@@ -2,7 +2,7 @@ import { router } from "@inertiajs/react";
 
 export const useLogout = () => {
     const logout = () => {
-        router.delete('/logout', {
+        router.delete(route('logout'), {
             onStart: () => {
                 console.log('Logging out...');
             },

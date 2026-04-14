@@ -2,16 +2,15 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\DublicateAnswer;
+use App\Rules\DublicateQuestion;
 use App\Rules\HasCorrectAnswer;
+use App\Rules\ImageFileBase64;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 
 class ExamRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
         return true;
@@ -19,8 +18,8 @@ class ExamRequest extends FormRequest
 
     public function rules(): array
     {
-        //dd($this->all());
         $examId = $this->route('exam') ? $this->route('exam')->id : null;
+        //dd($this->all());
         return [
             'name' => [
                 'required',
@@ -37,6 +36,7 @@ class ExamRequest extends FormRequest
                 'required',
                 'array',
                 'min:1',
+                new DublicateQuestion(),
             ],
             'questions.*.text' => [
                 'required',
@@ -47,26 +47,21 @@ class ExamRequest extends FormRequest
                 'boolean'
             ],
             'questions.*.image' => [
-                'nullable',
-                'image',
-                'mimes:jpeg,png,jpg,gif,svg',
-                'max:2048'
+                new ImageFileBase64(),
             ],
             'questions.*.answers' => [
                 'required',
                 'array',
                 'min:2',
-                new HasCorrectAnswer('is_correct')
+                new HasCorrectAnswer('is_correct'),
+                new DublicateAnswer(),
             ],
             'questions.*.answers.*.text' => [
                 'required',
                 'string'
             ],
             'questions.*.answers.*.image' => [
-                'nullable',
-                'image',
-                'mimes:jpeg,png,jpg,gif,svg',
-                'max:2048'
+                new ImageFileBase64(),
             ],
             'questions.*.answers.*.is_correct' => [
                 'required',

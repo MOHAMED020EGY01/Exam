@@ -2,6 +2,7 @@ import { DropdownItemInterface } from "@/interface/global"
 import { LogOut, PlusIcon, ShareIcon, User } from "lucide-react"
 import {Avatar, AvatarBadge, AvatarFallback, AvatarImage } from "../ui/avatar"
 import { DropdownMenuDestructive } from "./dropdown-menu"
+import { useAuth } from "@/hooks/use-auth"
 
 export const AvatarBadgeIcon = () => {
     const item: DropdownItemInterface[] = [
@@ -26,15 +27,15 @@ export const AvatarBadgeIcon = () => {
             icon: <LogOut />,
             method: "delete",
             danger: true,
-            openModal:true
+            openModal:false
         }
     ]
-
+    const user = useAuth();
     return (
         <DropdownMenuDestructive
             target={
                 <Avatar>
-                    <AvatarImage src="https://github.com/pranathip.png" alt="@pranathip" />
+                    <AvatarImage src={user.user?.avatar} alt="@pranathip" />
                     <AvatarFallback>PP</AvatarFallback>
                     <AvatarBadge>
                         <PlusIcon />

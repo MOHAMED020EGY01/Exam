@@ -6,10 +6,10 @@ namespace App\Services;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
 use Intervention\Image\Encoders\JpegEncoder;
+
 
 class ExamServices
 {
@@ -20,34 +20,21 @@ class ExamServices
     public static function processExamData($request, $exam = null)
     {
         $processedQuestions = [];
-        $usedIds = [];
-        if ($exam) {
-            $getOldQuestions = self::disk()->get($exam->questions_package);
-            $oldQuestions = json_decode($getOldQuestions, true);
-            $usedIds = collect($oldQuestions)->pluck('id')->toArray();
-        }
+
         foreach ($request->questions as $question) {
-            $questionId = $question['id'] ?? null;
-            if (!$questionId || !in_array($questionId, $usedIds)) {
-                $questionId = Str::uuid()->toString();
-            }
             $answers = [];
 
-            if (isset($question['image']) && $question['image']) {
+            if (isset($question['image']) && !is_string($question['image'])) {
                 $question['image'] = self::compressImageConvertBase64($question['image']);
-            } else {
-                if ($exam) {
-                    $oldQuestion = collect($oldQuestions)?->firstWhere('id', $questionId);
-                    $question['image'] = $oldQuestion['image'] ?? null;
-                }
             }
 
             foreach ($question['answers'] as $answer) {
+                if (isset($answer['image']) && !is_string($answer['image'])) {
+                    $answer['image'] = self::compressImageConvertBase64($answer['image']);
+                }
                 $answerData = [
                     'text' => $answer['text'],
-                    'image' => isset($answer['image'])
-                        ? self::compressImageConvertBase64($answer['image'])
-                        : null,
+                    'image' => $answer['image'] ?? null,
                     'is_correct' => (bool) $answer['is_correct'],
                 ];
 
@@ -55,7 +42,6 @@ class ExamServices
             }
 
             $processedQuestions[] = [
-                'id' => $questionId,
                 'text' => $question['text'],
                 'multiple' => (bool) $question['multiple'],
                 'answers' => $answers,
@@ -101,15 +87,20 @@ class ExamServices
 
             $manager = new ImageManager(new Driver());
 
-            // قراءة الصورة
+            // read image
             $imageCompress = $manager->read($image->getRealPath());
 
-            // ضغط وتحويل إلى JPEG
+            // encode as JPEG
             $encoded = $imageCompress->encode(new JpegEncoder(quality: 65));
 
-            // تحويل مباشرة إلى Base64
-            return base64_encode($encoded->toString());
+            // base64
+            $base64 = base64_encode($encoded->toString());
+
+            $mime = $image->getMimeType();
+
+            return "data:$mime;base64,$base64";
         }
+
         return null;
     }
 }

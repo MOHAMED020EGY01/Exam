@@ -3,7 +3,10 @@ import { ButtonGroup } from "@/components/ui/button-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import ImageCustom from "@/components/utils/file-custom";
+import ImagePreview from "@/components/utils/image-preview";
 import { cn } from "@/lib/utils";
+import { X } from "lucide-react";
 interface Props {
     question: any;
     questionIndex: number;
@@ -20,12 +23,15 @@ function ExamQuestions({
     multiChosen,
     setMultiChosen,
 }: Props) {
+    const removeImage = () => {
+        updateQuestion(questionIndex, "image", null);
+    };
     return (
         <div className="flex flex-col gap-2">
             {/* Question Text */}
             <div className="flex flex-col gap-2">
                 <Label>Question</Label>
-                <ButtonGroup className="w-full ">
+                <ButtonGroup className="w-full flex items-center justify-between gap-2">
                     <Input
                         value={question.text}
                         placeholder="Question ... ?"
@@ -41,21 +47,29 @@ function ExamQuestions({
                                 "border-destructive",
                         )}
                     />
-                    <Button>
-                        <input
-                            type="file"
-                            name={`questions.${questionIndex}.image`}
-                            onChange={(e) => {
-                                const file = e.target.files?.[0];
-                                updateQuestion(
-                                    questionIndex,
-                                    "image",
-                                    file,
-                                );
-                            }}
-                        />
-                    </Button>
+
+                    <ImageCustom
+                        name={`questions.${questionIndex}.image`}
+                        id={`question-image-${questionIndex}`}
+                        action={(e) => {
+                            const file = e.target.files?.[0] || null;
+                            updateQuestion(questionIndex, "image", file);
+                        }}
+                    />
                 </ButtonGroup>
+                {question.image && (
+                    <ImagePreview image={question.image} className="relative">
+                        {question.image && (
+                            <Button
+                                type="button"
+                                onClick={removeImage}
+                                className="absolute -top-2 -right-2 bg-destructive text-foreground rounded-full w-5 h-5 flex items-center justify-center"
+                            >
+                                <X />
+                            </Button>
+                        )}
+                    </ImagePreview>
+                )}
                 {errors[`questions.${questionIndex}.text`] && (
                     <p className="text-destructive text-sm">
                         {errors[`questions.${questionIndex}.text`]}

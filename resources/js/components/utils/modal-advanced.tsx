@@ -21,7 +21,7 @@ const ModalDynamicAdvanced = <T extends Record<string, any>>({
 
     return (
         <Dialog open={open} onOpenChange={handleOpenChange}>
-            <DialogContent className="sm:max-w-3xl" showCloseButton={false}>
+            <DialogContent className="sm:max-w-xl" showCloseButton={false}>
                 <DialogTitle className="text-lg font-semibold">
                     {label}
                 </DialogTitle>

@@ -93,7 +93,7 @@ function ExamFormQuestions({
                                 toggleCorrect(questionCurrent, Number(value))
                             }
                             className="space-y-2">
-                            <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1">
                                 {currentQuestion.answers.map(
                                     (answer: any, answerIndex: number) => (
                                         <ExamAnswers

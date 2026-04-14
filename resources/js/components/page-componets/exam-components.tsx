@@ -1,19 +1,15 @@
 import { Book, EllipsisVertical, Plus } from "lucide-react";
 import { Badge } from "../ui/badge";
-import {
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from "../ui/card";
+import { CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card";
 import { DropdownMenuDestructive } from "../utils/dropdown-menu";
 import { Button } from "../ui/button";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm } from "@inertiajs/react";
 import { Answer, Question, Questions } from "../class/question";
 import { ExamData } from "./exam-form-questions/exam-data";
 import { ExamFormQuestions } from "./exam-form-questions/exam-questions-main";
 import { Spinner } from "../ui/spinner";
+import { SonnerTypes } from "../utils/flash-message/flash-helper";
 type FormData = {
     name: string;
     description: string;
@@ -78,21 +74,28 @@ function ExamModalFormQuestions({
     url = "#",
 }: {
     setOpen: (open: boolean) => void;
-    label: string
+    label: string;
     exam?: any;
     method?: any;
     url?: any;
 }) {
     const [activeStep, setActiveStep] = useState(0);
-    const { data, setData, submit, processing, resetAndClearErrors, errors } =
-        useForm<FormData>({
-            name: exam?.name ? exam.name : "",
-            description: exam?.description ? exam.description : "",
-            questions: exam?.questions_package ? exam.questions_package.map(({ image, ...rest }) => rest) : [],
-        });
-    console.log(data.questions);
+    const {
+        data,
+        setData,
+        post,
+        processing,
+        resetAndClearErrors,
+        transform,
+        errors,
+    } = useForm<FormData>({
+        name: exam?.name ? exam.name : "",
+        description: exam?.description ? exam.description : "",
+        questions: exam?.questions_package ? exam.questions_package : [],
+    });
+
     const questionsManager = useMemo(() => {
-        return new Questions(data.questions.map(q => ({ ...q })));
+        return new Questions(data.questions.map((q) => ({ ...q })));
     }, [data.questions]);
 
     const addQuestion = () => {
@@ -142,38 +145,76 @@ function ExamModalFormQuestions({
 
         data.questions.forEach((question, qi) => {
             formData.append(`questions[${qi}][text]`, question.text);
-            formData.append(`questions[${qi}][multiple]`, question.multiple ? "1" : "0");
+            formData.append(
+                `questions[${qi}][multiple]`,
+                question.multiple ? "1" : "0",
+            );
             if (question.image) {
                 formData.append(`questions[${qi}][image]`, question.image);
             }
 
             question.answers.forEach((answer, ai) => {
-                formData.append(`questions[${qi}][answers][${ai}][text]`, answer.text);
-                formData.append(`questions[${qi}][answers][${ai}][is_correct]`, answer.is_correct ? "1" : "0");
+                formData.append(
+                    `questions[${qi}][answers][${ai}][text]`,
+                    answer.text,
+                );
+                formData.append(
+                    `questions[${qi}][answers][${ai}][is_correct]`,
+                    answer.is_correct ? "1" : "0",
+                );
                 if (answer.image) {
-                    formData.append(`questions[${qi}][answers][${ai}][image]`, answer.image);
+                    formData.append(
+                        `questions[${qi}][answers][${ai}][image]`,
+                        answer.image,
+                    );
                 }
             });
         });
 
-        submit("post", url, {
+        post(url, {
             onBefore: () => {
-                console.log("Before",data.questions);
+                console.log("Before sending", data.questions);
             },
             onSuccess: () => {
                 resetAndClearErrors();
                 setOpen(false);
             },
+            onError: () => {
+                console.log(errors);
+            },
         });
     };
+
     const handleCancel = () => {
         resetAndClearErrors();
         setOpen(false);
     };
     /* ================= UI ================= */
+const [showErrors, setShowErrors] = useState(false);
 
+useEffect(() => {
+    if (Object.keys(errors).length > 0) {
+        setShowErrors(true);
+
+        const timer = setTimeout(() => {
+            setShowErrors(false);
+        }, 3000);
+
+        return () => clearTimeout(timer);
+    }
+}, [errors]);
     return (
         <form onSubmit={handleSubmit} className="space-y-6">
+            {showErrors && Object.entries(errors).length > 0 && (
+                <div className="h-16 overflow-y-auto">
+                    {Object.entries(errors).map(([field, message], index) => (
+                        <div key={index} className="text-destructive">
+                            <strong>{field}</strong> {message}
+                        </div>
+                    ))}
+                </div>
+            )}
+            {console.log(Object.entries(errors).length > 0)}
             <div className="space-y-4  ">
                 <div className="flex justify-between">
                     {activeStep === 1 && (
@@ -203,17 +244,26 @@ function ExamModalFormQuestions({
                             setData={setData}
                         />
                     ) : (
-                        <ExamFormQuestions
-                            data={data}
-                            errors={errors}
-                            updateQuestion={updateQuestion}
-                            updateAnswer={updateAnswer}
-                            addQuestion={addQuestion}
-                            removeQuestion={removeQuestion}
-                            addAnswer={addAnswer}
-                            removeAnswer={removeAnswer}
-                            toggleCorrect={toggleCorrect}
-                        />
+                        <>
+                            {errors[`questions`] && (
+                                <p className="text-destructive text-sm">
+                                    {errors[`questions`]}
+                                </p>
+                            )}
+                            <div className="scroll-auto h-80 overflow-y-auto">
+                                <ExamFormQuestions
+                                    data={data}
+                                    errors={errors}
+                                    updateQuestion={updateQuestion}
+                                    updateAnswer={updateAnswer}
+                                    addQuestion={addQuestion}
+                                    removeQuestion={removeQuestion}
+                                    addAnswer={addAnswer}
+                                    removeAnswer={removeAnswer}
+                                    toggleCorrect={toggleCorrect}
+                                />
+                            </div>
+                        </>
                     )}
                 </div>
             </div>
