@@ -7,6 +7,7 @@ use App\Rules\DublicateQuestion;
 use App\Rules\HasCorrectAnswer;
 use App\Rules\ImageFileBase64;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
 class ExamRequest extends FormRequest
@@ -19,13 +20,17 @@ class ExamRequest extends FormRequest
     public function rules(): array
     {
         $examId = $this->route('exam') ? $this->route('exam')->id : null;
-        //dd($this->all());
         return [
             'name' => [
                 'required',
                 'string',
                 'max:50',
-                Rule::unique('exams', 'name')->ignore($examId)
+                Rule::unique('exams')
+                    ->where(
+                        fn($q) => $q
+                            ->where('course_id', $this->course_id)
+                            ->where('user_id', Auth::id())
+                    )->ignore($examId),
             ],
             'description' => [
                 'required',

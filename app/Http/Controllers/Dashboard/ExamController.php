@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Dashboard;
 use App\Helper\MessageFlash;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ExamRequest;
+use App\Http\Resources\ExamResource;
 use App\Models\Course;
 use App\Models\Exam;
 use App\Services\ExamServices;
@@ -17,13 +18,6 @@ use Inertia\Inertia;
 
 class ExamController extends Controller
 {
-    /**
-     * Summary of HelperMessageFlash
-     * @param mixed $type
-     * @param mixed $exam_name
-     * @param mixed $courses_name
-     * @return \Illuminate\Http\RedirectResponse
-     */
     private static function HelperMessageFlash($type, $exam_name, $courses_name)
     {
         return redirect()
@@ -70,14 +64,8 @@ class ExamController extends Controller
      */
     public function show(Course $course, Exam $exam)
     {
-        $questionsPackage = self::disk()->path($exam->questions_package);
-        $jsonPath = $questionsPackage . '/questions.json';
-        $questions = json_decode(File::get($jsonPath), true);
-
-        return Inertia::render('dashboard.exams.show', [
-            'course' => $course,
-            'exam' => $exam,
-            'questions' => $questions,
+        return Inertia::render('dashboard/courses/exams/show', [
+            'exam' => ExamResource::make($exam)->resolve(),
         ]);
     }
 

@@ -1,9 +1,10 @@
 import { DashboardLayout } from '@/components/layout/dashboard';
+import { ExamModalFormQuestions } from '@/components/page-componets/exam-components';
 import React from 'react'
 
-function show() {
+function show({exam}:{exam:any}) {
   return (
-    <div>show</div>
+    
   )
 }
 show.layout = (page: React.ReactNode) => (

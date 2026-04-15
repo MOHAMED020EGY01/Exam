@@ -70,7 +70,6 @@ function ExamModalFormQuestions({
     setOpen,
     label,
     exam = null,
-    method = "post",
     url = "#",
 }: {
     setOpen: (open: boolean) => void;
@@ -86,7 +85,6 @@ function ExamModalFormQuestions({
         post,
         processing,
         resetAndClearErrors,
-        transform,
         errors,
     } = useForm<FormData>({
         name: exam?.name ? exam.name : "",
@@ -293,4 +291,8 @@ useEffect(() => {
     );
 }
 
-export { ExamCard, ExamModalFormQuestions };
+
+function ExamView(){
+
+}
+export { ExamCard, ExamModalFormQuestions , ExamView };

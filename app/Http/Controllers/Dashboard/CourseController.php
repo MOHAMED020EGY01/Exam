@@ -9,6 +9,7 @@ use App\Models\Course;
 use App\Models\Exam;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 
 class CourseController extends Controller
@@ -28,7 +29,14 @@ class CourseController extends Controller
     {
 
         $request->validate([
-            'name' => ['required', 'string', 'max:255', 'unique:courses,name,id'],
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('courses')->where(function ($query) {
+                    return $query->where('user_id', Auth::id());
+                }),
+            ],
             'description' => ['required', 'string', 'max:255'],
         ]);
         $user = Auth::user();

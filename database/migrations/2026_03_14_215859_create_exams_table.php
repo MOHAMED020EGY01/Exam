@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->string('questions_package')->unique();
             $table->unsignedInteger('questions_count');
-            $table->unique(['name', 'course_id']);
+            $table->unique(['name', 'course_id','user_id']);
             $table->timestamps();
         });
     }
