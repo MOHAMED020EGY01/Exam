@@ -99,4 +99,12 @@ class ExamController extends Controller
             return self::HelperMessageFlash('Delete', $exam->name, $course->name);
         });
     }
+    public function all(){
+        $user = Auth::user();
+        $exams = Exam::where('user_id' , '=' , $user->id)->paginate(10)->withQueryString();
+        return Inertia::render('dashboard/courses/exams/all',[
+            'exams' =>  ExamResource::collection($exams)->resolve(),
+            'links' => $exams->linkCollection()->toArray(),
+        ]);
+    }
 }

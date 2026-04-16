@@ -15,7 +15,7 @@ type FormData = {
     description: string;
     questions: Question[];
 };
-function ExamCard({ exam, items }: { exam: any; items: any }) {
+function ExamCard({ exam, items }: { exam: any; items?: any }) {
     return (
         <div>
             <CardHeader>
