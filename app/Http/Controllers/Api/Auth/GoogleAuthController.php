@@ -26,7 +26,7 @@ class GoogleAuthController extends Controller
                 JWK::parseKeySet($keys)
             );
 
-            if ($decoded->aud !== env('GOOGLE_CLIENT_ID')) {
+            if ($decoded->aud !== config('services.google.client_id')) {
                 return response()->json([
                     'message' => 'Invalid audience'
                 ], 401);
