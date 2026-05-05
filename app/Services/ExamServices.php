@@ -146,7 +146,7 @@ class ExamServices
             return null;
         }
         $files = self::disk()->files($folderPath);
-        $zipFilePath = storage_path("app/{$exam->name}_exam.zip");
+        $zipFilePath = storage_path("app/{$exam->name}_exam.elr");
 
         $zip = new ZipArchive;
 

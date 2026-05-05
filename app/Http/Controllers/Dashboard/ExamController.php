@@ -102,7 +102,7 @@ class ExamController extends Controller
         }
         return response()->download(
             $file,
-            "{$exam->name}_exam.zip"
+            "{$exam->name}_exam.elr"
         )->deleteFileAfterSend(true);
     }
 
