@@ -18,7 +18,7 @@ class ExamResource extends JsonResource
             'description'=>(string)$this->description,
             'course_id'=>(string)$this->course_id,
             'questions_count' => (int)$this->questions_count,
-            'questions_package' => Json::decode($questionContent),
+            'questions_package' => $questionContent,
             'created_at' => (string)$this->created_at?->format('Y-m-d H'),
             'diff_for_humans' => (string)$this->created_at?->diffForHumans(),
         ];

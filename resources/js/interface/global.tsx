@@ -13,6 +13,7 @@ export interface DropdownItemInterface {
     method?: Method
     variant?: Variant
     danger?: boolean
+    download?: boolean
 }
 
 

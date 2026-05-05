@@ -39,7 +39,7 @@ interface SelectedAnswers {
 
 function Show({ exam }: { exam: ExamData }) {
   const examData = exam as ExamData;
-
+  console.log(exam);
   const questionsWithoutAnswers = useMemo(() => {
     return examData?.questions_package?.map((q: Question) => {
       const { answers, ...questionWithoutAnswers } = q;

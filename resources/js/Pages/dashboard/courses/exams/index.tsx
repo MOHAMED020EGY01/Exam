@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Pagination } from "@/components/utils/pagination";
 import { EmptyFunction } from "@/components/utils/empty-function";
 import { DropdownItemInterface } from "@/interface/global";
-import { Pen, Sheet, Trash } from "lucide-react";
+import { Download, Pen, Sheet, Trash } from "lucide-react";
 import { ModalDynamic } from "@/components/modal";
 import { ModalDynamicAdvanced } from "@/components/utils/modal-advanced";
 interface Data {
@@ -39,6 +39,7 @@ const itemDropDown = (
             label: "View",
             icon: <Sheet />,
             openModal: false,
+            download: false,
         },
         {
             variant: "default",
@@ -47,6 +48,15 @@ const itemDropDown = (
             icon: <Pen />,
             openModal: true,
             openModalFn: () => handleEditClick(exam),
+            download: false,
+        },
+        {
+            variant: "default",
+            href: route("exams.download", { course: course.id, exam: exam.id }),
+            label: "Download",
+            icon: <Download />,
+            openModal: false,
+            download: true,
         },
         {
             variant: "destructive",
@@ -55,6 +65,7 @@ const itemDropDown = (
             icon: <Trash />,
             openModal: true,
             openModalFn: () => handleDeleteClick(exam),
+            download: false,
         },
     ];
 };
@@ -76,6 +87,7 @@ function Index({ exams, links, course }: Props) {
         setSelectedEditModal(item);
         setEditModal(true);
     };
+
 
     return (
         <>
@@ -99,7 +111,7 @@ function Index({ exams, links, course }: Props) {
                                         item,
                                         course,
                                         handleDeleteClick,
-                                        handleEditClick,
+                                        handleEditClick
                                     )}
                                 />
                             </CardSmall>

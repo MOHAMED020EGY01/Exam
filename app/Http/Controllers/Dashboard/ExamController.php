@@ -11,14 +11,12 @@ use App\Models\Exam;
 use App\Services\ExamServices;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 use Inertia\Inertia;
 
 class ExamController extends Controller
 {
-    private static function HelperMessageFlash($type, $exam_name, $courses_name)
+    private static function HelperMessageFlash(string $type, string $exam_name, string $courses_name)
     {
         return redirect()
             ->back()
@@ -28,33 +26,30 @@ class ExamController extends Controller
                 201
             ));
     }
-    private static function disk(){
+    private static function disk()
+    {
         return Storage::disk('local');
     }
 
     public function store(ExamRequest $request, Course $course)
     {
         $user = Auth::user();
-        $userSlug = Str::slug($user->name . '_' . $user->id);
-        $courseSlug = Str::slug($course->name . '_' . $course->id);
         $examFolder = 'exam_' . time();
+        $path = "$course->path/$examFolder";
+        return DB::transaction(function () use ($request, $course, $user, $path) {
+            ExamServices::directoryFindOrCreate($path);
+            ExamServices::processExamData($request, $path);
 
-        return DB::transaction(function () use ($request, $course, $user, $userSlug, $courseSlug, $examFolder) {
-            $baseDirectory = self::disk()->path("users/{$userSlug}/{$courseSlug}/{$examFolder}");
-            if (!File::exists($baseDirectory)) {
-                File::makeDirectory($baseDirectory, 0755, true, true);
-            }
-            $processedQuestions = ExamServices::processExamData($request);
-            $jsonPath = $baseDirectory . '/questions.json';
-            ExamServices::saveFile($jsonPath, $processedQuestions);
+            $filesCount = ExamServices::filterFilesQuestions($path);
             $exam = Exam::create([
                 'name' => $request->name,
                 'description' => $request->description,
                 'user_id' => $user->id,
                 'course_id' => $course->id,
-                'questions_package' => "users/{$userSlug}/{$courseSlug}/{$examFolder}/questions.json",
-                'questions_count' => count($processedQuestions),
+                'questions_package' => $path,
+                'questions_count' => count($filesCount),
             ]);
+
             return self::HelperMessageFlash('Create', $exam->name, $course->name);
         });
     }
@@ -72,18 +67,14 @@ class ExamController extends Controller
     public function update(ExamRequest $request, Course $course, Exam $exam)
     {
         return DB::transaction(function () use ($request, $course, $exam) {
-            $baseDirectory = self::disk()->path($exam->questions_package);
-            if (!File::exists($baseDirectory)) {
-                File::makeDirectory($baseDirectory, 0755, true, true);
-            }
-            $processedQuestions = ExamServices::processExamData($request,$exam);
+            $path = $exam->questions_package;
 
-            $jsonPath = $baseDirectory;
-            ExamServices::saveFile($jsonPath, $processedQuestions);
+            ExamServices::processExamData($request, $path);
+            $filesCount = ExamServices::filterFilesQuestions($path);
             $exam->update([
                 'name' => $request->name,
                 'description' => $request->description,
-                'questions_count' => count($processedQuestions),
+                'questions_count' => count($filesCount),
             ]);
 
             return self::HelperMessageFlash('Update', $exam->name, $course->name);
@@ -95,15 +86,32 @@ class ExamController extends Controller
     {
         return DB::transaction(function () use ($course, $exam) {
             ExamServices::deleteExamPackage($exam);
-            $exam->delete();
+            $exam->delete($exam->id);
             return self::HelperMessageFlash('Delete', $exam->name, $course->name);
         });
     }
-    public function all(){
+
+    public function download(Course $course, Exam $exam)
+    {
+        $file = ExamServices::downloadZipExam($exam);
+
+        if (!$file || !file_exists($file)) {
+            return response()->json([
+                'message' => 'Zip file not generated'
+            ], 500);
+        }
+        return response()->download(
+            $file,
+            "{$exam->name}_exam.zip"
+        )->deleteFileAfterSend(true);
+    }
+
+    public function all()
+    {
         $user = Auth::user();
-        $exams = Exam::where('user_id' , '=' , $user->id)->paginate(10)->withQueryString();
-        return Inertia::render('dashboard/courses/exams/all',[
-            'exams' =>  ExamResource::collection($exams)->resolve(),
+        $exams = Exam::where('user_id', '=', $user->id, 'and')->paginate(10)->withQueryString();
+        return Inertia::render('dashboard/courses/exams/all', [
+            'exams' => ExamResource::collection($exams)->resolve(),
             'links' => $exams->linkCollection()->toArray(),
         ]);
     }

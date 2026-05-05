@@ -25,7 +25,7 @@ export const DropdownMenuDestructive = ({ target, items }: Props) => {
                     {items?.map((item, index) => (
                         <Fragment key={index}>
                             {item.danger && <DropdownMenuSeparator />}
-                            {!item.openModal && (
+                            {(!item.openModal && !item.download) && (
                                 <DropdownMenuItem
                                     variant={item?.variant}
                                     asChild
@@ -34,8 +34,25 @@ export const DropdownMenuDestructive = ({ target, items }: Props) => {
                                         <Link
                                             className="w-full flex items-center gap-2"
                                             href={item?.href}
-                                            method={item?.method || "get"}
-
+                                            method={item?.method || "get"}>
+                                            {item?.icon}
+                                            {item?.label}
+                                        </Link>
+                                    </div>
+                                </DropdownMenuItem>
+                            )}
+                            {item.download && (
+                                <DropdownMenuItem
+                                    variant={item?.variant}
+                                    asChild>
+                                    <div>
+                                        <Link
+                                            className="w-full flex items-center gap-2"
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                if (!item?.href) return;
+                                                window.location.href = item.href;
+                                            }}
                                         >
                                             {item?.icon}
                                             {item?.label}

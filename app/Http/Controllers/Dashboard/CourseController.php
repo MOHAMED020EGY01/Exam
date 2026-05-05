@@ -9,16 +9,21 @@ use App\Models\Course;
 use App\Models\Exam;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
+use Storage;
 
 class CourseController extends Controller
 {
-
+    private static function disk()
+    {
+        return Storage::disk('local');
+    }
     public function index()
     {
         $user = Auth::user();
-        $courses = Course::where('user_id', $user->id)->with('exams')->paginate(5)->withQueryString();
+        $courses = Course::where('user_id', '=', $user->id, 'and')->with('exams')->paginate(5)->withQueryString();
         return Inertia::render('dashboard/courses/index', [
             'courses' => CoursesResource::collection($courses)->resolve(),
             'links' => $courses->linkCollection()->toArray(),
@@ -44,6 +49,7 @@ class CourseController extends Controller
             'name' => $request->name,
             'user_id' => $user->id,
             'description' => $request->description,
+            'path' => "users/" . Str::slug($user->name . '_' . $user->id) . "/" . Str::slug($request->name)
         ]);
 
         return redirect()->back()->with('success', 'Create Courses successfuly');
@@ -52,7 +58,7 @@ class CourseController extends Controller
     public function show(Course $course)
     {
         $user = Auth::user();
-        $exams = Exam::where('course_id', '=', $course->id)
+        $exams = Exam::where('course_id', '=', $course->id, 'and')
             ->where('user_id', '=', $user->id)
             ->paginate()->withQueryString();
         return Inertia::render('dashboard/courses/exams/index', [
@@ -88,7 +94,10 @@ class CourseController extends Controller
         if ($course->user_id !== $user->id) {
             return back()->with('error', 'You are not authorized to delete this course');
         }
-        $course->delete();
+        if (self::disk()->exists($course->path)) {
+            self::disk()->deleteDirectory($course->path);
+        }
+        $course->delete($course->id);
         return back()->with('success', 'Course deleted successfully');
     }
 }
