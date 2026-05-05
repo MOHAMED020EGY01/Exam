@@ -153,11 +153,31 @@ class ExamServices
         if ($zip->open($zipFilePath, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
             return null;
         }
-    
+
         foreach ($files as $file) {
-            $fullPath = self::disk()->path($file);
-            $relativeName = basename($file);
-            $zip->addFile($fullPath, $relativeName);
+            $filename = basename($file);
+            if (preg_match('/^q\d+\.json$/', $filename)) {
+
+                $content = self::disk()->get($file);
+                $json = json_decode($content, true);
+
+                if ($json) {
+
+                    $json['isSingleSelection'] = !$json['multiple'];
+                    unset($json['multiple']);
+
+                    if (isset($json['answers']) && is_array($json['answers'])) {
+                        foreach ($json['answers'] as &$answer) {
+                            unset($answer['is_correct']);
+                        }
+                    }
+
+                    $content = json_encode($json, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+                }
+                $zip->addFromString($filename, $content);
+            } else {
+                $zip->addFile(self::disk()->path($file), $filename);
+            }
         }
         $zip->close();
 
