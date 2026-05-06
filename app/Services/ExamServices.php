@@ -5,7 +5,6 @@ namespace App\Services;
 use App\Http\Requests\ExamRequest;
 use App\Models\Exam;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
@@ -19,26 +18,26 @@ class ExamServices
         return Storage::disk('local');
     }
 
-    private static function metaFile(int $n_of_question, string $baseDirectory)
+    private static function metaFile(int $n_of_question, string $path)
     {
         $bytes = pack("N", $n_of_question);
-        self::disk()->put($baseDirectory . "/meta", $bytes);
+        self::disk()->put($path . "/meta", $bytes);
     }
-    public static function filterFilesQuestions(string $baseDirectory)
+    public static function filterFilesQuestions(string $path)
     {
-        $allFiles = self::disk()->files($baseDirectory);
+        $allFiles = self::disk()->files($path);
         $qFiles = array_filter($allFiles, function ($file) {
             return preg_match('/\/q\d+\.json$/', $file);
         });
         return $qFiles;
     }
-    public static function directoryFindOrCreate(string $directory)
+    public static function directoryFindOrCreate(string $path)
     {
-        if (!File::exists($directory)) {
-            File::makeDirectory($directory, 0755, true, true);
+        if (!self::disk()->exists($path)) {
+            self::disk()->makeDirectory($path);
         }
     }
-    public static function processExamData(ExamRequest $request, string $baseDirectory, $exam = null)
+    public static function processExamData(ExamRequest $request, string $path, $exam = null)
     {
         $processedQuestions = [];
         $questionAnswerMap = [];
@@ -77,7 +76,7 @@ class ExamServices
                 'answers' => $answers,
             ];
             ExamServices::saveFile(
-                $baseDirectory . "/q{$questionCounter}.json",
+                $path . "/q{$questionCounter}.json",
                 $processedQuestions
             );
             $questionAnswerMap[] = $questionCounter . ':' . implode(',', $correctIndexes);
@@ -87,10 +86,10 @@ class ExamServices
         $answerString = implode(';', $questionAnswerMap);
 
         ExamServices::saveFile(
-            $baseDirectory . "/answer.json",
+            $path . "/answer.json",
             $answerString
         );
-        self::metaFile(count($request->questions), $baseDirectory);
+        self::metaFile(count($request->questions), $path);
     }
 
     public static function saveFile(string $jsonPath, array|string $processedQuestions)
@@ -102,7 +101,7 @@ class ExamServices
     }
     public static function responseFileJson(string $questions_package)
     {
-        if (File::exists($questions_package)) {
+        if (self::disk()->exists($questions_package)) {
             $qFiles = self::filterFilesQuestions($questions_package);
             natsort($qFiles);
             $merged = [];
@@ -125,8 +124,6 @@ class ExamServices
             self::disk()->deleteDirectory($path);
         }
     }
-
-
     public static function compressImageConvertBase64(UploadedFile $image)
     {
         if ($image instanceof UploadedFile) {

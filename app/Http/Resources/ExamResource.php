@@ -12,6 +12,7 @@ class ExamResource extends JsonResource
     public function toArray(Request $request): array
     {
         $questionContent = ExamServices::responseFileJson($this->questions_package);
+        //dd($questionContent);
         return [
             'id' => (string)$this->id,
             'name' => (string)$this->name,
