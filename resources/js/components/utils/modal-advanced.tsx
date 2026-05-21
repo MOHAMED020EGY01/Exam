@@ -1,15 +1,19 @@
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { cn } from "@/lib/utils";
+
 interface ModalInterface<T> {
     open: boolean;
     children?: React.ReactNode;
     label: string;
     onOpenChange?: (open: boolean) => void;
+    className?: string;
 }
 const ModalDynamicAdvanced = <T extends Record<string, any>>({
     open,
     children,
     label,
     onOpenChange,
+    className,
 }: ModalInterface<T>) => {
     const handleOpenChange = (nextOpen: boolean) => {
         if (!nextOpen) {
@@ -21,10 +25,13 @@ const ModalDynamicAdvanced = <T extends Record<string, any>>({
 
     return (
         <Dialog open={open} onOpenChange={handleOpenChange}>
-            <DialogContent className="sm:max-w-xl" showCloseButton={false}>
-                <DialogTitle className="text-lg font-semibold">
+            <DialogContent className={cn("sm:max-w-xl", className)} showCloseButton={false}>
+                <DialogTitle className="text-lg font-semibold sr-only">
                     {label}
                 </DialogTitle>
+                <DialogDescription className="sr-only">
+                    Configure and manage exam details, questions, and choice configurations.
+                </DialogDescription>
                 {children}
             </DialogContent>
         </Dialog>

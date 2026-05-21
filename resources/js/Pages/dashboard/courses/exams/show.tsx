@@ -39,21 +39,26 @@ interface SelectedAnswers {
 
 function Show({ exam }: { exam: ExamData }) {
   const examData = exam as ExamData;
-  console.log(exam);
+
+  const safeQuestions = useMemo(() => {
+    const pkg = examData?.questions_package;
+    return Array.isArray(pkg) ? pkg : (pkg && typeof pkg === 'object' ? Object.values(pkg) as Question[] : []);
+  }, [examData]);
+
   const questionsWithoutAnswers = useMemo(() => {
-    return examData?.questions_package?.map((q: Question) => {
+    return safeQuestions.map((q: Question) => {
       const { answers, ...questionWithoutAnswers } = q;
       return questionWithoutAnswers;
-    }) || [];
-  }, [examData]);
+    });
+  }, [safeQuestions]);
 
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState<SelectedAnswers>({});
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  const questions = useMemo(() => examData?.questions_package || [], [examData]);
-  const currentQuestion = questions[currentQuestionIndex];
-  const progressPercentage = ((currentQuestionIndex + 1) / questions.length) * 100;
+  const questions = safeQuestions;
+  const currentQuestion = questions[currentQuestionIndex] || null;
+  const progressPercentage = questions.length > 0 ? ((currentQuestionIndex + 1) / questions.length) * 100 : 0;
 
   const handleAnswerSelect = (answerIndex: number) => {
     if (!currentQuestion) return;
@@ -97,12 +102,11 @@ function Show({ exam }: { exam: ExamData }) {
 
   const handleSubmit = () => {
     setIsSubmitted(true);
-    console.log('Exam submitted with answers:', selectedAnswers);
   };
 
   if (!examData || questions.length === 0) {
     return (
-      <div className="flex items-center justify-center h-screen">
+      <div className="flex items-center justify-center min-h-[50vh]">
         <p className="text-muted-foreground">No exam data available</p>
       </div>
     );
@@ -110,7 +114,7 @@ function Show({ exam }: { exam: ExamData }) {
 
   if (isSubmitted) {
     return (
-      <div className="flex items-center justify-center h-screen">
+      <div className="flex items-center justify-center min-h-[50vh]">
         <Card className="w-full max-w-md">
           <CardHeader>
             <CardTitle>Exam Submitted</CardTitle>
@@ -125,8 +129,7 @@ function Show({ exam }: { exam: ExamData }) {
   }
 
   return (
-    <div className="min-h-screen bg-background p-6">
-      <div className="max-w-2xl mx-auto">
+    <div className="max-w-2xl mx-auto w-full px-2 py-4 sm:px-0">
         {/* Exam Header */}
         <Card className="mb-6">
           <CardHeader>
@@ -181,7 +184,7 @@ function Show({ exam }: { exam: ExamData }) {
 
               {/* Answers */}
               <div className="space-y-3">
-                {currentQuestion.answers && currentQuestion.answers.length > 0 ? (
+                {Array.isArray(currentQuestion.answers) && currentQuestion.answers.length > 0 ? (
                   currentQuestion.multiple ? (
                     // Multiple Choice - Checkboxes
                     <div className="space-y-3">
@@ -289,7 +292,6 @@ function Show({ exam }: { exam: ExamData }) {
           )}
         </div>
       </div>
-    </div>
   );
 }
 Show.layout = (page: React.ReactNode) => (

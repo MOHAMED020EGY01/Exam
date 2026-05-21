@@ -4,9 +4,7 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CoursesResource;
-use App\Http\Resources\ExamResource;
 use App\Models\Course;
-use App\Models\Exam;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -23,10 +21,9 @@ class CourseController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $courses = Course::where('user_id', '=', $user->id, 'and')->with('exams')->paginate(5)->withQueryString();
+        $courses = Course::where('user_id', '=', $user->id)->with('exams')->get();
         return Inertia::render('dashboard/courses/index', [
             'courses' => CoursesResource::collection($courses)->resolve(),
-            'links' => $courses->linkCollection()->toArray(),
         ]);
     }
 
@@ -57,15 +54,7 @@ class CourseController extends Controller
 
     public function show(Course $course)
     {
-        $user = Auth::user();
-        $exams = Exam::where('course_id', '=', $course->id, 'and')
-            ->where('user_id', '=', $user->id)
-            ->paginate()->withQueryString();
-        return Inertia::render('dashboard/courses/exams/index', [
-            'exams' => ExamResource::collection($exams)->resolve(),
-            'course' => $course,
-            'links' => $exams->linkCollection()->toArray(),
-        ]);
+        return redirect()->route('courses.index', ['course_id' => $course->id]);
     }
 
     public function update(Request $request, Course $course)

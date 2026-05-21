@@ -7,7 +7,7 @@ interface Props {
     children?:ReactNode
 }
 
-function ImagePreview({ image,className ,children }: Props) {
+function ImagePreview({ image, className, children }: Props) {
     const [previewSrc, setPreviewSrc] = useState<string | null>(null);
     const [loaded, setLoaded] = useState(false);
 
@@ -32,7 +32,7 @@ function ImagePreview({ image,className ,children }: Props) {
     if (!image || !previewSrc) return null;
 
     return (
-        <div className="relative w-16 h-16">
+        <div className={cn("relative w-16 h-16 shrink-0", className)}>
             {!loaded && (
                 <div className="absolute inset-0 animate-pulse rounded-lg outline-2 outline-dashed outline-card-foreground" />
             )}
@@ -41,10 +41,9 @@ function ImagePreview({ image,className ,children }: Props) {
                 alt="Preview"
                 onLoad={() => setLoaded(true)}
                 className={cn(
-                    "w-16 h-16 object-cover rounded-lg",
+                    "w-full h-full object-cover rounded-lg",
                     "outline-2 outline-dashed outline-card-foreground",
                     "transition-all duration-500",
-                    className,
                     loaded ? "opacity-100 scale-100" : "opacity-0 scale-90"
                 )}
             />

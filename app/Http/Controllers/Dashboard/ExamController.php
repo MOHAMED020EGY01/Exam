@@ -108,11 +108,6 @@ class ExamController extends Controller
 
     public function all()
     {
-        $user = Auth::user();
-        $exams = Exam::where('user_id', '=', $user->id, 'and')->paginate(10)->withQueryString();
-        return Inertia::render('dashboard/courses/exams/all', [
-            'exams' => ExamResource::collection($exams)->resolve(),
-            'links' => $exams->linkCollection()->toArray(),
-        ]);
+        return redirect()->route('courses.index');
     }
 }
