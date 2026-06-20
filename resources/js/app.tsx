@@ -1,9 +1,25 @@
+/**
+ * app.tsx
+ *
+ * Purpose:
+ * Entry point of the React application initialized under Laravel Inertia.
+ *
+ * Responsibilities:
+ * - Boot up Inertia.js app
+ * - Wrap application in ThemeProvider
+ * - Handle custom defaults and page prefetching
+ *
+ * Dependencies:
+ * - createInertiaApp (Inertia)
+ * - ThemeProvider (Common components)
+ */
+
 import './bootstrap';
 import '../css/app.css';
 import { createInertiaApp } from '@inertiajs/react';
 import { createRoot } from 'react-dom/client';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
-import { ThemeProvider } from './components/theme-provider';
+import { ThemeProvider } from './components/common/ThemeProvider';
 
 createInertiaApp({
     title: (title) => `${title} - Exam App`,

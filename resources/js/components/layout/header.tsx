@@ -1,6 +1,23 @@
+/**
+ * Header.tsx
+ *
+ * Purpose:
+ * Renders the top navigation header bar.
+ *
+ * Responsibilities:
+ * - Render theme selection toggle button
+ * - Render authenticated user profile avatar actions
+ * - Hide header when user is unauthenticated
+ *
+ * Dependencies:
+ * - ModeToggleTheme (Shadcn UI)
+ * - AvatarBadgeIcon (Common component)
+ * - useAuth hook
+ */
+
 import { useAuth } from "@/hooks/use-auth";
 import { ModeToggleTheme } from "@/components/ui/mode-toggle";
-import { AvatarBadgeIcon } from "@/components/utils/avatar";
+import { AvatarBadgeIcon } from "@/components/common/Avatar";
 
 export const Header = () => {
     const user = useAuth();

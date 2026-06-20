@@ -1,4 +1,20 @@
-import { useState, useMemo, useCallback } from 'react';
+/**
+ * use-tree.ts
+ *
+ * Purpose:
+ * Hook to manage courses explorer tree states (expansion states, selected node, search filters).
+ *
+ * Responsibilities:
+ * - Hold tree expanded folder keys and selected node ID
+ * - Provide search scoped query filtering
+ * - Expose toggle / expand operations on tree nodes
+ *
+ * Dependencies:
+ * - useSearchScope hook
+ * - Tree helper functions (lib/treeHelpers)
+ */
+
+import { useState, useMemo, useCallback, useEffect } from 'react';
 import { TreeNodeData, filterTree, getFolderNodeIds } from '../lib/treeHelpers';
 import { useSearchScope, SearchScope } from './use-search-scope';
 
@@ -82,17 +98,18 @@ export function useTree(initialNodes: any) {
     setExpandedKeys({});
   }, []);
 
-  // Filter tree based on query and auto-expand matched nodes
+  // Filter tree based on query
   const filteredNodes = useMemo(() => {
     if (!debouncedQuery.trim()) {
       return safeInitialNodes;
     }
-    const filtered = filterTree(safeInitialNodes, debouncedQuery, scope);
-    
-    // Auto-expand matches
-    const folderIds = getFolderNodeIds(filtered);
-    
-    setTimeout(() => {
+    return filterTree(safeInitialNodes, debouncedQuery, scope);
+  }, [safeInitialNodes, debouncedQuery, scope]);
+
+  // Auto-expand matched nodes in useEffect
+  useEffect(() => {
+    if (debouncedQuery.trim()) {
+      const folderIds = getFolderNodeIds(filteredNodes);
       setExpandedKeys((prev) => {
         const merged = { ...prev };
         folderIds.forEach((id) => {
@@ -100,10 +117,8 @@ export function useTree(initialNodes: any) {
         });
         return merged;
       });
-    }, 0);
-
-    return filtered;
-  }, [safeInitialNodes, debouncedQuery, scope]);
+    }
+  }, [debouncedQuery, filteredNodes]);
 
   return {
     expandedKeys,

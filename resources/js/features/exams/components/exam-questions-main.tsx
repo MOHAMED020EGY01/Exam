@@ -1,3 +1,20 @@
+/**
+ * exam-questions-main.tsx
+ *
+ * Purpose:
+ * Renders the question editor interface (Step 2) with a question navigation list.
+ *
+ * Responsibilities:
+ * - Render left sidebar list of questions with their index number
+ * - Render right side question editing panel
+ * - Handle question pagination and keyboard hotkeys (ArrowUp/ArrowDown)
+ *
+ * Dependencies:
+ * - RadioGroup and Progress components (Shadcn UI)
+ * - Lucide icons
+ * - framer-motion animations
+ */
+
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { useEffect, useState, useMemo, useCallback } from "react";

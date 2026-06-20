@@ -1,3 +1,18 @@
+/**
+ * ModalAdvanced.tsx
+ *
+ * Purpose:
+ * Renders an advanced custom modal with user escape validation.
+ *
+ * Responsibilities:
+ * - Handle dialog open/close state
+ * - Trigger browser confirm dialog when user attempts to close
+ * - Render child content passed inside
+ *
+ * Dependencies:
+ * - Dialog components (Shadcn UI)
+ */
+
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 
@@ -8,6 +23,7 @@ interface ModalInterface<T> {
     onOpenChange?: (open: boolean) => void;
     className?: string;
 }
+
 const ModalDynamicAdvanced = <T extends Record<string, any>>({
     open,
     children,

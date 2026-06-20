@@ -1,3 +1,19 @@
+/**
+ * exam-data.tsx
+ *
+ * Purpose:
+ * Renders the basic exam configuration form inputs (Step 1).
+ *
+ * Responsibilities:
+ * - Render title and description fields for the exam
+ * - Display reference card of the parent Course
+ * - Handle input transitions and display validation messages
+ *
+ * Dependencies:
+ * - Input/Textarea components (Shadcn UI)
+ * - Lucide Book icon
+ */
+
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";

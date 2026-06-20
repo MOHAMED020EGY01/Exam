@@ -1,8 +1,24 @@
+/**
+ * exam-answers.tsx
+ *
+ * Purpose:
+ * Renders a single answer option input inside the question editor.
+ *
+ * Responsibilities:
+ * - Render selection control (Radio button for single, Checkbox for multi-choice)
+ * - Render answer choice text input
+ * - Render action triggers (image attachment, delete option)
+ *
+ * Dependencies:
+ * - FileCustom and ImagePreview components (Common)
+ * - RadioGroupItem and Checkbox components (Shadcn UI)
+ */
+
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroupItem } from "@/components/ui/radio-group";
-import ImageCustom from "@/components/utils/file-custom";
-import ImagePreview from "@/components/utils/image-preview";
+import ImageCustom from "@/components/common/FileCustom";
+import ImagePreview from "@/components/common/ImagePreview";
 import { cn } from "@/lib/utils";
 import { Trash, X } from "lucide-react";
 

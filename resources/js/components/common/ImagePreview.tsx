@@ -1,10 +1,25 @@
+/**
+ * ImagePreview.tsx
+ *
+ * Purpose:
+ * Renders a preview image from a string URL or File object with a loading animation.
+ *
+ * Responsibilities:
+ * - Generate a temporary object URL when File objects are passed
+ * - Revoke object URL on unmount to prevent memory leaks
+ * - Display loading pulse animation while the image loads
+ *
+ * Dependencies:
+ * - Tailwind CSS utilities
+ */
+
 import { cn } from "@/lib/utils";
-import {  ReactNode, useEffect, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 
 interface Props {
     image: any;
-    className?:string
-    children?:ReactNode
+    className?: string;
+    children?: ReactNode;
 }
 
 function ImagePreview({ image, className, children }: Props) {

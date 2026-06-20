@@ -1,3 +1,16 @@
+/**
+ * GoogleSvg.tsx
+ *
+ * Purpose:
+ * Renders the Google logo SVG.
+ *
+ * Responsibilities:
+ * - Render multi-colored Google brand paths
+ *
+ * Dependencies:
+ * - React
+ */
+
 import React from "react";
 
 const GoogleSvg = () => {
@@ -23,4 +36,4 @@ const GoogleSvg = () => {
     );
 }
 
-export {GoogleSvg};
+export { GoogleSvg };

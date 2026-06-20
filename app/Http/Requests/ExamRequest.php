@@ -28,7 +28,7 @@ class ExamRequest extends FormRequest
                 Rule::unique('exams')
                     ->where(
                         fn($q) => $q
-                            ->where('course_id', $this->course_id)
+                            ->where('course_id', $this->route('course')?->id ?? $this->course_id)
                             ->where('user_id', Auth::id())
                     )->ignore($examId),
             ],

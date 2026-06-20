@@ -1,3 +1,19 @@
+/**
+ * SearchInput.tsx
+ *
+ * Purpose:
+ * Renders the search bar equipped with a scope selector.
+ *
+ * Responsibilities:
+ * - Capture search queries
+ * - Render dropdown menu to switch search scopes (all, courses, exams, questions)
+ * - Display loading spinner during debounced query transitions
+ *
+ * Dependencies:
+ * - DropdownMenu and Input components (Shadcn UI)
+ * - Lucide icons
+ */
+
 import React from 'react';
 import { Search, ChevronDown, Loader2 } from 'lucide-react';
 import { Input } from '../ui/input';

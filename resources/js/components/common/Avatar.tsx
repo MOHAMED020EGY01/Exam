@@ -1,8 +1,24 @@
-import { DropdownItemInterface } from "@/interface/global"
-import { LogOut, PlusIcon, ShareIcon, User } from "lucide-react"
-import {Avatar, AvatarBadge, AvatarFallback, AvatarImage } from "../ui/avatar"
-import { DropdownMenuDestructive } from "./dropdown-menu"
-import { useAuth } from "@/hooks/use-auth"
+/**
+ * Avatar.tsx
+ *
+ * Purpose:
+ * Renders the user avatar with a status badge and links to profile actions.
+ *
+ * Responsibilities:
+ * - Render avatar image fallback to initials
+ * - Render drop-down action list (profile, share, logout) on clicks
+ *
+ * Dependencies:
+ * - DropdownMenu component (Shadcn UI & Common)
+ * - Avatar components (Shadcn UI)
+ * - useAuth hook
+ */
+
+import { DropdownItemInterface } from "@/interface/global";
+import { LogOut, PlusIcon, ShareIcon, User } from "lucide-react";
+import { Avatar, AvatarBadge, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { DropdownMenuDestructive } from "./DropdownMenu";
+import { useAuth } from "@/hooks/use-auth";
 
 export const AvatarBadgeIcon = () => {
     const item: DropdownItemInterface[] = [
@@ -27,9 +43,9 @@ export const AvatarBadgeIcon = () => {
             icon: <LogOut />,
             method: "delete",
             danger: true,
-            openModal:false
+            openModal: false
         }
-    ]
+    ];
     const user = useAuth();
     return (
         <DropdownMenuDestructive
@@ -44,5 +60,5 @@ export const AvatarBadgeIcon = () => {
             }
             items={item}
         />
-    )
-}
+    );
+};

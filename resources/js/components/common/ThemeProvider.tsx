@@ -1,10 +1,19 @@
-import {
-    createContext,
-    useContext,
-    useEffect,
-    useLayoutEffect,
-    useState,
-} from "react";
+/**
+ * ThemeProvider.tsx
+ *
+ * Purpose:
+ * Context Provider for application appearance mode (light, dark, system).
+ *
+ * Responsibilities:
+ * - Load/store user theme preference to localStorage
+ * - Track prefers-color-scheme media query for system theme selection
+ * - Set appropriate dark/light classes on the document element
+ *
+ * Dependencies:
+ * - React Context
+ */
+
+import { createContext, useContext, useLayoutEffect, useState } from "react";
 
 type Theme = "dark" | "light" | "system";
 

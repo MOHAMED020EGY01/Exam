@@ -1,7 +1,24 @@
+/**
+ * DashboardLayout.tsx
+ *
+ * Purpose:
+ * Main layout wrapper for the authenticated dashboard pages.
+ *
+ * Responsibilities:
+ * - Wrap pages in TooltipProvider
+ * - Render Header component
+ * - Configure Sonner notification helper
+ *
+ * Dependencies:
+ * - Header component
+ * - Toaster (sonner)
+ * - TooltipProvider (Shadcn UI)
+ */
+
 import { ReactNode } from "react";
-import { Header } from "./header";
+import { Header } from "./Header";
 import { Toaster } from "@/components/ui/sonner";
-import { SonnerTypes } from "../utils/flash-message/flash-helper";
+import { SonnerTypes } from "../common/FlashHelper";
 import { TooltipProvider } from "../ui/tooltip";
 
 const DashboardLayout = ({ children }: { children: ReactNode }) => {

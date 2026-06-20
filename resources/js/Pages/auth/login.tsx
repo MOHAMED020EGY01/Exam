@@ -1,10 +1,27 @@
+/**
+ * login.tsx
+ *
+ * Purpose:
+ * Renders the login page wrapper.
+ *
+ * Responsibilities:
+ * - Render login card interface
+ * - Display theme selection control
+ * - Handle redirect trigger link to Google OAuth flow
+ *
+ * Dependencies:
+ * - ModeToggleTheme (Shadcn UI)
+ * - Spinner (Shadcn UI)
+ * - GoogleSvg (Common)
+ */
+
 import { BookOpen } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ModeToggleTheme } from "@/components/ui/mode-toggle";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Spinner } from "@/components/ui/spinner";
-import { GoogleSvg } from "@/components/svg";
+import { GoogleSvg } from "@/components/common/GoogleSvg";
 
 export default function Login() {
     const [loading, setLoading] = useState(false);

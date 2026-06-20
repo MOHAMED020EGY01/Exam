@@ -1,3 +1,19 @@
+/**
+ * treeHelpers.ts
+ *
+ * Purpose:
+ * Normalizes flat course and exam structures into recursive TreeNodeData format
+ * and provides helper functions to filter and traverse the tree nodes.
+ *
+ * Responsibilities:
+ * - Convert courses array into tree structure
+ * - Recursively filter nodes by scope and query
+ * - Extract expanded/collapsed folder node keys
+ *
+ * Dependencies:
+ * - TreeNodeData (type definitions)
+ */
+
 export interface TreeNodeData {
   id: string; // e.g. 'course-1', 'exam-3', 'question-3-0'
   label: string;
@@ -18,7 +34,7 @@ export function normalizeCoursesToTree(courses: any): TreeNodeData[] {
     : (courses && typeof courses === 'object' ? Object.values(courses) : []);
 
   return safeCourses
-    .map((course: any) => {
+    .map((course: any): TreeNodeData | null => {
       if (!course) return null;
       const courseId = `course-${course.id}`;
       
@@ -30,7 +46,7 @@ export function normalizeCoursesToTree(courses: any): TreeNodeData[] {
           : (course?.exams && typeof course.exams === 'object' ? Object.values(course.exams) : []));
         
       const examNodes: TreeNodeData[] = rawExams
-        .map((exam: any) => {
+        .map((exam: any): TreeNodeData | null => {
           if (!exam) return null;
           const examId = `exam-${exam.id}`;
           
@@ -48,7 +64,7 @@ export function normalizeCoursesToTree(courses: any): TreeNodeData[] {
                     : (exam?.questions && typeof exam.questions === 'object' ? Object.values(exam.questions) : [])))));
 
           const questionNodes: TreeNodeData[] = rawQuestions
-            .map((question: any, qIdx: number) => {
+            .map((question: any, qIdx: number): TreeNodeData | null => {
               if (!question) return null;
               const questionId = `question-${exam.id}-${qIdx}`;
               return {
@@ -65,7 +81,7 @@ export function normalizeCoursesToTree(courses: any): TreeNodeData[] {
                 },
               };
             })
-            .filter((q): q is TreeNodeData => q !== null);
+            .filter((q: TreeNodeData | null): q is TreeNodeData => q !== null);
 
           return {
             id: examId,
@@ -80,7 +96,7 @@ export function normalizeCoursesToTree(courses: any): TreeNodeData[] {
             children: questionNodes,
           };
         })
-        .filter((e): e is TreeNodeData => e !== null);
+        .filter((e: TreeNodeData | null): e is TreeNodeData => e !== null);
 
       return {
         id: courseId,
@@ -91,7 +107,7 @@ export function normalizeCoursesToTree(courses: any): TreeNodeData[] {
         children: examNodes,
       };
     })
-    .filter((c): c is TreeNodeData => c !== null);
+    .filter((c: TreeNodeData | null): c is TreeNodeData => c !== null);
 }
 
 /**
@@ -147,9 +163,9 @@ export function getFolderNodeIds(nodes: any): string[] {
     if (!n) return;
     if (n.type === 'course' || n.type === 'exam') {
       ids.push(n.id);
-      const safeChildren = Array.isArray(n.children) 
+      const safeChildren = (Array.isArray(n.children) 
         ? n.children 
-        : (n.children && typeof n.children === 'object' ? Object.values(n.children) : []);
+        : (n.children && typeof n.children === 'object' ? Object.values(n.children) : [])) as TreeNodeData[];
       safeChildren.forEach(traverse);
     }
   }

@@ -1,3 +1,19 @@
+/**
+ * mode-toggle.tsx
+ *
+ * Purpose:
+ * Renders the theme switcher menu dropdown.
+ *
+ * Responsibilities:
+ * - Toggle website appearance theme between light and dark
+ * - Set correct theme value in ThemeProvider context
+ *
+ * Dependencies:
+ * - DropdownMenu (Shadcn UI)
+ * - Sun/Moon icons (lucide-react)
+ * - useTheme hook (Common ThemeProvider)
+ */
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -6,7 +22,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Moon, Sun } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { useTheme } from "@/components/theme-provider"
+import { useTheme } from "@/components/common/ThemeProvider"
 import { cn } from "@/lib/utils"
 
 export function ModeToggleTheme({ className }: { className?: string }) {

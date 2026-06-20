@@ -1,3 +1,17 @@
+/**
+ * TreeIcon.tsx
+ *
+ * Purpose:
+ * Renders icons matching the specific tree node types (root, course, exam, question) and chevron states.
+ *
+ * Responsibilities:
+ * - Switch between icons dynamically matching tree elements
+ * - Handle chevron icon orientations (expanded vs collapsed)
+ *
+ * Dependencies:
+ * - Lucide icons
+ */
+
 import React from 'react';
 import { 
   Folder, 

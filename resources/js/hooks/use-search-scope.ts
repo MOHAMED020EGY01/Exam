@@ -1,3 +1,17 @@
+/**
+ * use-search-scope.ts
+ *
+ * Purpose:
+ * Hook managing query state, debouncing query values, and transitions of search scopes.
+ *
+ * Responsibilities:
+ * - Hold current search query state and target scope state
+ * - Trigger debounced transitions of search query queries
+ *
+ * Dependencies:
+ * - React transition hooks
+ */
+
 import { useState, useTransition, useEffect } from 'react';
 
 export type SearchScope = 'all' | 'course' | 'exam' | 'question';

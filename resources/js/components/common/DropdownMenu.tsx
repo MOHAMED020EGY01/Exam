@@ -1,3 +1,19 @@
+/**
+ * DropdownMenu.tsx
+ *
+ * Purpose:
+ * Renders a dropdown menu with support for links, downloads, and modal buttons.
+ *
+ * Responsibilities:
+ * - Render trigger and content items
+ * - Differentiate between regular navigation, downloads, and modal triggers
+ * - Support custom icons and labels for dropdown items
+ *
+ * Dependencies:
+ * - DropdownMenu components (Shadcn UI)
+ * - Inertia Link component
+ */
+
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -10,10 +26,12 @@ import { Button } from "../ui/button";
 import { DropdownItemInterface } from "@/interface/global";
 import { Fragment, ReactNode } from "react";
 import { Link } from "@inertiajs/react";
+
 interface Props {
     target: ReactNode;
     items: DropdownItemInterface[];
 }
+
 export const DropdownMenuDestructive = ({ target, items }: Props) => {
     return (
         <DropdownMenu>

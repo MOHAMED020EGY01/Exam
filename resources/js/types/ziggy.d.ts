@@ -1,4 +1,13 @@
-// resources/js/types/ziggy.d.ts
+/**
+ * ziggy.d.ts
+ *
+ * Purpose:
+ * Ziggy route helper global type definitions.
+ *
+ * Responsibilities:
+ * - Declare route function overloads and Window's ziggy config object structure
+ */
+
 import { RouteParams, Router } from 'ziggy-js';
 
 declare global {

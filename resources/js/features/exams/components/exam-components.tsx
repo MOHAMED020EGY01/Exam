@@ -1,8 +1,28 @@
-import { Plus } from "lucide-react";
+/**
+ * exam-components.tsx
+ *
+ * Purpose:
+ * Container component that orchestrates the multi-step exam wizard form.
+ *
+ * Responsibilities:
+ * - Render step headers and navigation indicator dots
+ * - Maintain multi-step validation logic and Inertia post action
+ * - Coordinate state updates of the questions array
+ *
+ * Dependencies:
+ * - ExamData and ExamFormQuestions components
+ * - Questions state class
+ * - Inertia useForm hook
+ */
+
 import { Button } from "@/components/ui/button";
 import { useEffect, useMemo, useState } from "react";
 import { useForm } from "@inertiajs/react";
-import { Answer, Question, Questions } from "@/features/questions/class/question";
+import {
+    Answer,
+    Question,
+    Questions,
+} from "@/features/questions/class/question";
 import { ExamData } from "./exam-data";
 import { ExamFormQuestions } from "./exam-questions-main";
 import { Spinner } from "@/components/ui/spinner";
@@ -31,18 +51,12 @@ function ExamModalFormQuestions({
     onStepChange?: (step: number) => void;
 }) {
     const [activeStep, setActiveStep] = useState(0);
-    const {
-        data,
-        setData,
-        post,
-        processing,
-        resetAndClearErrors,
-        errors,
-    } = useForm<FormData>({
-        name: exam?.name ? exam.name : "",
-        description: exam?.description ? exam.description : "",
-        questions: exam?.questions_package ? exam.questions_package : [],
-    });
+    const { data, setData, post, processing, resetAndClearErrors, errors } =
+        useForm<FormData>({
+            name: exam?.name ? exam.name : "",
+            description: exam?.description ? exam.description : "",
+            questions: exam?.questions_package ? exam.questions_package : [],
+        });
 
     // Notify parent when activeStep changes to adjust modal size dynamically
     useEffect(() => {
@@ -130,21 +144,40 @@ function ExamModalFormQuestions({
     }, [errors]);
 
     return (
-        <form onSubmit={handleSubmit} className="flex flex-col h-full bg-background max-h-[90vh]">
+        <form
+            onSubmit={handleSubmit}
+            className="flex flex-col h-full bg-background max-h-[90vh]"
+        >
             {/* Header Area */}
             <div className="px-6 py-4 border-b border-border shrink-0 flex items-center justify-between">
                 <div>
-                    <h3 className="text-base font-bold tracking-tight text-foreground">{label} Exam</h3>
+                    <h3 className="text-base font-bold tracking-tight text-foreground">
+                        {label} Exam
+                    </h3>
                     <p className="text-xs text-muted-foreground mt-0.5">
-                        {activeStep === 0 
-                            ? "Configure the basic exam details, name, and description." 
+                        {activeStep === 0
+                            ? "Configure the basic exam details, name, and description."
                             : "Add questions, answers, specify correct options, and attach files."}
                     </p>
                 </div>
                 {/* Step indicator */}
                 <div className="flex items-center gap-1.5 bg-muted/80 px-2.5 py-1 rounded-full border border-border select-none">
-                    <span className={cn("w-1.5 h-1.5 rounded-full transition-all", activeStep === 0 ? "bg-primary" : "bg-muted-foreground/30")} />
-                    <span className={cn("w-1.5 h-1.5 rounded-full transition-all", activeStep === 1 ? "bg-primary" : "bg-muted-foreground/30")} />
+                    <span
+                        className={cn(
+                            "w-1.5 h-1.5 rounded-full transition-all",
+                            activeStep === 0
+                                ? "bg-primary"
+                                : "bg-muted-foreground/30",
+                        )}
+                    />
+                    <span
+                        className={cn(
+                            "w-1.5 h-1.5 rounded-full transition-all",
+                            activeStep === 1
+                                ? "bg-primary"
+                                : "bg-muted-foreground/30",
+                        )}
+                    />
                     <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider ml-1">
                         Step {activeStep + 1} of 2
                     </span>
@@ -156,7 +189,9 @@ function ExamModalFormQuestions({
                 <div className="px-6 py-2.5 bg-destructive/10 border-b border-destructive/20 text-destructive text-xs space-y-0.5 max-h-24 overflow-y-auto shrink-0 select-none">
                     {Object.entries(errors).map(([field, message], index) => (
                         <div key={index} className="flex items-start gap-1.5">
-                            <span className="font-semibold capitalize shrink-0">{field.replace(/_/g, " ")}:</span>
+                            <span className="font-semibold capitalize shrink-0">
+                                {field.replace(/_/g, " ")}:
+                            </span>
                             <span>{message}</span>
                         </div>
                     ))}
@@ -164,10 +199,12 @@ function ExamModalFormQuestions({
             )}
 
             {/* Main Content Area */}
-            <div className={cn(
-                "flex-1 min-h-0 overflow-y-auto",
-                activeStep === 0 ? "p-6" : "p-0"
-            )}>
+            <div
+                className={cn(
+                    "flex-1 min-h-0 overflow-y-auto",
+                    activeStep === 0 ? "p-6" : "p-0",
+                )}
+            >
                 {activeStep === 0 ? (
                     <ExamData
                         data={data}
@@ -258,7 +295,9 @@ function ExamModalFormQuestions({
                                 className="font-semibold text-xs h-9 gap-1.5 min-w-[120px]"
                             >
                                 {processing ? (
-                                    <>Saving... <Spinner /></>
+                                    <>
+                                        Saving... <Spinner />
+                                    </>
                                 ) : (
                                     <>Publish Exam</>
                                 )}

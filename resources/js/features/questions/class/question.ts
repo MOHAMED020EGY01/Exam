@@ -1,3 +1,16 @@
+/**
+ * question.ts
+ *
+ * Purpose:
+ * Represents the Question and Answer data structures and the Questions state manager class.
+ *
+ * Responsibilities:
+ * - Define Answer and Question types
+ * - Encapsulate question array CRUD actions (add, remove, update)
+ * - Encapsulate answer options array CRUD actions
+ * - Coordinate single/multiple option answer selection rules
+ */
+
 export type Answer = {
   text: string;
   is_correct: boolean;

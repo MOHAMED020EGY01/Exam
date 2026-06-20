@@ -1,3 +1,20 @@
+/**
+ * show.tsx
+ *
+ * Purpose:
+ * Renders the interface for taking an exam.
+ *
+ * Responsibilities:
+ * - Load exam questions and answers dynamically
+ * - Track user selected responses (single or multiple choice)
+ * - Handle exam navigation (next, previous) and keyboard arrow navigation
+ * - Submit the completed exam responses
+ *
+ * Dependencies:
+ * - DashboardLayout
+ * - Card/Progress/Separator components (Shadcn UI)
+ */
+
 import React, { useState, useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -7,7 +24,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Separator } from '@/components/ui/separator';
 import { Progress } from '@/components/ui/progress';
 import { ChevronLeft, ChevronRight, Send } from 'lucide-react';
-import { DashboardLayout } from '@/components/layout/dashboard';
+import { DashboardLayout } from '@/components/layout/DashboardLayout';
 
 interface Answer {
   text: string;
@@ -275,7 +292,7 @@ function Show({ exam }: { exam: ExamData }) {
           {currentQuestionIndex === questions.length - 1 ? (
             <Button
               onClick={handleSubmit}
-              className="gap-2 bg-green-600 hover:bg-green-700"
+              className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white dark:bg-emerald-700 dark:hover:bg-emerald-800"
             >
               <Send className="h-4 w-4" />
               Submit Exam

@@ -1,3 +1,16 @@
+/**
+ * use-flash-message.ts
+ *
+ * Purpose:
+ * Hook to access server flash messages from page properties.
+ *
+ * Responsibilities:
+ * - Extract `flash_message` property from Inertia usePage props
+ *
+ * Dependencies:
+ * - usePage (Inertia)
+ */
+
 import { usePage } from "@inertiajs/react";
 export interface FlashMessage {
     code: string;

@@ -7,10 +7,11 @@ use App\Http\Resources\CoursesResource;
 use App\Models\Course;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
-use Storage;
+
 
 class CourseController extends Controller
 {
@@ -21,7 +22,7 @@ class CourseController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $courses = Course::where('user_id', '=', $user->id)->with('exams')->get();
+        $courses = Course::where('user_id', '=', $user->id, 'and')->with('exams')->get();
         return Inertia::render('dashboard/courses/index', [
             'courses' => CoursesResource::collection($courses)->resolve(),
         ]);
@@ -64,7 +65,7 @@ class CourseController extends Controller
             return back()->with('error', 'You are not authorized to update this course');
         }
         $request->validate([
-            'name' => ['required ', 'string', 'max:255'],
+            'name' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string', 'max:255'],
         ]);
 

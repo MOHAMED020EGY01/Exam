@@ -1,4 +1,19 @@
-import { DashboardLayout } from "@/components/layout/dashboard";
+/**
+ * welcome.tsx
+ *
+ * Purpose:
+ * Renders the application welcome/landing page.
+ *
+ * Responsibilities:
+ * - Render splash/landing info for unauthenticated users
+ * - Render navigation quick-starts for logged-in users
+ *
+ * Dependencies:
+ * - DashboardLayout
+ * - useAuth hook
+ */
+
+import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/hooks/use-auth";

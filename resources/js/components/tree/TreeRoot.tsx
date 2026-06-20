@@ -1,5 +1,23 @@
+/**
+ * TreeRoot.tsx
+ *
+ * Purpose:
+ * Renders the top-level container of the Courses Explorer tree.
+ *
+ * Responsibilities:
+ * - Render explorer title actions (expand all, collapse all, add course)
+ * - Render scoped SearchInput wrapper
+ * - Render virtual root folder (Courses)
+ * - Render nested children using RecursiveTree component
+ *
+ * Dependencies:
+ * - SearchInput and RecursiveTree components
+ * - Lucide icons
+ * - TreeNodeData interface
+ */
+
 import React from 'react';
-import { TreeNodeData } from '../../lib/treeHelpers';
+import { TreeNodeData } from '@/lib/treeHelpers';
 import { RecursiveTree } from './RecursiveTree';
 import { TreeIcon, ChevronIcon } from './TreeIcon';
 import { Search, FolderPlus, ChevronsDown, ChevronsUp, FolderTree } from 'lucide-react';
@@ -27,6 +45,14 @@ interface TreeRootProps {
   onEditExam: (exam: any) => void;
   onDeleteExam: (exam: any) => void;
   onDownloadExam: (exam: any) => void;
+
+  // Clipboard & Move operations
+  clipboard?: any;
+  onCopy?: (node: TreeNodeData) => void;
+  onPaste?: (node: TreeNodeData) => void;
+  onMove?: (node: TreeNodeData) => void;
+  onDuplicate?: (node: TreeNodeData) => void;
+  onDeleteQuestion?: (node: TreeNodeData) => void;
 }
 
 export const TreeRoot: React.FC<TreeRootProps> = ({
@@ -49,6 +75,12 @@ export const TreeRoot: React.FC<TreeRootProps> = ({
   onEditExam,
   onDeleteExam,
   onDownloadExam,
+  clipboard,
+  onCopy,
+  onPaste,
+  onMove,
+  onDuplicate,
+  onDeleteQuestion,
 }) => {
   const isRootExpanded = expandedKeys['root'] !== false; // Default expanded to true
 
@@ -133,6 +165,12 @@ export const TreeRoot: React.FC<TreeRootProps> = ({
                   onEditExam={onEditExam}
                   onDeleteExam={onDeleteExam}
                   onDownloadExam={onDownloadExam}
+                  clipboard={clipboard}
+                  onCopy={onCopy}
+                  onPaste={onPaste}
+                  onMove={onMove}
+                  onDuplicate={onDuplicate}
+                  onDeleteQuestion={onDeleteQuestion}
                 />
               ) : (
                 <div className="p-8 text-xs text-muted-foreground text-center flex flex-col items-center justify-center gap-2 select-none">

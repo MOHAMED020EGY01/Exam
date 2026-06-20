@@ -1,9 +1,23 @@
-import { cn } from "@/lib/utils"
-import { Button } from "../ui/button"
+/**
+ * Hamburger.tsx
+ *
+ * Purpose:
+ * Renders a customizable hamburger menu button.
+ *
+ * Responsibilities:
+ * - Toggle navigation expand state on clicks
+ * - Animate bars of the hamburger dynamically when toggled open
+ *
+ * Dependencies:
+ * - Tailwind CSS utilities
+ */
+
+import { cn } from "@/lib/utils";
+import { Button } from "../ui/button";
 
 interface HamburgerProps {
-    open: boolean
-    setOpen: (value: boolean) => void
+    open: boolean;
+    setOpen: (value: boolean) => void;
 }
 
 export const Hamburger = ({ open, setOpen }: HamburgerProps) => {
@@ -25,5 +39,5 @@ export const Hamburger = ({ open, setOpen }: HamburgerProps) => {
                 open && "hidden"
             )}></div>
         </Button>
-    )
-}
+    );
+};

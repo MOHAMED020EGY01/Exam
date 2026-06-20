@@ -1,3 +1,18 @@
+/**
+ * global.tsx
+ *
+ * Purpose:
+ * Shared interfaces and generic type declarations used across UI/UX components.
+ *
+ * Responsibilities:
+ * - Define DropdownItemInterface configurations
+ * - Define CardInterface props
+ * - Define generic openSetOpenInterface toggles
+ *
+ * Dependencies:
+ * - React
+ */
+
 import { ReactNode } from "react"
 
 type Method = "get" | "post" | "put" | "delete"

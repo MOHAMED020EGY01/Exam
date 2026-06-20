@@ -1,8 +1,24 @@
+/**
+ * exam-questions.tsx
+ *
+ * Purpose:
+ * Renders the question editing area: prompt and choice-mode.
+ *
+ * Responsibilities:
+ * - Render question prompt text input
+ * - Render file upload selector for question image attachment
+ * - Toggle answer selection mode (single vs multiple choice)
+ *
+ * Dependencies:
+ * - FileCustom and ImagePreview components (Common)
+ * - Input/Label components (Shadcn UI)
+ */
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import ImageCustom from "@/components/utils/file-custom";
-import ImagePreview from "@/components/utils/image-preview";
+import ImageCustom from "@/components/common/FileCustom";
+import ImagePreview from "@/components/common/ImagePreview";
 import { cn } from "@/lib/utils";
 import { X, HelpCircle, Layers, CheckSquare, List } from "lucide-react";
 

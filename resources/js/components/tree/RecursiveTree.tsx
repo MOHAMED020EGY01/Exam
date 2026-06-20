@@ -1,5 +1,19 @@
+/**
+ * RecursiveTree.tsx
+ *
+ * Purpose:
+ * Renders list of TreeNode components recursively mapping tree layers.
+ *
+ * Responsibilities:
+ * - Map nodes array to individual TreeNode items passing callback triggers
+ *
+ * Dependencies:
+ * - TreeNode component
+ * - TreeNodeData interface
+ */
+
 import React from 'react';
-import { TreeNodeData } from '../../lib/treeHelpers';
+import { TreeNodeData } from '@/lib/treeHelpers';
 import { TreeNode } from './TreeNode';
 
 interface RecursiveTreeProps {
@@ -17,6 +31,14 @@ interface RecursiveTreeProps {
   onEditExam?: (exam: any) => void;
   onDeleteExam?: (exam: any) => void;
   onDownloadExam?: (exam: any) => void;
+
+  // Clipboard & Move operations
+  clipboard?: any;
+  onCopy?: (node: TreeNodeData) => void;
+  onPaste?: (node: TreeNodeData) => void;
+  onMove?: (node: TreeNodeData) => void;
+  onDuplicate?: (node: TreeNodeData) => void;
+  onDeleteQuestion?: (node: TreeNodeData) => void;
 }
 
 export const RecursiveTree: React.FC<RecursiveTreeProps> = ({
@@ -32,6 +54,12 @@ export const RecursiveTree: React.FC<RecursiveTreeProps> = ({
   onEditExam,
   onDeleteExam,
   onDownloadExam,
+  clipboard,
+  onCopy,
+  onPaste,
+  onMove,
+  onDuplicate,
+  onDeleteQuestion,
 }) => {
   return (
     <>
@@ -50,6 +78,12 @@ export const RecursiveTree: React.FC<RecursiveTreeProps> = ({
           onEditExam={onEditExam}
           onDeleteExam={onDeleteExam}
           onDownloadExam={onDownloadExam}
+          clipboard={clipboard}
+          onCopy={onCopy}
+          onPaste={onPaste}
+          onMove={onMove}
+          onDuplicate={onDuplicate}
+          onDeleteQuestion={onDeleteQuestion}
         />
       ))}
     </>

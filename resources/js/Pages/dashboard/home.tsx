@@ -1,6 +1,18 @@
+/**
+ * home.tsx
+ *
+ * Purpose:
+ * Renders the dashboard home page.
+ *
+ * Responsibilities:
+ * - Render main dashboard portal elements
+ *
+ * Dependencies:
+ * - DashboardLayout
+ */
+
 import { Head } from '@inertiajs/react';
-import { DashboardLayout } from '@/components/layout/dashboard';
-import { SonnerTypes } from '@/components/utils/flash-message/flash-helper';
+import { DashboardLayout } from '@/components/layout/DashboardLayout';
 
 
 function Home() {

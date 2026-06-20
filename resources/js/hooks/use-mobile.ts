@@ -1,3 +1,17 @@
+/**
+ * use-mobile.ts
+ *
+ * Purpose:
+ * Hook to detect if the user's viewport matches a mobile breakpoint screen width.
+ *
+ * Responsibilities:
+ * - Listen to window resize events and matchMedia updates
+ * - Expose isMobile state flag
+ *
+ * Dependencies:
+ * - React
+ */
+
 import * as React from "react"
 
 const MOBILE_BREAKPOINT = 768

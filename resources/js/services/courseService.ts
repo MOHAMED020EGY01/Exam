@@ -1,3 +1,18 @@
+/**
+ * courseService.ts
+ *
+ * Purpose:
+ * Handle course and exam API communications.
+ *
+ * Responsibilities:
+ * - Delete course by ID
+ * - Delete exam by course ID and exam ID
+ * - Download exam ZIP package
+ *
+ * Dependencies:
+ * - Inertia router
+ */
+
 import { router } from '@inertiajs/react';
 
 export const courseService = {
