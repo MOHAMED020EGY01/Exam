@@ -1,0 +1,15 @@
+.full-screen {
+  @apply w-full h-screen;
+}
+
+.page-container {
+  @apply w-full max-w-[1200px] mx-auto;
+}
+
+.modal-large {
+  @apply w-full h-[90vh] max-h-[900px];
+}
+
+.modal-medium {
+  @apply w-[80vw] max-w-[700px] h-[80vh];
+}

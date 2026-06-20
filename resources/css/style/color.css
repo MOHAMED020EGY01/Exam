@@ -102,3 +102,12 @@
     --color-background: var(--background);
     --color-background-secondary: var(--background-secondary);
 }
+
+.primary-button {
+    @apply bg-emerald-600 hover:bg-emerald-700 text-white dark:bg-emerald-700 dark:hover:bg-emerald-800;
+}
+
+.danger-button {
+    @apply bg-red-600 hover:bg-red-700 text-white;
+}
+

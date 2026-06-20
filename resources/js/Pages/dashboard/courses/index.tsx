@@ -275,7 +275,7 @@ const CoursesIndex = ({ courses }: Props) => {
           open={examCreateOpen}
           label="Create Exam"
           onOpenChange={setExamCreateOpen}
-          className={examModalStep === 1 ? "sm:max-w-5xl w-full h-[90vh] max-h-[900px] flex flex-col p-0 overflow-hidden" : "sm:max-w-xl"}
+          className={examModalStep === 1 ? "sm:max-w-5xl modal-large flex flex-col p-0 overflow-hidden" : "sm:max-w-xl"}
         >
           <ExamModalFormQuestions
             label="Create"
@@ -293,7 +293,7 @@ const CoursesIndex = ({ courses }: Props) => {
           open={examEditOpen}
           label="Update Exam"
           onOpenChange={setExamEditOpen}
-          className={examModalStep === 1 ? "sm:max-w-5xl w-full h-[90vh] max-h-[900px] flex flex-col p-0 overflow-hidden" : "sm:max-w-xl"}
+          className={examModalStep === 1 ? "sm:max-w-5xl modal-large flex flex-col p-0 overflow-hidden" : "sm:max-w-xl"}
         >
           <ExamModalFormQuestions
             label="Update"

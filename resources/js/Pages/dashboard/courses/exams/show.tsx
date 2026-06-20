@@ -292,7 +292,7 @@ function Show({ exam }: { exam: ExamData }) {
           {currentQuestionIndex === questions.length - 1 ? (
             <Button
               onClick={handleSubmit}
-              className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white dark:bg-emerald-700 dark:hover:bg-emerald-800"
+              className="gap-2 primary-button"
             >
               <Send className="h-4 w-4" />
               Submit Exam
