@@ -158,10 +158,10 @@ export const CourseDetails: React.FC<CourseDetailsProps> = ({
                                                 variant="outline"
                                             >
                                                 <Link
-                                                    href={route("exams.show", {
-                                                        course: selectedNode.originalId,
-                                                        exam: exam.id,
-                                                    })}
+                                                // href={route("exams.show", {
+                                                //     course: selectedNode.originalId,
+                                                //     exam: exam.id,
+                                                // })}
                                                 >
                                                     <Eye className="w-3.5 h-3.5 mr-1" />{" "}
                                                     View

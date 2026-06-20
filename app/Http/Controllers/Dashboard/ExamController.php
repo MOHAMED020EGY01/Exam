@@ -26,10 +26,6 @@ class ExamController extends Controller
                 201
             ));
     }
-    private static function disk()
-    {
-        return Storage::disk('local');
-    }
 
     public function store(ExamRequest $request, Course $course)
     {
@@ -53,17 +49,6 @@ class ExamController extends Controller
             return self::HelperMessageFlash('Create', $exam->name, $course->name);
         });
     }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Course $course, Exam $exam)
-    {
-        return Inertia::render('dashboard/courses/exams/show', [
-            'exam' => ExamResource::make($exam)->resolve(),
-        ]);
-    }
-
     public function update(ExamRequest $request, Course $course, Exam $exam)
     {
         return DB::transaction(function () use ($request, $course, $exam) {
@@ -104,10 +89,5 @@ class ExamController extends Controller
             $file,
             "{$exam->name}_exam.elr"
         )->deleteFileAfterSend(true);
-    }
-
-    public function all()
-    {
-        return redirect()->route('courses.index');
     }
 }

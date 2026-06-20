@@ -28,10 +28,10 @@ import { courseService } from "@/services/courseService";
 import { TreeRoot } from "@/components/tree/TreeRoot";
 import { MoveModal } from "@/components/tree/MoveModal";
 import { useClipboard } from "@/hooks/use-clipboard";
-import { CourseDetails } from "./components/CourseDetails";
-import { ExamDetails } from "./components/ExamDetails";
-import { QuestionDetails } from "./components/QuestionDetails";
-import { ExplorerEmptyState } from "./components/ExplorerEmptyState";
+import { CourseDetails } from "@/components/page/CourseDetails";
+import { ExamDetails } from "@/components/page/ExamDetails";
+import { QuestionDetails } from "@/components/page/QuestionDetails";
+import { ExplorerEmptyState } from "@/components/page/ExplorerEmptyState";
 import { CourseData, ExamsData, QuestionsData } from "@/interface/global";
 
 interface Props {
@@ -43,7 +43,8 @@ const form = [
     { field: "description", type: "input" },
 ] as FieldForm[];
 
-const CoursesIndex = ({ courses }: Props) => {
+function Home ({ courses }: Props){
+
     const safeCourses = useMemo((): CourseData[] => {
         return courses;
     }, [courses]);
@@ -342,7 +343,7 @@ const CoursesIndex = ({ courses }: Props) => {
     );
 };
 
-CoursesIndex.layout = (page: ReactNode) => (
+Home.layout = (page: ReactNode) => (
     <DashboardLayout>{page}</DashboardLayout>
 );
-export default CoursesIndex;
+export default Home;

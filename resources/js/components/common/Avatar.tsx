@@ -24,14 +24,12 @@ export const AvatarBadgeIcon = () => {
     const item: DropdownItemInterface[] = [
         {
             variant: "default",
-            href: route('home'),
             label: "profile",
             icon: <User />,
             openModal: false
         },
         {
             variant: "default",
-            href: route('home'),
             label: "Share",
             icon: <ShareIcon />,
             openModal: false

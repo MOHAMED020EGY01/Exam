@@ -23,7 +23,7 @@ class CourseController extends Controller
     {
         $user = Auth::user();
         $courses = Course::where('user_id', '=', $user->id, 'and')->with('exams')->get();
-        return Inertia::render('dashboard/courses/index', [
+        return Inertia::render('Home', [
             'courses' => CoursesResource::collection($courses)->resolve(),
         ]);
     }

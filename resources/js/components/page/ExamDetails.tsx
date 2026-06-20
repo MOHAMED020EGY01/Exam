@@ -110,14 +110,13 @@ export const ExamDetails: React.FC<ExamDetailsProps> = ({
                 </div>
 
                 <div className="flex items-center justify-between border-t pt-4">
-                    {exam?.course_id &&
-                    selectedNode.originalId ? (
+                    {exam?.course_id && selectedNode.originalId ? (
                         <Button asChild size="lg" className="w-full md:w-auto">
                             <Link
-                                href={route("exams.show", {
-                                    course: exam.course_id,
-                                    exam: selectedNode.originalId,
-                                })}
+                            // href={route("exams.show", {
+                            //     course: exam.course_id,
+                            //     exam: selectedNode.originalId,
+                            // })}
                             >
                                 Take Exam
                             </Link>

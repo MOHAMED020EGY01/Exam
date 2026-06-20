@@ -27,6 +27,7 @@ import { ExamData } from "./exam-data";
 import { ExamFormQuestions } from "./exam-questions-main";
 import { Spinner } from "@/components/ui/spinner";
 import { cn } from "@/lib/utils";
+import { TypeMethodHTTP } from "@/interface/global";
 
 type FormData = {
     name: string;
@@ -37,6 +38,7 @@ type FormData = {
 function ExamModalFormQuestions({
     setOpen,
     label,
+    method = "get",
     exam = null,
     url = "#",
     course = null,
@@ -45,13 +47,13 @@ function ExamModalFormQuestions({
     setOpen: (open: boolean) => void;
     label: string;
     exam?: any;
-    method?: any;
+    method?: TypeMethodHTTP;
     url?: any;
     course?: any;
     onStepChange?: (step: number) => void;
 }) {
     const [activeStep, setActiveStep] = useState(0);
-    const { data, setData, post, processing, resetAndClearErrors, errors } =
+    const { data, setData, processing, resetAndClearErrors, errors, submit } =
         useForm<FormData>({
             name: exam?.name ? exam.name : "",
             description: exam?.description ? exam.description : "",
@@ -117,7 +119,7 @@ function ExamModalFormQuestions({
 
         // The Laravel route expects standard multi-part payload.
         // We let Inertia post the data directly as configured.
-        post(url, {
+        submit(method, url, {
             onSuccess: () => {
                 resetAndClearErrors();
                 setOpen(false);

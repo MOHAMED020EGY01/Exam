@@ -24,7 +24,10 @@ import { ThemeProvider } from './components/common/ThemeProvider';
 createInertiaApp({
     title: (title) => `${title} - Exam App`,
     resolve: (name) =>
-        resolvePageComponent(`./Pages/${name}.tsx`, import.meta.glob('./Pages/**/*.tsx')),
+        resolvePageComponent(
+            `./Pages/${name}.tsx`,
+            import.meta.glob('./Pages/**/*.tsx')
+        ),
     setup({ el, App, props }) {
         createRoot(el).render(
             <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
