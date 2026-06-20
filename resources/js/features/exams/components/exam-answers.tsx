@@ -51,7 +51,7 @@ function ExamAnswers({
         <div className={cn(
             "flex flex-col sm:flex-row items-stretch sm:items-center gap-3 p-3 rounded-lg border bg-card transition-all",
             answer.is_correct 
-                ? "border-emerald-500/40 bg-emerald-500/5 dark:bg-emerald-950/10" 
+                ? "answer-correct-card" 
                 : "border-border hover:border-muted-foreground/30"
         )}>
             {/* Left Selection Controls */}
@@ -59,8 +59,8 @@ function ExamAnswers({
                 <span className={cn(
                     "flex items-center justify-center w-6 h-6 rounded-full text-[10px] font-bold border transition-all duration-200",
                     answer.is_correct
-                        ? "bg-emerald-500 border-emerald-500 text-white shadow-xs"
-                        : "bg-muted border-border text-muted-foreground"
+                        ? "answer-correct-badge shadow-xs"
+                        : "answer-default-badge"
                 )}>
                     {letter}
                 </span>

@@ -36,18 +36,18 @@ export const TreeIcon: React.FC<TreeIconProps> = ({ type, expanded, className })
       return <Boxes className={`w-4 h-4 text-primary ${className || ''}`} />;
     case 'course':
       return expanded ? (
-        <BookOpen className={`w-4 h-4 text-indigo-500 dark:text-indigo-400 ${className || ''}`} />
+        <BookOpen className={`w-4 h-4 icon-indigo-dark ${className || ''}`} />
       ) : (
-        <Book className={`w-4 h-4 text-indigo-500 dark:text-indigo-400 ${className || ''}`} />
+        <Book className={`w-4 h-4 icon-indigo-dark ${className || ''}`} />
       );
     case 'exam':
       return expanded ? (
-        <FolderOpen className={`w-4 h-4 text-amber-500 dark:text-amber-400 ${className || ''}`} />
+        <FolderOpen className={`w-4 h-4 icon-amber-dark ${className || ''}`} />
       ) : (
-        <Folder className={`w-4 h-4 text-amber-500 dark:text-amber-400 ${className || ''}`} />
+        <Folder className={`w-4 h-4 icon-amber-dark ${className || ''}`} />
       );
     case 'question':
-      return <FileQuestion className={`w-4 h-4 text-emerald-500 dark:text-emerald-400 ${className || ''}`} />;
+      return <FileQuestion className={`w-4 h-4 icon-emerald-dark ${className || ''}`} />;
     default:
       return null;
   }

@@ -1,7 +1,7 @@
 <?php
 
-use App\Http\Controllers\Dashboard\Clipboard\ExamCliboardController;
-use App\Http\Controllers\Dashboard\Clipboard\QuestionCliboardController;
+use App\Http\Controllers\Dashboard\Clipboard\ExamClipboardController;
+use App\Http\Controllers\Dashboard\Clipboard\QuestionClipboardController;
 use App\Http\Controllers\Dashboard\CourseController;
 use App\Http\Controllers\Dashboard\ExamController;
 use App\Http\Controllers\Dashboard\HomeController;
@@ -23,14 +23,14 @@ Route::group([
     Route::get('exams/all', [ExamController::class, 'all'])->name('exams.all');
 
     // Explorer Clipboard Routes
-    Route::post('clipboard/exams/paste'        ,[ExamCliboardController::class, 'pasteExam'])->name('exams.paste');
-    Route::post('clipboard/exams/move'         ,[ExamCliboardController::class, 'moveExam'])->name('exams.move');
-    Route::post('clipboard/exams/duplicate'    ,[ExamCliboardController::class, 'duplicateExam'])->name('exams.duplicate');
+    Route::post('clipboard/exams/paste'        ,[ExamClipboardController::class, 'pasteExam'])->name('exams.paste');
+    Route::post('clipboard/exams/move'         ,[ExamClipboardController::class, 'moveExam'])->name('exams.move');
+    Route::post('clipboard/exams/duplicate'    ,[ExamClipboardController::class, 'duplicateExam'])->name('exams.duplicate');
 
-    Route::post('clipboard/questions/paste'    ,[QuestionCliboardController::class, 'pasteQuestion'])->name('questions.paste');
-    Route::post('clipboard/questions/move'     ,[QuestionCliboardController::class, 'moveQuestion'])->name('questions.move');
-    Route::post('clipboard/questions/duplicate',[QuestionCliboardController::class, 'duplicateQuestion'])->name('questions.duplicate');
-    Route::post('clipboard/questions/delete'   ,[QuestionCliboardController::class, 'deleteQuestion'])->name('questions.delete');
+    Route::post('clipboard/questions/paste'    ,[QuestionClipboardController::class, 'pasteQuestion'])->name('questions.paste');
+    Route::post('clipboard/questions/move'     ,[QuestionClipboardController::class, 'moveQuestion'])->name('questions.move');
+    Route::post('clipboard/questions/duplicate',[QuestionClipboardController::class, 'duplicateQuestion'])->name('questions.duplicate');
+    Route::post('clipboard/questions/delete'   ,[QuestionClipboardController::class, 'deleteQuestion'])->name('questions.delete');
 });
 
 

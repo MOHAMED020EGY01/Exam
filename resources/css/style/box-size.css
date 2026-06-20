@@ -13,3 +13,201 @@
 .modal-medium {
   @apply w-[80vw] max-w-[700px] h-[80vh];
 }
+
+/* Exam editor panel (step 2) */
+.exam-editor-panel {
+  @apply h-[80vh] md:h-[70vh] min-h-[500px];
+}
+
+/* Max-width containers */
+.content-sm {
+  @apply w-full max-w-sm mx-auto;
+}
+
+.content-md {
+  @apply w-full max-w-md mx-auto;
+}
+
+.content-lg {
+  @apply w-full max-w-2xl mx-auto;
+}
+
+/* Login card */
+.login-card {
+  @apply max-w-[400px];
+}
+
+/* Logo/brand icon */
+.logo-icon {
+  @apply w-12 h-12;
+}
+
+/* Icon Sizing - Standard */
+.icon-sm {
+  @apply w-4 h-4;
+}
+
+.icon-md {
+  @apply w-5 h-5;
+}
+
+.icon-lg {
+  @apply w-6 h-6;
+}
+
+.icon-xl {
+  @apply w-7 h-7;
+}
+
+/* Icon with shrink-0 */
+.icon-fixed {
+  @apply shrink-0;
+}
+
+/* Button Sizing */
+.btn-size-xs {
+  @apply h-6;
+}
+
+.btn-size-sm {
+  @apply h-7;
+}
+
+.btn-size-default {
+  @apply h-8;
+}
+
+.btn-size-lg {
+  @apply h-9;
+}
+
+/* Icon Button Sizing */
+.btn-icon {
+  @apply size-8;
+}
+
+.btn-icon-sm {
+  @apply size-6;
+}
+
+.btn-icon-lg {
+  @apply size-9;
+}
+
+/* Input Field Sizing */
+.input-height {
+  @apply h-8;
+}
+
+.input-height-lg {
+  @apply h-10;
+}
+
+/* Badge Sizing */
+.badge-height {
+  @apply h-5;
+}
+
+.badge-width {
+  @apply w-fit;
+}
+
+/* Textarea Sizing */
+.textarea-min-height {
+  @apply min-h-16;
+}
+
+/* Progress Bar Sizing */
+.progress-height {
+  @apply h-1;
+}
+
+.progress-full-width {
+  @apply w-full;
+}
+
+/* Avatar Sizing */
+.avatar-sm {
+  @apply size-6;
+}
+
+.avatar-default {
+  @apply size-8;
+}
+
+.avatar-lg {
+  @apply size-10;
+}
+
+/* Modal Content Sizing */
+.modal-content-max-width {
+  @apply max-w-md;
+}
+
+.modal-content-scroll {
+  @apply max-h-[60vh];
+}
+
+/* Container Sizing */
+.container-full {
+  @apply w-full;
+}
+
+.container-fit {
+  @apply w-fit;
+}
+
+/* Width Utilities */
+.w-pixel-divider {
+  @apply w-px;
+}
+
+/* Thin Line - Vertical Separator */
+.line-separator-v {
+  @apply w-px h-3.5 md:h-4;
+}
+
+/* Full Dimensions */
+.dimensions-full {
+  @apply w-full h-full;
+}
+
+/* Minimum Sizing */
+.min-width-reset {
+  @apply min-w-0;
+}
+
+/* Flex Width */
+.flex-width-full {
+  @apply w-full;
+}
+
+/* Move Modal sizing */
+.modal-move {
+  @apply max-h-[85vh];
+}
+
+/* Options list in move modal */
+.options-list {
+  @apply min-h-[180px] max-h-[300px];
+}
+
+.square-sm {
+  @apply size-2;
+}
+
+.square-xs {
+  @apply size-2.5;
+}
+
+.square-md {
+  @apply size-3;
+}
+
+.square-lg {
+  @apply size-4;
+}
+
+.square-xl {
+  @apply size-5;
+}

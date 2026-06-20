@@ -17,7 +17,7 @@ import { cn } from "@/lib/utils";
 import { ReactNode, useEffect, useState } from "react";
 
 interface Props {
-    image: any;
+    image: string | File | null;
     className?: string;
     children?: ReactNode;
 }

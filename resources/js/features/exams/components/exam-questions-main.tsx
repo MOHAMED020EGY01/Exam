@@ -160,7 +160,7 @@ function ExamFormQuestions({
     );
 
     return (
-        <div className="flex flex-col md:flex-row flex-1 h-[80vh] md:h-[70vh] min-h-[500px] overflow-hidden bg-background divide-y md:divide-y-0 md:divide-x border border-border rounded-xl">
+        <div className="flex flex-col md:flex-row flex-1 exam-editor-panel overflow-hidden bg-background divide-y md:divide-y-0 md:divide-x border border-border rounded-xl">
             {/* 1. Left Sidebar Navigation */}
             <div className="w-full md:w-64 flex flex-col bg-muted/10 shrink-0 select-none">
                 <div className="hidden md:flex p-3 border-b justify-between items-center bg-muted/20">

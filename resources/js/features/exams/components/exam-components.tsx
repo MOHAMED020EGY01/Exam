@@ -146,7 +146,7 @@ function ExamModalFormQuestions({
     return (
         <form
             onSubmit={handleSubmit}
-            className="flex flex-col h-full bg-background max-h-[90vh]"
+            className="flex flex-col h-full bg-background modal-large"
         >
             {/* Header Area */}
             <div className="px-6 py-4 border-b border-border shrink-0 flex items-center justify-between">
@@ -186,7 +186,7 @@ function ExamModalFormQuestions({
 
             {/* Error Notification Area */}
             {showErrors && Object.entries(errors).length > 0 && (
-                <div className="px-6 py-2.5 bg-destructive/10 border-b border-destructive/20 text-destructive text-xs space-y-0.5 max-h-24 overflow-y-auto shrink-0 select-none">
+                <div className="px-6 py-2.5 error-banner border-b text-xs space-y-0.5 max-h-24 overflow-y-auto shrink-0 select-none">
                     {Object.entries(errors).map(([field, message], index) => (
                         <div key={index} className="flex items-start gap-1.5">
                             <span className="font-semibold capitalize shrink-0">

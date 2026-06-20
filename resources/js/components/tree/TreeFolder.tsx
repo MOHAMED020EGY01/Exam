@@ -17,17 +17,17 @@
  */
 
 import React from 'react';
-import { TreeNodeData } from '@/lib/treeHelpers';
+import { TreeNodeData } from '@/interface/global';
 import { TreeIcon, ChevronIcon } from './TreeIcon';
-import { 
-  Plus, 
-  Pen, 
-  Trash, 
-  Download, 
-  Copy, 
-  Clipboard, 
-  Move, 
-  CopyPlus, 
+import {
+  Plus,
+  Pen,
+  Trash,
+  Download,
+  Copy,
+  Clipboard,
+  Move,
+  CopyPlus,
   MoreVertical,
   Eye
 } from 'lucide-react';
@@ -48,7 +48,7 @@ interface TreeFolderProps {
   onToggle: (id: string) => void;
   onSelect: (node: TreeNodeData) => void;
   children?: React.ReactNode;
-  
+
   // Action triggers
   onAddExam?: (course: any) => void;
   onEditCourse?: (course: any) => void;
@@ -109,8 +109,8 @@ export const TreeFolder: React.FC<TreeFolderProps> = ({
         className={cn(
           "flex items-center gap-2 py-1.5 pr-3 mx-1 my-0.5 rounded-md cursor-pointer transition-all duration-150 group text-sm select-none justify-between",
           "pl-[calc(var(--depth)*10px+12px)] md:pl-[calc(var(--depth)*16px+12px)]",
-          isSelected 
-            ? "bg-primary/10 text-primary font-medium border-l-2 border-primary pl-[calc(var(--depth)*10px+10px)] md:pl-[calc(var(--depth)*16px+10px)]" 
+          isSelected
+            ? "bg-primary/10 text-primary font-medium border-l-2 border-primary pl-[calc(var(--depth)*10px+10px)] md:pl-[calc(var(--depth)*16px+10px)]"
             : "text-foreground hover:bg-foreground/5",
           isCopied && "opacity-60 border-2 border-dashed border-primary/45 bg-primary/5 animate-pulse"
         )}
@@ -118,13 +118,13 @@ export const TreeFolder: React.FC<TreeFolderProps> = ({
         <div className="flex items-center gap-2 truncate flex-1">
           {/* Chevron expand/collapse toggle */}
           <ChevronIcon expanded={isExpanded} onClick={handleChevronClick} />
-          
+
           <TreeIcon type={node.type} expanded={isExpanded} />
-          
+
           <span className="truncate font-medium" title={node.label}>
             {node.label}
           </span>
-          
+
           {/* Item count helper badge */}
           {node.children && node.children.length > 0 && (
             <span className="text-[10px] text-muted-foreground/60 bg-foreground/5 px-1 py-0.2 rounded font-normal">
@@ -174,7 +174,7 @@ export const TreeFolder: React.FC<TreeFolderProps> = ({
                   )}
                   <DropdownMenuSeparator />
                   {onDeleteCourse && (
-                    <DropdownMenuItem 
+                    <DropdownMenuItem
                       variant="destructive"
                       onClick={() => onDeleteCourse(node.originalData)}
                     >
@@ -226,7 +226,7 @@ export const TreeFolder: React.FC<TreeFolderProps> = ({
                   )}
                   <DropdownMenuSeparator />
                   {onDeleteExam && (
-                    <DropdownMenuItem 
+                    <DropdownMenuItem
                       variant="destructive"
                       onClick={() => onDeleteExam(node.originalData)}
                     >

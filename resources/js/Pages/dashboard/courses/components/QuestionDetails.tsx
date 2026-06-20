@@ -17,7 +17,7 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { HelpCircle, CheckCircle2, XCircle } from "lucide-react";
-import { TreeNodeData } from "@/lib/treeHelpers";
+import { QuestionsData, TreeNodeData } from "@/interface/global";
 
 interface QuestionDetailsProps {
   selectedNode: TreeNodeData;
@@ -28,17 +28,18 @@ export const QuestionDetails: React.FC<QuestionDetailsProps> = ({
   selectedNode,
   selectedNodeAnswers,
 }) => {
+    const questions = selectedNode.originalData as QuestionsData;
   return (
     <Card className="shadow-sm">
       <CardHeader className="bg-muted/10 border-b border-border">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
-            <HelpCircle className="w-5 h-5 text-emerald-500" />
-            <span className="text-[10px] uppercase font-bold tracking-wider text-emerald-600 bg-emerald-500/10 px-2 py-0.5 rounded-full">
+            <HelpCircle className="w-5 h-5 icon-emerald" />
+            <span className="text-[10px] uppercase font-bold tracking-wider badge-question px-2 py-0.5 rounded-full">
               Question {(selectedNode.originalId as number) + 1}
             </span>
             <span className="text-[10px] text-muted-foreground">
-              {selectedNode.originalData?.multiple ? "Multiple Choice" : "Single Choice"}
+              {questions?.multiple ? "Multiple Choice" : "Single Choice"}
             </span>
           </div>
           <CardTitle className="text-xl font-bold mt-2 leading-relaxed">
@@ -48,10 +49,10 @@ export const QuestionDetails: React.FC<QuestionDetailsProps> = ({
       </CardHeader>
       <CardContent className="pt-6 space-y-6">
         {/* Question Image (if any) */}
-        {selectedNode.originalData?.image && (
+        {questions?.image && (
           <div className="border rounded-lg overflow-hidden bg-muted/5 p-2 flex justify-center max-w-lg mx-auto">
-            <img 
-              src={selectedNode.originalData.image} 
+            <img
+              src={questions.image}
               alt="Question Context"
               className="max-h-60 object-contain rounded-md"
             />
@@ -63,11 +64,11 @@ export const QuestionDetails: React.FC<QuestionDetailsProps> = ({
           <h4 className="text-sm font-semibold text-muted-foreground">Options:</h4>
           <div className="flex flex-col gap-3">
             {selectedNodeAnswers.map((answer: any, index: number) => (
-              <div 
-                key={index} 
+              <div
+                key={index}
                 className={`flex items-start gap-3 p-3 border rounded-lg transition-colors ${
-                  answer?.is_correct 
-                    ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-950 dark:text-emerald-300" 
+                  answer?.is_correct
+                    ? "answer-correct-row"
                     : "bg-background border-border text-foreground"
                 }`}
               >

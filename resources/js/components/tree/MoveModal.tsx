@@ -112,7 +112,7 @@ export const MoveModal: React.FC<MoveModalProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md max-h-[85vh] flex flex-col p-6 overflow-hidden">
+      <DialogContent className="sm:max-w-md modal-move flex flex-col p-6 overflow-hidden">
         <DialogHeader className="shrink-0 pb-2 border-b">
           <DialogTitle className="text-xl font-bold flex items-center gap-2">
             <Move className="w-5 h-5 text-primary" />
@@ -157,7 +157,7 @@ export const MoveModal: React.FC<MoveModalProps> = ({
         </div>
 
         {/* Options list container */}
-        <div className="flex-1 overflow-y-auto min-h-[180px] max-h-[300px] border rounded-lg divide-y divide-border select-none">
+        <div className="flex-1 overflow-y-auto options-list border rounded-lg divide-y divide-border select-none">
           {filteredOptions.length > 0 ? (
             filteredOptions.map((option) => (
               <div
@@ -174,12 +174,12 @@ export const MoveModal: React.FC<MoveModalProps> = ({
                   {isExam ? (
                     <Book className={cn(
                       "w-4 h-4 mt-0.5 shrink-0", 
-                      selectedDestinationId === option.id ? "text-primary" : "text-indigo-500"
+                      selectedDestinationId === option.id ? "text-primary" : "icon-indigo"
                     )} />
                   ) : (
                     <FileText className={cn(
                       "w-4 h-4 mt-0.5 shrink-0", 
-                      selectedDestinationId === option.id ? "text-primary" : "text-amber-500"
+                      selectedDestinationId === option.id ? "text-primary" : "icon-amber"
                     )} />
                   )}
                   <div className="min-w-0 flex-1">

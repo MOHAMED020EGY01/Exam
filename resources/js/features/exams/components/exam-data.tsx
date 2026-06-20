@@ -35,7 +35,7 @@ function ExamData({ errors, data, setData, course }: Props) {
                 <div className="space-y-2">
                     <Label className="text-muted-foreground text-xs uppercase font-bold tracking-wider">Related Course</Label>
                     <div className="flex items-center gap-3 p-3 rounded-lg border bg-muted/30 border-dashed">
-                        <Book className="w-5 h-5 text-indigo-500 shrink-0" />
+                        <Book className="w-5 h-5 icon-indigo shrink-0" />
                         <div className="flex-1 min-w-0">
                             <span className="font-semibold text-sm block truncate">{course.name}</span>
                             <span className="text-xs text-muted-foreground block truncate">{course.description || "No description"}</span>

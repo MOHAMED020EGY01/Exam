@@ -132,7 +132,7 @@ function Show({ exam }: { exam: ExamData }) {
   if (isSubmitted) {
     return (
       <div className="flex items-center justify-center min-h-[50vh]">
-        <Card className="w-full max-w-md">
+        <Card className="modal-content-max-width w-full">
           <CardHeader>
             <CardTitle>Exam Submitted</CardTitle>
             <CardDescription>Your responses have been recorded</CardDescription>
@@ -146,7 +146,7 @@ function Show({ exam }: { exam: ExamData }) {
   }
 
   return (
-    <div className="max-w-2xl mx-auto w-full px-2 py-4 sm:px-0">
+    <div className="content-lg px-2 py-4 sm:px-0">
         {/* Exam Header */}
         <Card className="mb-6">
           <CardHeader>

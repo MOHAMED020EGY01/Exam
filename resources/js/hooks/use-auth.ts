@@ -12,9 +12,14 @@
  * - usePage (Inertia)
  * - User type definition
  */
-
 import { usePage } from "@inertiajs/react";
-import { User } from "../interface/user-Interface";
+
+export interface User {
+    name: string;
+    email: string;
+    id: number;
+    avatar:string
+}
 
 export const useAuth = () => {
     const { auth } = usePage().props;

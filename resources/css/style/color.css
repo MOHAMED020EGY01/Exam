@@ -103,11 +103,233 @@
     --color-background-secondary: var(--background-secondary);
 }
 
-.primary-button {
-    @apply bg-emerald-600 hover:bg-emerald-700 text-white dark:bg-emerald-700 dark:hover:bg-emerald-800;
+/* SEMANTIC COLOR UTILITIES */
+
+/* Primary Button Variant */
+.btn-primary {
+  @apply bg-primary text-primary-foreground hover:bg-primary/80;
 }
 
-.danger-button {
-    @apply bg-red-600 hover:bg-red-700 text-white;
+/* Secondary Button Variant */
+.btn-secondary {
+  @apply bg-secondary text-secondary-foreground hover:bg-secondary/80;
+}
+
+/* Destructive Button Variant */
+.btn-destructive {
+  @apply bg-destructive/10 text-destructive hover:bg-destructive/20;
+}
+
+/* Outline Button Variant */
+.btn-outline {
+  @apply border-border bg-background hover:bg-muted hover:text-foreground;
+}
+
+/* Ghost Button Variant */
+.btn-ghost {
+  @apply hover:bg-muted hover:text-foreground;
+}
+
+/* Link Button Variant */
+.btn-link {
+  @apply text-primary underline-offset-4 hover:underline;
+}
+
+/* Badge Default Variant */
+.badge-default {
+  @apply bg-primary text-primary-foreground hover:bg-primary/80;
+}
+
+/* Badge Secondary Variant */
+.badge-secondary {
+  @apply bg-secondary text-secondary-foreground hover:bg-secondary/80;
+}
+
+/* Badge Destructive Variant */
+.badge-destructive {
+  @apply bg-destructive/10 text-destructive focus-visible:ring-destructive/20 hover:bg-destructive/20;
+}
+
+/* Badge Outline Variant */
+.badge-outline {
+  @apply border-border text-foreground hover:bg-muted hover:text-muted-foreground;
+}
+
+/* Badge Ghost Variant */
+.badge-ghost {
+  @apply hover:bg-muted hover:text-muted-foreground;
+}
+
+/* Badge Link Variant */
+.badge-link {
+  @apply text-primary underline-offset-4 hover:underline;
+}
+
+/* Input Error State */
+.input-error {
+  @apply border-destructive ring-destructive/20;
+}
+
+/* Input Field Default State */
+.input-base {
+  @apply border-input bg-transparent placeholder:text-muted-foreground;
+}
+
+/* Focus Ring State - Primary */
+.focus-ring-primary {
+  @apply focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50;
+}
+
+/* Focus Ring State - Destructive */
+.focus-ring-destructive {
+  @apply focus-visible:border-destructive focus-visible:ring-3 focus-visible:ring-destructive/20;
+}
+
+/* Error Text */
+.text-error {
+  @apply text-destructive;
+}
+
+/* Muted Text */
+.text-mute {
+  @apply text-muted-foreground hover:text-foreground;
+}
+
+/* Card Container */
+.card-base {
+  @apply bg-card text-card-foreground;
+}
+
+/* Card Header Background */
+.card-header-bg {
+  @apply bg-card border-b border-border/10;
+}
+
+/* Card Footer Background */
+.card-footer-bg {
+  @apply bg-muted/50 border-t border-border;
+}
+
+/* Tooltip Colors */
+.tooltip-content {
+  @apply bg-foreground text-background;
+}
+
+/* Header Background */
+.header-bg {
+  @apply border-border/60 bg-background/80;
+}
+
+/* Avatar Badge Colors */
+.avatar-badge-base {
+  @apply bg-primary text-primary-foreground;
+}
+
+/* Progress Bar - Track */
+.progress-track {
+  @apply bg-muted;
+}
+
+/* Progress Bar - Indicator */
+.progress-indicator {
+  @apply bg-primary;
+}
+
+/* Success State */
+.state-success {
+  @apply text-emerald-600 dark:text-emerald-500;
+}
+
+/* Semantic Text Colors */
+.text-primary-semantic {
+  @apply text-primary;
+}
+
+.text-secondary-semantic {
+  @apply text-secondary-foreground;
+}
+
+.text-muted-semantic {
+  @apply text-muted-foreground;
+}
+
+/* ── Tree / Detail icon accent colors ── */
+
+/* Indigo accent — used for Course icons and labels */
+.icon-indigo {
+  @apply text-indigo-500;
+}
+
+.icon-indigo-dark {
+  @apply text-indigo-500 dark:text-indigo-400;
+}
+
+/* Amber accent — used for Exam icons and labels */
+.icon-amber {
+  @apply text-amber-500;
+}
+
+.icon-amber-dark {
+  @apply text-amber-500 dark:text-amber-400;
+}
+
+/* Emerald accent — used for Question icons and labels */
+.icon-emerald {
+  @apply text-emerald-500;
+}
+
+.icon-emerald-dark {
+  @apply text-emerald-500 dark:text-emerald-400;
+}
+
+/* ── Node-type badge labels (Explorer detail panels) ── */
+
+/* Course badge */
+.badge-course {
+  @apply text-indigo-600 bg-indigo-500/10;
+}
+
+/* Exam badge */
+.badge-exam {
+  @apply text-amber-600 bg-amber-500/10;
+}
+
+/* Question badge */
+.badge-question {
+  @apply text-emerald-600 bg-emerald-500/10;
+}
+
+/* ── Answer correct/incorrect states ── */
+
+/* Correct answer card border + bg */
+.answer-correct-card {
+  @apply border-emerald-500/40 bg-emerald-500/5 dark:bg-emerald-950/10;
+}
+
+/* Correct answer letter badge (filled) */
+.answer-correct-badge {
+  @apply bg-emerald-500 border-emerald-500 text-white;
+}
+
+/* Incorrect answer letter badge (muted) */
+.answer-default-badge {
+  @apply bg-muted border-border text-muted-foreground;
+}
+
+/* Correct answer result row (QuestionDetails) */
+.answer-correct-row {
+  @apply bg-emerald-500/10 border-emerald-500/30 text-emerald-950 dark:text-emerald-300;
+}
+
+/* ── Login / Auth page ── */
+
+/* App brand icon container */
+.brand-icon {
+  @apply bg-primary text-primary-foreground;
+}
+
+/* ── Error / Destructive notification area ── */
+.error-banner {
+  @apply bg-destructive/10 border-destructive/20 text-destructive;
 }
 

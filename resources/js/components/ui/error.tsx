@@ -12,7 +12,7 @@ function Error({ message, className, ...props }: ErrorProps) {
     <p
       data-slot="error"
       className={cn(
-        "text-sm text-red-500 mt-1",
+        "text-sm text-error mt-1",
         className
       )}
       {...props}

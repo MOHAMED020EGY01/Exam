@@ -38,10 +38,10 @@ export default function Login() {
                         transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
                     >
                         <ModeToggleTheme className="absolute top-8 right-8" />
-                        <div className="max-w-[400px] text-card-foreground border border-border rounded-2xl shadow-2xl p-8 md:p-10 transition-all duration-300">
+                        <div className="login-card text-card-foreground border border-border rounded-2xl shadow-2xl p-8 md:p-10 transition-all duration-300">
                             <div className="flex flex-col items-center text-center">
                                 <div className="mb-8">
-                                    <div className="w-12 h-12 rounded-xl bg-primary flex items-center justify-center text-primary-foreground shadow-lg shadow-primary/20">
+                                    <div className="logo-icon rounded-xl brand-icon flex items-center justify-center shadow-lg shadow-primary/20">
                                         <BookOpen className="w-10 h-10 fill-current" />
                                     </div>
                                 </div>

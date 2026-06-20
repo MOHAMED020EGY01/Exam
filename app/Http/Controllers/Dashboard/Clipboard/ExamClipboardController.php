@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
-class ExamCliboardController extends Controller
+class ExamClipboardController extends Controller
 {
     private static function disk()
     {

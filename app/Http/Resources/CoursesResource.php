@@ -16,7 +16,7 @@ class CoursesResource extends JsonResource
             'description' => (string)$this->description,
             'created_at' => (string)$this->created_at?->format('Y-m-d H'),
             'diff_for_humans' => (string)$this->created_at?->diffForHumans(),
-            'exams' => ExamResource::collection($this->whenLoaded('exams')),
+            'exams' => ExamResource::collection($this->whenLoaded('exams'))->resolve(),
         ];
     }
 }

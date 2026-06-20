@@ -17,7 +17,7 @@
  */
 
 import React from 'react';
-import { TreeNodeData } from '@/lib/treeHelpers';
+import { TreeNodeData } from '@/interface/global';
 import { RecursiveTree } from './RecursiveTree';
 import { TreeIcon, ChevronIcon } from './TreeIcon';
 import { Search, FolderPlus, ChevronsDown, ChevronsUp, FolderTree } from 'lucide-react';
@@ -135,8 +135,8 @@ export const TreeRoot: React.FC<TreeRootProps> = ({
           <div
             onClick={() => toggleExpand('root')}
             className={`flex items-center gap-2 py-1.5 px-3 mx-1 my-0.5 rounded-md cursor-pointer transition-colors duration-150 text-sm select-none hover:bg-foreground/5 ${
-              selectedNode?.id === 'root' 
-                ? 'bg-primary/10 text-primary font-medium border-l-2 border-primary pl-2.5' 
+              selectedNode?.id === 'root'
+                ? 'bg-primary/10 text-primary font-medium border-l-2 border-primary pl-2.5'
                 : 'text-foreground'
             }`}
           >

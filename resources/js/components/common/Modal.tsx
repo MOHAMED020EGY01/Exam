@@ -96,11 +96,11 @@ const ModalDynamic = <T extends Record<string, any>>({
             return <Trash2 className="w-5 h-5 text-destructive shrink-0" />;
         }
         if (title.toLowerCase().includes("course")) {
-            return <Book className="w-5 h-5 text-indigo-500 shrink-0" />;
+            return <Book className="w-5 h-5 icon-indigo shrink-0" />;
         }
         if (title.toLowerCase().includes("exam")) {
             return (
-                <GraduationCap className="w-5 h-5 text-amber-500 shrink-0" />
+                <GraduationCap className="w-5 h-5 icon-amber shrink-0" />
             );
         }
         return <HelpCircle className="w-5 h-5 text-primary shrink-0" />;

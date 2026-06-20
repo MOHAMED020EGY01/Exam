@@ -10,23 +10,27 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
-class QuestionCliboardController extends Controller
+class QuestionClipboardController extends Controller
 {
     private static function disk()
     {
         return Storage::disk('local');
     }
 
-
+    private array $validatorQuestion =[
+            'source_exam_id' => 'required|exists:exams,id',
+            'question_index' => 'required|integer|min:0',
+            'destination_exam_id' => 'required|exists:exams,id',
+        ];
+    private array $validatorQuestionExam_id = [
+            'exam_id' => 'required|exists:exams,id',
+            'question_index' => 'required|integer|min:0',
+        ];
     /**
      * Copy a question from a source exam and paste it into a destination exam.
      */
     public function pasteQuestion(Request $request){
-        $request->validate([
-            'source_exam_id' => 'required|exists:exams,id',
-            'question_index' => 'required|integer|min:0',
-            'destination_exam_id' => 'required|exists:exams,id',
-        ]);
+        $request->validate($this->validatorQuestion);
 
         $user = Auth::user();
         $sourceExam = Exam::where('id', '=', $request->source_exam_id,'and')->where('user_id', $user->id)->firstOrFail();
@@ -64,11 +68,7 @@ class QuestionCliboardController extends Controller
      * Move a question from a source exam to a destination exam.
      */
     public function moveQuestion(Request $request){
-        $request->validate([
-            'source_exam_id' => 'required|exists:exams,id',
-            'question_index' => 'required|integer|min:0',
-            'destination_exam_id' => 'required|exists:exams,id',
-        ]);
+        $request->validate($this->validatorQuestion);
 
         $user = Auth::user();
         $sourceExam = Exam::where('id', '=',$request->source_exam_id,'and')->where('user_id', $user->id)->firstOrFail();
@@ -113,10 +113,7 @@ class QuestionCliboardController extends Controller
      * Duplicate a question inside the same exam.
      */
     public function duplicateQuestion(Request $request){
-        $request->validate([
-            'exam_id' => 'required|exists:exams,id',
-            'question_index' => 'required|integer|min:0',
-        ]);
+        $request->validate($this->validatorQuestionExam_id);
 
         $user = Auth::user();
         $exam = Exam::where('id', '=' ,$request->exam_id,'and')->where('user_id', $user->id)->firstOrFail();
@@ -150,6 +147,33 @@ class QuestionCliboardController extends Controller
     }
 
     /**
+     * Delete a question from an exam and re-index.
+     */
+    public function deleteQuestion(Request $request){
+        $request->validate($this->validatorQuestionExam_id);
+
+        $user = Auth::user();
+        $exam = Exam::where('id', '=',$request->exam_id,'and')->where('user_id', $user->id)->firstOrFail();
+
+        // Retrieve files
+        $files = ExamServices::filterFilesQuestions($exam->questions_package);
+        natsort($files);
+        $files = array_values($files);
+
+        $questionIndex = (int)$request->question_index;
+        if (!isset($files[$questionIndex])) {
+            return back()->with('error', 'Question index out of bounds.');
+        }
+
+        return DB::transaction(function () use ($exam, $files, $questionIndex) {
+            self::disk()->delete($files[$questionIndex]);
+            $this->rebuildExamFiles($exam);
+
+            return redirect()->back()->with('success', 'Question deleted successfully.');
+        });
+    }
+
+        /**
      * Rebuild questions package indices, answer.json, and meta files, resolving any gaps.
      */
     private function rebuildExamFiles(Exam $exam){
@@ -212,35 +236,5 @@ class QuestionCliboardController extends Controller
         $exam->update([
             'questions_count' => count($tempFiles),
         ]);
-    }
-
-    /**
-     * Delete a question from an exam and re-index.
-     */
-    public function deleteQuestion(Request $request){
-        $request->validate([
-            'exam_id' => 'required|exists:exams,id',
-            'question_index' => 'required|integer|min:0',
-        ]);
-
-        $user = Auth::user();
-        $exam = Exam::where('id', '=',$request->exam_id,'and')->where('user_id', $user->id)->firstOrFail();
-
-        // Retrieve files
-        $files = ExamServices::filterFilesQuestions($exam->questions_package);
-        natsort($files);
-        $files = array_values($files);
-
-        $questionIndex = (int)$request->question_index;
-        if (!isset($files[$questionIndex])) {
-            return back()->with('error', 'Question index out of bounds.');
-        }
-
-        return DB::transaction(function () use ($exam, $files, $questionIndex) {
-            self::disk()->delete($files[$questionIndex]);
-            $this->rebuildExamFiles($exam);
-
-            return redirect()->back()->with('success', 'Question deleted successfully.');
-        });
     }
 }

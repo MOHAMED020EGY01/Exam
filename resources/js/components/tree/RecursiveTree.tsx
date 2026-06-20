@@ -13,7 +13,7 @@
  */
 
 import React from 'react';
-import { TreeNodeData } from '@/lib/treeHelpers';
+import { TreeNodeData } from '@/interface/global';
 import { TreeNode } from './TreeNode';
 
 interface RecursiveTreeProps {
@@ -23,7 +23,7 @@ interface RecursiveTreeProps {
   selectedNode: TreeNodeData | null;
   toggleExpand: (id: string) => void;
   setSelectedNode: (node: TreeNodeData) => void;
-  
+
   // Action triggers
   onAddExam?: (course: any) => void;
   onEditCourse?: (course: any) => void;
