@@ -2,41 +2,52 @@
  * use-tree.ts
  *
  * Purpose:
- * Hook to manage courses explorer tree states (expansion states, selected node, search filters).
+ * Hook to manage all courses explorer tree state: expansion, selection, and search.
+ *
+ * Changes from previous version:
+ * - useSearchScope logic merged directly here (useState + useTransition + debounce)
+ *   so the separate use-search-scope.ts file is no longer needed.
+ * - expandAll no longer requires nodes argument; it operates on safeInitialNodes internally.
  *
  * Responsibilities:
- * - Hold tree expanded folder keys and selected node ID
- * - Provide search scoped query filtering
- * - Expose toggle / expand operations on tree nodes
+ * - Hold tree expanded folder keys and selected node
+ * - Manage search query + scope with 200 ms debounce via useTransition
+ * - Expose toggle / expand / collapse operations
+ * - Compute filteredNodes via useMemo
+ * - Auto-expand matched folders when search query changes
  *
  * Dependencies:
- * - useSearchScope hook
  * - Tree helper functions (lib/treeHelpers)
  */
 
-import { useState, useMemo, useCallback, useEffect } from "react";
+import { useState, useMemo, useCallback, useEffect, useTransition } from "react";
 import { filterTree, getFolderNodeIds } from "../lib/treeHelpers";
-import { useSearchScope, SearchScope } from "./use-search-scope";
 import { TreeNodeData } from "@/interface/global";
+import { SearchScope } from "@/components/tree/SearchInput";
 
 export function useTree(initialNodes: any) {
-    const [expandedKeys, setExpandedKeys] = useState<Record<string, boolean>>(
-        {},
-    );
+    // ── Tree UI state ───────────────────────────────────────────
+    const [expandedKeys, setExpandedKeys] = useState<Record<string, boolean>>({});
     const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
 
-    // Hook-based Scoped search with debouncing & useTransition
-    const {
-        searchQuery,
-        setSearchQuery,
-        debouncedQuery,
-        scope,
-        setScope,
-        isPending,
-    } = useSearchScope();
+    // ── Search state (previously in useSearchScope) ─────────────
+    const [searchQuery,    setSearchQuery]    = useState('');
+    const [debouncedQuery, setDebouncedQuery] = useState('');
+    const [scope,          setScope]          = useState<SearchScope>('all');
+    const [isPending,      startTransition]   = useTransition();
 
-    // Safeguard initial nodes input to ensure it is always an array
-    const safeInitialNodes = useMemo(() => {
+    /** 200 ms debounce — mirrors the old useSearchScope behaviour */
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            startTransition(() => {
+                setDebouncedQuery(searchQuery);
+            });
+        }, 200);
+        return () => clearTimeout(handler);
+    }, [searchQuery]);
+
+    // ── Safe-guard initial nodes ────────────────────────────────
+    const safeInitialNodes = useMemo<TreeNodeData[]>(() => {
         return Array.isArray(initialNodes)
             ? initialNodes
             : initialNodes && typeof initialNodes === "object"
@@ -44,7 +55,7 @@ export function useTree(initialNodes: any) {
                 : [];
     }, [initialNodes]);
 
-    // Recursively find a node by ID in tree
+    // ── Recursive node finder ───────────────────────────────────
     const findNodeById = useCallback(
         (nodes: TreeNodeData[], id: string): TreeNodeData | null => {
             for (const node of nodes) {
@@ -59,87 +70,71 @@ export function useTree(initialNodes: any) {
         [],
     );
 
-    const selectedNode = useMemo(() => {
-        if (!selectedNodeId) return null;
-        return findNodeById(safeInitialNodes, selectedNodeId);
-    }, [safeInitialNodes, selectedNodeId, findNodeById]);
+    const selectedNode = useMemo(
+        () => (selectedNodeId ? findNodeById(safeInitialNodes, selectedNodeId) : null),
+        [safeInitialNodes, selectedNodeId, findNodeById],
+    );
 
     const handleSetSelectedNode = useCallback((node: any) => {
-        if (!node) {
-            setSelectedNodeId(null);
-        } else if (typeof node === "string") {
-            setSelectedNodeId(node);
-        } else {
-            setSelectedNodeId(node.id);
-        }
+        if (!node)                    setSelectedNodeId(null);
+        else if (typeof node === "string") setSelectedNodeId(node);
+        else                          setSelectedNodeId(node.id);
     }, []);
-
-    // Toggle node expansion state
+    
+    // ── Expansion helpers ───────────────────────────────────────
     const toggleExpand = useCallback((nodeId: string) => {
-        setExpandedKeys((prev) => ({
-            ...prev,
-            [nodeId]: !prev[nodeId],
-        }));
+        setExpandedKeys((prev) => ({ ...prev, [nodeId]: !prev[nodeId] }));
     }, []);
 
-    // Set expand state for a node explicitly
     const setExpand = useCallback((nodeId: string, isExpanded: boolean) => {
-        setExpandedKeys((prev) => ({
-            ...prev,
-            [nodeId]: isExpanded,
-        }));
+        setExpandedKeys((prev) => ({ ...prev, [nodeId]: isExpanded }));
     }, []);
 
-    // Expand all folders in the current tree
-    const expandAll = useCallback((nodes: TreeNodeData[]) => {
-        const safeNodes = Array.isArray(nodes) ? nodes : [];
-        const folderIds = getFolderNodeIds(safeNodes);
-        const newExpanded: Record<string, boolean> = {};
-        folderIds.forEach((id) => {
-            newExpanded[id] = true;
-        });
-        setExpandedKeys(newExpanded);
-    }, []);
+    const expandAll = useCallback(() => {
+        const folderIds = getFolderNodeIds(safeInitialNodes);
+        const next: Record<string, boolean> = {};
+        folderIds.forEach((id) => { next[id] = true; });
+        setExpandedKeys(next);
+    }, [safeInitialNodes]);
 
-    // Collapse all folders
     const collapseAll = useCallback(() => {
         setExpandedKeys({});
     }, []);
 
-    // Filter tree based on query
-    const filteredNodes = useMemo(() => {
-        if (!debouncedQuery.trim()) {
-            return safeInitialNodes;
-        }
-        return filterTree(safeInitialNodes, debouncedQuery, scope);
-    }, [safeInitialNodes, debouncedQuery, scope]);
+    // ── Filtered nodes ──────────────────────────────────────────
+    const filteredNodes = useMemo(
+        () =>
+            debouncedQuery.trim()
+                ? filterTree(safeInitialNodes, debouncedQuery, scope)
+                : safeInitialNodes,
+        [safeInitialNodes, debouncedQuery, scope],
+    );
 
-    // Auto-expand matched nodes in useEffect
+    // Auto-expand matched folders when query changes
     useEffect(() => {
         if (debouncedQuery.trim()) {
             const folderIds = getFolderNodeIds(filteredNodes);
             setExpandedKeys((prev) => {
                 const merged = { ...prev };
-                folderIds.forEach((id) => {
-                    merged[id] = true;
-                });
+                folderIds.forEach((id) => { merged[id] = true; });
                 return merged;
             });
         }
     }, [debouncedQuery, filteredNodes]);
 
+    // ── Public API ──────────────────────────────────────────────
     return {
         expandedKeys,
         selectedNode,
+        filteredNodes,
         searchQuery,
         setSearchQuery,
         scope,
         setScope,
         isPending,
-        filteredNodes,
         toggleExpand,
         setExpand,
-        expandAll: () => expandAll(safeInitialNodes),
+        expandAll,
         collapseAll,
         setSelectedNode: handleSetSelectedNode,
     };

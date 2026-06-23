@@ -1,8 +1,13 @@
 /**
- * index.tsx
+ * Home.tsx
  *
  * Purpose:
  * Main Courses Explorer page component mapping courses, exams, and question trees.
+ *
+ * Changes from previous version:
+ * - All handler functions are now wrapped with useCallback to prevent
+ *   unnecessary re-creation on each render, keeping TreeRoot's context
+ *   value stable and avoiding cascading re-renders inside the tree.
  *
  * Responsibilities:
  * - Render hierarchical explorer navigation tree on the left
@@ -16,7 +21,7 @@
  * - DashboardLayout
  */
 
-import { ReactNode, useState, useMemo } from "react";
+import { ReactNode, useState, useMemo, useCallback } from "react";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { ModalDynamic } from "@/components/common/Modal";
 import { ModalDynamicAdvanced } from "@/components/common/ModalAdvanced";
@@ -43,20 +48,18 @@ const form = [
     { field: "description", type: "input" },
 ] as FieldForm[];
 
-function Home ({ courses }: Props){
+function Home ({ courses }: Props) {
 
-    //! Not work if change in courses
-    const safeCourses = useMemo((): CourseData[] => {
-        return courses;
-    }, [courses]);
+    // Stabilise the courses reference — prevents downstream memo invalidation
+    const safeCourses = useMemo((): CourseData[] => courses, [courses]);
 
-    //! Change Data from Object Api to TreeNodeData
+    // Convert flat API data → TreeNodeData hierarchy
     const treeNodes = useMemo(
         () => normalizeCoursesToTree(safeCourses),
         [safeCourses],
     );
 
-    //! Add all feature to new TreeNodeData
+    // Tree state management
     const {
         filteredNodes,
         expandedKeys,
@@ -73,7 +76,7 @@ function Home ({ courses }: Props){
         setExpand,
     } = useTree(treeNodes);
 
-    //! Clipboard
+    // Clipboard state management
     const {
         clipboard,
         moveTarget,
@@ -88,83 +91,90 @@ function Home ({ courses }: Props){
         handleDeleteQuestion,
     } = useClipboard();
 
-    //TODO uesState instead of useState
-
+    // ── Modal open/close states ─────────────────────────────────
     const [courseCreateOpen, setCourseCreateOpen] = useState(false);
-    const [courseEditOpen, setCourseEditOpen] = useState(false);
+    const [courseEditOpen,   setCourseEditOpen]   = useState(false);
     const [courseDeleteOpen, setCourseDeleteOpen] = useState(false);
 
     const [examCreateOpen, setExamCreateOpen] = useState(false);
-    const [examEditOpen, setExamEditOpen] = useState(false);
+    const [examEditOpen,   setExamEditOpen]   = useState(false);
     const [examDeleteOpen, setExamDeleteOpen] = useState(false);
 
     const [examModalStep, setExamModalStep] = useState(0);
 
     const [activeCourse, setActiveCourse] = useState<CourseData | null>(null);
-    const [activeExam, setActiveExam] = useState<ExamsData | null>(null);
+    const [activeExam,   setActiveExam]   = useState<ExamsData  | null>(null);
 
-    const handleAddCourse = () => setCourseCreateOpen(true);
+    // ── Handler callbacks — wrapped in useCallback so their identity is stable
+    // across re-renders, preventing the context value from being recreated every
+    // time an unrelated state changes. ─────────────────────────────────────────
 
-    const handleEditCourse = (course: CourseData | null) => {
+    const handleAddCourse = useCallback(() => {
+        setCourseCreateOpen(true);
+    }, []);
+
+    const handleEditCourse = useCallback((course: CourseData | null) => {
         setActiveCourse(course);
         setCourseEditOpen(true);
-    };
+    }, []);
 
-    const handleDeleteCourse = (course: CourseData | null) => {
+    const handleDeleteCourse = useCallback((course: CourseData | null) => {
         setActiveCourse(course);
         setCourseDeleteOpen(true);
-    };
+    }, []);
 
-    const handleAddExam = (course: CourseData | null) => {
+    const handleAddExam = useCallback((course: CourseData | null) => {
         setActiveCourse(course);
         setExamCreateOpen(true);
-        if (course && course.id) {
+        if (course?.id) {
             setExpand(`course-${course.id}`, true);
         }
-    };
+    }, [setExpand]);
 
-    const handleEditExam = (exam: ExamsData) => {
+    const handleEditExam = useCallback((exam: ExamsData) => {
         setActiveExam(exam);
         const course = safeCourses.find(
             (c) => String(c?.id) === String(exam?.course_id),
         );
         setActiveCourse(course ?? null);
         setExamEditOpen(true);
-        if (course && course.id) {
+        if (course?.id) {
             setExpand(`course-${course.id}`, true);
         }
-    };
+    }, [safeCourses, setExpand]);
 
-    const handleDeleteExam = (exam: ExamsData) => {
+    const handleDeleteExam = useCallback((exam: ExamsData) => {
         setActiveExam(exam);
         const course = safeCourses.find(
             (c) => String(c?.id) === String(exam?.course_id),
         );
         setActiveCourse(course ?? null);
         setExamDeleteOpen(true);
-    };
+    }, [safeCourses]);
 
-    const handleDownloadExam = (exam: ExamsData) => {
-        if (exam && exam.course_id && exam.id) {
+    const handleDownloadExam = useCallback((exam: ExamsData) => {
+        if (exam?.course_id && exam?.id) {
             courseService.downloadExam(exam.course_id, exam.id);
         }
-    };
+    }, []);
+
+    // ── Derived selected-node data ──────────────────────────────
 
     const selectedNodeExams = useMemo(() => {
-        if (selectedNode?.type == "course"){
-            const course = selectedNode.originalData as CourseData;
-            return course.exams;
+        if (selectedNode?.type === "course") {
+            return (selectedNode.originalData as CourseData).exams;
         }
         return [];
     }, [selectedNode]);
 
     const selectedNodeAnswers = useMemo(() => {
-        if (selectedNode?.type == "question"){
-            const question = selectedNode.originalData as QuestionsData;
-            return question.answers;
+        if (selectedNode?.type === "question") {
+            return (selectedNode.originalData as QuestionsData).answers;
         }
         return [];
     }, [selectedNode]);
+
+    // ── Render ──────────────────────────────────────────────────
 
     return (
         <div className="flex flex-col gap-6 py-2">
@@ -179,6 +189,7 @@ function Home ({ courses }: Props){
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
+                {/* ── Tree Explorer Panel ─────────────────────── */}
                 <div className="md:col-span-5 lg:col-span-4 h-full">
                     <TreeRoot
                         filteredNodes={filteredNodes}
@@ -209,6 +220,7 @@ function Home ({ courses }: Props){
                     />
                 </div>
 
+                {/* ── Detail Panel ────────────────────────────── */}
                 <div className="md:col-span-7 lg:col-span-8 flex flex-col gap-6">
                     {!selectedNode || selectedNode.id === "root" ? (
                         <ExplorerEmptyState onAddCourse={handleAddCourse} />
@@ -236,6 +248,8 @@ function Home ({ courses }: Props){
                     )}
                 </div>
             </div>
+
+            {/* ── Modals ─────────────────────────────────────── */}
 
             {courseCreateOpen && (
                 <ModalDynamic
@@ -347,9 +361,10 @@ function Home ({ courses }: Props){
             )}
         </div>
     );
-};
+}
 
 Home.layout = (page: ReactNode) => (
     <DashboardLayout>{page}</DashboardLayout>
 );
+
 export default Home;

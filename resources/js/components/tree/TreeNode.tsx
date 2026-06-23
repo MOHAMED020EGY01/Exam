@@ -2,70 +2,35 @@
  * TreeNode.tsx
  *
  * Purpose:
- * Component that decides whether to render a folder node or leaf node based on node type.
+ * Decides whether to render a folder node (TreeFolder) or leaf node (TreeItem)
+ * based on node.type, and handles recursive child rendering.
  *
- * Responsibilities:
- * - Route to TreeItem for question nodes
- * - Route to TreeFolder for course and exam nodes
- * - Render child levels by nesting RecursiveTree when expanded
+ * Changes from previous version:
+ * - Props reduced to `node` and `depth` only.
+ * - expandedKeys, selectedNode, toggleExpand, setSelectedNode and all action
+ *   callbacks are now read from useTreeContext() instead of being passed as props.
+ * - React.memo applied with comparison on node.id and depth for performance.
  *
  * Dependencies:
- * - TreeFolder and TreeItem components
- * - RecursiveTree component
- * - TreeNodeData interface
+ * - TreeFolder, TreeItem, RecursiveTree
+ * - useTreeContext
  */
 
 import React from 'react';
 import { TreeNodeData } from '@/interface/global';
+import { useTreeContext } from './TreeContext';
 import { TreeFolder } from './TreeFolder';
 import { TreeItem } from './TreeItem';
 import { RecursiveTree } from './RecursiveTree';
 
 interface TreeNodeProps {
-  node: TreeNodeData;
+  node:  TreeNodeData;
   depth: number;
-  expandedKeys: Record<string, boolean>;
-  selectedNode: TreeNodeData | null;
-  toggleExpand: (id: string) => void;
-  setSelectedNode: (node: TreeNodeData) => void;
-
-  // Action triggers
-  onAddExam?: (course: any) => void;
-  onEditCourse?: (course: any) => void;
-  onDeleteCourse?: (course: any) => void;
-  onEditExam?: (exam: any) => void;
-  onDeleteExam?: (exam: any) => void;
-  onDownloadExam?: (exam: any) => void;
-
-  // Clipboard & Move operations
-  clipboard?: any;
-  onCopy?: (node: TreeNodeData) => void;
-  onPaste?: (node: TreeNodeData) => void;
-  onMove?: (node: TreeNodeData) => void;
-  onDuplicate?: (node: TreeNodeData) => void;
-  onDeleteQuestion?: (node: TreeNodeData) => void;
 }
 
-export const TreeNode: React.FC<TreeNodeProps> = ({
-  node,
-  depth,
-  expandedKeys,
-  selectedNode,
-  toggleExpand,
-  setSelectedNode,
-  onAddExam,
-  onEditCourse,
-  onDeleteCourse,
-  onEditExam,
-  onDeleteExam,
-  onDownloadExam,
-  clipboard,
-  onCopy,
-  onPaste,
-  onMove,
-  onDuplicate,
-  onDeleteQuestion,
-}) => {
+const TreeNodeInner: React.FC<TreeNodeProps> = ({ node, depth }) => {
+  const { expandedKeys, selectedNode, toggleExpand, setSelectedNode } = useTreeContext();
+
   const isExpanded = !!expandedKeys[node.id];
   const isSelected = selectedNode?.id === node.id;
 
@@ -76,11 +41,6 @@ export const TreeNode: React.FC<TreeNodeProps> = ({
         depth={depth}
         isSelected={isSelected}
         onSelect={setSelectedNode}
-        clipboard={clipboard}
-        onCopy={onCopy}
-        onMove={onMove}
-        onDuplicate={onDuplicate}
-        onDeleteQuestion={onDeleteQuestion}
       />
     );
   }
@@ -93,40 +53,19 @@ export const TreeNode: React.FC<TreeNodeProps> = ({
       isSelected={isSelected}
       onToggle={toggleExpand}
       onSelect={setSelectedNode}
-      onAddExam={onAddExam}
-      onEditCourse={onEditCourse}
-      onDeleteCourse={onDeleteCourse}
-      onEditExam={onEditExam}
-      onDeleteExam={onDeleteExam}
-      onDownloadExam={onDownloadExam}
-      clipboard={clipboard}
-      onCopy={onCopy}
-      onPaste={onPaste}
-      onMove={onMove}
-      onDuplicate={onDuplicate}
     >
       {node.children && node.children.length > 0 && (
-        <RecursiveTree
-          nodes={node.children}
-          depth={depth + 1}
-          expandedKeys={expandedKeys}
-          selectedNode={selectedNode}
-          toggleExpand={toggleExpand}
-          setSelectedNode={setSelectedNode}
-          onAddExam={onAddExam}
-          onEditCourse={onEditCourse}
-          onDeleteCourse={onDeleteCourse}
-          onEditExam={onEditExam}
-          onDeleteExam={onDeleteExam}
-          onDownloadExam={onDownloadExam}
-          clipboard={clipboard}
-          onCopy={onCopy}
-          onPaste={onPaste}
-          onMove={onMove}
-          onDuplicate={onDuplicate}
-          onDeleteQuestion={onDeleteQuestion}
-        />
+        <RecursiveTree nodes={node.children} depth={depth + 1} />
       )}
     </TreeFolder>
   );
 };
+
+export const TreeNode = React.memo(
+  TreeNodeInner,
+  (prev, next) =>
+    prev.node.id === next.node.id &&
+    prev.depth   === next.depth,
+);
+
+TreeNode.displayName = 'TreeNode';

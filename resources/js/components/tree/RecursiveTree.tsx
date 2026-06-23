@@ -2,10 +2,14 @@
  * RecursiveTree.tsx
  *
  * Purpose:
- * Renders list of TreeNode components recursively mapping tree layers.
+ * Renders a list of TreeNode components for a given depth level.
  *
- * Responsibilities:
- * - Map nodes array to individual TreeNode items passing callback triggers
+ * Changes from previous version:
+ * - Props reduced to `nodes` and `depth` only.
+ * - All shared state / actions are now consumed via useTreeContext()
+ *   inside each TreeNode, so this component no longer needs to forward them.
+ * - React.memo applied with a comparison on nodes array identity and depth,
+ *   preventing unnecessary re-renders when only context values change.
  *
  * Dependencies:
  * - TreeNode component
@@ -13,79 +17,25 @@
  */
 
 import React from 'react';
-import { CourseData, ExamsData, TreeNodeData } from '@/interface/global';
+import { TreeNodeData } from '@/interface/global';
 import { TreeNode } from './TreeNode';
 
 interface RecursiveTreeProps {
   nodes: TreeNodeData[];
   depth: number;
-  expandedKeys: Record<string, boolean>;
-  selectedNode: TreeNodeData | null;
-  toggleExpand: (id: string) => void;
-  setSelectedNode: (node: TreeNodeData) => void;
-
-  // Action triggers
-  onAddExam?: (course: CourseData) => void;
-  onEditCourse?: (course: CourseData) => void;
-  onDeleteCourse?: (course: CourseData) => void;
-  onEditExam?: (exam: ExamsData) => void;
-  onDeleteExam?: (exam: ExamsData) => void;
-  onDownloadExam?: (exam: ExamsData) => void;
-
-  // Clipboard & Move operations
-  clipboard?: any;
-  onCopy?: (node: TreeNodeData) => void;
-  onPaste?: (node: TreeNodeData) => void;
-  onMove?: (node: TreeNodeData) => void;
-  onDuplicate?: (node: TreeNodeData) => void;
-  onDeleteQuestion?: (node: TreeNodeData) => void;
 }
 
-export const RecursiveTree: React.FC<RecursiveTreeProps> = ({
-  nodes,
-  depth,
-  expandedKeys,
-  selectedNode,
-  toggleExpand,
-  setSelectedNode,
-  onAddExam,
-  onEditCourse,
-  onDeleteCourse,
-  onEditExam,
-  onDeleteExam,
-  onDownloadExam,
-  clipboard,
-  onCopy,
-  onPaste,
-  onMove,
-  onDuplicate,
-  onDeleteQuestion,
-}) => {
-  return (
-    <>
-      {nodes.map((node) => (
-        <TreeNode
-          key={node.id}
-          node={node}
-          depth={depth}
-          expandedKeys={expandedKeys}
-          selectedNode={selectedNode}
-          toggleExpand={toggleExpand}
-          setSelectedNode={setSelectedNode}
-          onAddExam={onAddExam}
-          onEditCourse={onEditCourse}
-          onDeleteCourse={onDeleteCourse}
-          onEditExam={onEditExam}
-          onDeleteExam={onDeleteExam}
-          onDownloadExam={onDownloadExam}
-          clipboard={clipboard}
-          onCopy={onCopy}
-          onPaste={onPaste}
-          onMove={onMove}
-          onDuplicate={onDuplicate}
-          onDeleteQuestion={onDeleteQuestion}
-        />
-      ))}
-    </>
-  );
-};
+const RecursiveTreeInner: React.FC<RecursiveTreeProps> = ({ nodes, depth }) => (
+  <>
+    {nodes.map((node) => (
+      <TreeNode key={node.id} node={node} depth={depth} />
+    ))}
+  </>
+);
+
+export const RecursiveTree = React.memo(
+  RecursiveTreeInner,
+  (prev, next) => prev.depth === next.depth && prev.nodes === next.nodes,
+);
+
+RecursiveTree.displayName = 'RecursiveTree';
