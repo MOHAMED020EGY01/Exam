@@ -4,8 +4,9 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ExamRequest;
-use App\Jobs\ProcessExamJobCreate;
-use App\Jobs\ProcessExamJobUpdate;
+use App\Jobs\ExamJob\ProcessExamJobCreate;
+use App\Jobs\ExamJob\ProcessExamJobDelete;
+use App\Jobs\ExamJob\ProcessExamJobUpdate;
 use App\Models\Course;
 use App\Models\Exam;
 use App\Services\ExamServices;
@@ -36,20 +37,22 @@ class ExamController extends Controller
         $requestDate = $request->validated();
         ProcessExamJobUpdate::dispatch(
             $requestDate,
-            $course,
             $exam,
             $path
         );
-        return redirect()->back()->with('success', "Create Exam in Process {$requestDate['name']} ");
+        return redirect()->back()->with('success', "Update Exam in Process {$exam->name} in course {$course->name}");
     }
 
 
     public function destroy(Course $course, Exam $exam)
     {
         return DB::transaction(function () use ($course, $exam) {
-            ExamServices::deleteExamPackage($exam);
+            
+            ProcessExamJobDelete::dispatch(
+                $exam,
+            );
             $exam->delete($exam->id);
-            return redirect()->back()->with('success', "Create Exam in Process {$exam->name} in course {$course->name} ");
+            return redirect()->back()->with('success', "Delete Exam in Process {$exam->name} in course {$course->name} ");
         });
     }
 

@@ -77,7 +77,8 @@ interface TreeRootProps {
 // TitleBar sub-component
 // ─────────────────────────────────────────────────────────────
 
-const TitleBar: React.FC = () => {
+const TitleBar: React.FC = (props) => {
+    console.log("🌳 TreeRoot Render", props);
     const { expandAll, collapseAll, actions } = useTreeContext();
 
     return (

@@ -25,41 +25,49 @@ export function normalizeCoursesToTree(
 ): TreeNodeData[] {
 
     return courses.map((course) => ({
+
         id: `course-${course.id}`,
         label: course.name || "Unnamed Course",
         type: "course",
         originalId: course.id,
         originalData: course,
 
-        children: (course?.exams).map((exam: ExamsData) => ({
-            id: `exam-${exam.id}`,
-            label: exam.name || "N/A Exam",
-            type: "exam",
-            parentId: `course-${course.id}`,
-            originalId: exam.id,
+        children: Array.isArray(course?.exams)
+            ? course.exams.map((exam: ExamsData) => ({
 
-            originalData: {
-                ...exam,
-                courseId: course.id,
-            },
+                id: `exam-${exam.id}`,
+                label: exam.name || "N/A Exam",
+                type: "exam",
+                parentId: `course-${course.id}`,
+                originalId: exam.id,
 
-            children: (exam?.questions_package).map(
-                (question: QuestionsData, index: number) => ({
-                    id: `question-${exam.id}-${index}`,
-                    label: question.text || `Question ${index + 1}`,
-                    type: "question",
-                    parentId: `exam-${exam.id}`,
-                    originalId: index,
+                originalData: {
+                    ...exam,
+                    courseId: course.id,
+                },
 
-                    originalData: {
-                        ...question,
-                        index,
-                        examId: exam.id,
-                        courseId: course.id,
-                    },
-                }),
-            ),
-        })),
+                children: Array.isArray(exam?.questions_package)
+                    ? exam.questions_package.map(
+                        (question: QuestionsData, index: number) => ({
+                            id: `question-${exam.id}-${index}`,
+                            label: question.text || `Question ${index + 1}`,
+                            type: "question",
+                            parentId: `exam-${exam.id}`,
+                            originalId: index,
+
+                            originalData: {
+                                ...question,
+                                index,
+                                examId: exam.id,
+                                courseId: course.id,
+                            },
+                        }),
+                    )
+                    : [],
+
+            }))
+            : [],
+
     }));
 }
 /**

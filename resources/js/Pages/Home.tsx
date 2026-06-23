@@ -21,7 +21,7 @@
  * - DashboardLayout
  */
 
-import { ReactNode, useState, useMemo, useCallback } from "react";
+import { ReactNode, useState, useMemo, useCallback, useEffect } from "react";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { ModalDynamic } from "@/components/common/Modal";
 import { ModalDynamicAdvanced } from "@/components/common/ModalAdvanced";
@@ -38,6 +38,10 @@ import { ExamDetails } from "@/components/page/ExamDetails";
 import { QuestionDetails } from "@/components/page/QuestionDetails";
 import { ExplorerEmptyState } from "@/components/page/ExplorerEmptyState";
 import { CourseData, ExamsData, QuestionsData } from "@/interface/global";
+import { useAuth } from "@/hooks/use-auth";
+import { useEchoChannel } from "@/hooks/use-echo-channel";
+import { toast } from "sonner";
+import { router } from "@inertiajs/react";
 
 interface Props {
     courses: CourseData[];
@@ -48,16 +52,53 @@ const form = [
     { field: "description", type: "input" },
 ] as FieldForm[];
 
-function Home ({ courses }: Props) {
+function Home({ courses }: Props) {
+    const user = useAuth();
+    useEchoChannel(
+        `users.${user.user?.id}`,
+        ".exam.created",
+        (e: any) => {
+            toast.success(`Exam "${e.exam.name}" created`);
+            router.reload({
+                only: ["courses"],
+                onSuccess: () => {
+                    refreshTree();
+                },
+            });
+        },
+        [user.user?.id],
+    );
 
+    useEchoChannel(
+        `users.${user.user?.id}`,
+        ".exam.updated",
+        (e: any) => {
+            toast.success(`Exam "${e.exam.name}" updated`);
+            router.reload({
+                only: ["courses"],
+            });
+        },
+        [user.user?.id],
+    );
     // Stabilise the courses reference — prevents downstream memo invalidation
     const safeCourses = useMemo((): CourseData[] => courses, [courses]);
+
+    useEffect(() => {
+        console.log("Courses updated", courses);
+    }, [courses]);
 
     // Convert flat API data → TreeNodeData hierarchy
     const treeNodes = useMemo(
         () => normalizeCoursesToTree(safeCourses),
         [safeCourses],
     );
+    useEffect(() => {
+        console.log("TREE COUNT", treeNodes.length);
+
+        treeNodes.forEach((node) => {
+            console.log(node.id, node.label, node.children?.length);
+        });
+    }, [treeNodes]);
 
     // Tree state management
     const {
@@ -74,6 +115,7 @@ function Home ({ courses }: Props) {
         setScope,
         isPending,
         setExpand,
+        refreshTree,
     } = useTree(treeNodes);
 
     // Clipboard state management
@@ -93,17 +135,17 @@ function Home ({ courses }: Props) {
 
     // ── Modal open/close states ─────────────────────────────────
     const [courseCreateOpen, setCourseCreateOpen] = useState(false);
-    const [courseEditOpen,   setCourseEditOpen]   = useState(false);
+    const [courseEditOpen, setCourseEditOpen] = useState(false);
     const [courseDeleteOpen, setCourseDeleteOpen] = useState(false);
 
     const [examCreateOpen, setExamCreateOpen] = useState(false);
-    const [examEditOpen,   setExamEditOpen]   = useState(false);
+    const [examEditOpen, setExamEditOpen] = useState(false);
     const [examDeleteOpen, setExamDeleteOpen] = useState(false);
 
     const [examModalStep, setExamModalStep] = useState(0);
 
     const [activeCourse, setActiveCourse] = useState<CourseData | null>(null);
-    const [activeExam,   setActiveExam]   = useState<ExamsData  | null>(null);
+    const [activeExam, setActiveExam] = useState<ExamsData | null>(null);
 
     // ── Handler callbacks — wrapped in useCallback so their identity is stable
     // across re-renders, preventing the context value from being recreated every
@@ -123,34 +165,43 @@ function Home ({ courses }: Props) {
         setCourseDeleteOpen(true);
     }, []);
 
-    const handleAddExam = useCallback((course: CourseData | null) => {
-        setActiveCourse(course);
-        setExamCreateOpen(true);
-        if (course?.id) {
-            setExpand(`course-${course.id}`, true);
-        }
-    }, [setExpand]);
+    const handleAddExam = useCallback(
+        (course: CourseData | null) => {
+            setActiveCourse(course);
+            setExamCreateOpen(true);
+            if (course?.id) {
+                setExpand(`course-${course.id}`, true);
+            }
+        },
+        [setExpand],
+    );
 
-    const handleEditExam = useCallback((exam: ExamsData) => {
-        setActiveExam(exam);
-        const course = safeCourses.find(
-            (c) => String(c?.id) === String(exam?.course_id),
-        );
-        setActiveCourse(course ?? null);
-        setExamEditOpen(true);
-        if (course?.id) {
-            setExpand(`course-${course.id}`, true);
-        }
-    }, [safeCourses, setExpand]);
+    const handleEditExam = useCallback(
+        (exam: ExamsData) => {
+            setActiveExam(exam);
+            const course = safeCourses.find(
+                (c) => String(c?.id) === String(exam?.course_id),
+            );
+            setActiveCourse(course ?? null);
+            setExamEditOpen(true);
+            if (course?.id) {
+                setExpand(`course-${course.id}`, true);
+            }
+        },
+        [safeCourses, setExpand],
+    );
 
-    const handleDeleteExam = useCallback((exam: ExamsData) => {
-        setActiveExam(exam);
-        const course = safeCourses.find(
-            (c) => String(c?.id) === String(exam?.course_id),
-        );
-        setActiveCourse(course ?? null);
-        setExamDeleteOpen(true);
-    }, [safeCourses]);
+    const handleDeleteExam = useCallback(
+        (exam: ExamsData) => {
+            setActiveExam(exam);
+            const course = safeCourses.find(
+                (c) => String(c?.id) === String(exam?.course_id),
+            );
+            setActiveCourse(course ?? null);
+            setExamDeleteOpen(true);
+        },
+        [safeCourses],
+    );
 
     const handleDownloadExam = useCallback((exam: ExamsData) => {
         if (exam?.course_id && exam?.id) {
@@ -363,8 +414,6 @@ function Home ({ courses }: Props) {
     );
 }
 
-Home.layout = (page: ReactNode) => (
-    <DashboardLayout>{page}</DashboardLayout>
-);
+Home.layout = (page: ReactNode) => <DashboardLayout>{page}</DashboardLayout>;
 
 export default Home;

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Events;
+namespace App\Events\ExamEvent;
 
 use App\Models\Exam;
 use Illuminate\Broadcasting\Channel;

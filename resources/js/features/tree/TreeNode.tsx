@@ -64,11 +64,6 @@ const TreeNodeInner: React.FC<TreeNodeProps> = ({ node, depth }) => {
   );
 };
 
-export const TreeNode = React.memo(
-  TreeNodeInner,
-  (prev, next) =>
-    prev.node.id === next.node.id &&
-    prev.depth   === next.depth,
-);
+export const TreeNode = TreeNodeInner;
 
 TreeNode.displayName = 'TreeNode';

@@ -20,22 +20,34 @@
  * - Tree helper functions (lib/treeHelpers)
  */
 
-import { useState, useMemo, useCallback, useEffect, useTransition } from "react";
+import {
+    useState,
+    useMemo,
+    useCallback,
+    useEffect,
+    useTransition,
+} from "react";
 import { filterTree, getFolderNodeIds } from "../lib/treeHelpers";
 import { TreeNodeData } from "@/interface/global";
 import { SearchScope } from "@/features/tree/SearchInput";
 
 export function useTree(initialNodes: any) {
     // ── Tree UI state ───────────────────────────────────────────
-    const [expandedKeys, setExpandedKeys] = useState<Record<string, boolean>>({});
+    const [expandedKeys, setExpandedKeys] = useState<Record<string, boolean>>(
+        {},
+    );
     const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
 
     // ── Search state (previously in useSearchScope) ─────────────
-    const [searchQuery,    setSearchQuery]    = useState('');
-    const [debouncedQuery, setDebouncedQuery] = useState('');
-    const [scope,          setScope]          = useState<SearchScope>('all');
-    const [isPending,      startTransition]   = useTransition();
+    const [searchQuery, setSearchQuery] = useState("");
+    const [debouncedQuery, setDebouncedQuery] = useState("");
+    const [scope, setScope] = useState<SearchScope>("all");
+    const [isPending, startTransition] = useTransition();
+    const [treeVersion, setTreeVersion] = useState(0);
 
+    const refreshTree = useCallback(() => {
+        setTreeVersion((v) => v + 1);
+    }, []);
     /** 200 ms debounce — mirrors the old useSearchScope behaviour */
     useEffect(() => {
         const handler = setTimeout(() => {
@@ -51,8 +63,8 @@ export function useTree(initialNodes: any) {
         return Array.isArray(initialNodes)
             ? initialNodes
             : initialNodes && typeof initialNodes === "object"
-                ? Object.values(initialNodes)
-                : [];
+              ? Object.values(initialNodes)
+              : [];
     }, [initialNodes]);
 
     // ── Recursive node finder ───────────────────────────────────
@@ -71,16 +83,19 @@ export function useTree(initialNodes: any) {
     );
 
     const selectedNode = useMemo(
-        () => (selectedNodeId ? findNodeById(safeInitialNodes, selectedNodeId) : null),
+        () =>
+            selectedNodeId
+                ? findNodeById(safeInitialNodes, selectedNodeId)
+                : null,
         [safeInitialNodes, selectedNodeId, findNodeById],
     );
 
     const handleSetSelectedNode = useCallback((node: any) => {
-        if (!node)                    setSelectedNodeId(null);
+        if (!node) setSelectedNodeId(null);
         else if (typeof node === "string") setSelectedNodeId(node);
-        else                          setSelectedNodeId(node.id);
+        else setSelectedNodeId(node.id);
     }, []);
-    
+
     // ── Expansion helpers ───────────────────────────────────────
     const toggleExpand = useCallback((nodeId: string) => {
         setExpandedKeys((prev) => ({ ...prev, [nodeId]: !prev[nodeId] }));
@@ -93,7 +108,9 @@ export function useTree(initialNodes: any) {
     const expandAll = useCallback(() => {
         const folderIds = getFolderNodeIds(safeInitialNodes);
         const next: Record<string, boolean> = {};
-        folderIds.forEach((id) => { next[id] = true; });
+        folderIds.forEach((id) => {
+            next[id] = true;
+        });
         setExpandedKeys(next);
     }, [safeInitialNodes]);
 
@@ -107,7 +124,7 @@ export function useTree(initialNodes: any) {
             debouncedQuery.trim()
                 ? filterTree(safeInitialNodes, debouncedQuery, scope)
                 : safeInitialNodes,
-        [safeInitialNodes, debouncedQuery, scope],
+        [safeInitialNodes, debouncedQuery, scope,treeVersion],
     );
 
     // Auto-expand matched folders when query changes
@@ -116,7 +133,9 @@ export function useTree(initialNodes: any) {
             const folderIds = getFolderNodeIds(filteredNodes);
             setExpandedKeys((prev) => {
                 const merged = { ...prev };
-                folderIds.forEach((id) => { merged[id] = true; });
+                folderIds.forEach((id) => {
+                    merged[id] = true;
+                });
                 return merged;
             });
         }
@@ -137,6 +156,7 @@ export function useTree(initialNodes: any) {
         expandAll,
         collapseAll,
         setSelectedNode: handleSetSelectedNode,
+        refreshTree,
     };
 }
 

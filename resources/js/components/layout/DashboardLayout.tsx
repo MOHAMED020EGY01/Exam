@@ -26,17 +26,7 @@ import { router } from "@inertiajs/react";
 import { useEchoChannel } from "@/hooks/use-echo-channel";
 
 const DashboardLayout = ({ children }: { children: ReactNode }) => {
-    const user = useAuth();
-        useEchoChannel(
-            `users.${user.user?.id}`,
-            ".exam.created",
-            (e: any) => {
-                console.log("🔥 Event received:", e);
 
-                toast.success(`Exam "${e.exam.name}" created`);
-            },
-            [user.user?.id]
-        );
 
     return (
         <TooltipProvider>
