@@ -134,7 +134,7 @@ export const MoveModal: React.FC<MoveModalProps> = ({
             <DialogContent className="sm:max-w-md modal-move flex flex-col p-6 overflow-hidden">
                 <DialogHeader className="shrink-0 pb-2 border-b">
                     <DialogTitle className="text-xl font-bold flex items-center gap-2">
-                        <Move className="w-5 h-5 text-primary" />
+                        <Move className="icon-md text-primary" />
                         Move {isExam ? "Exam" : "Question"}
                     </DialogTitle>
                     <DialogDescription className="text-xs text-muted-foreground mt-1">
@@ -153,7 +153,7 @@ export const MoveModal: React.FC<MoveModalProps> = ({
                             {nodeToMove.label}
                         </span>
                     </div>
-                    <ArrowRight className="w-4 h-4 text-muted-foreground shrink-0 mt-3" />
+                    <ArrowRight className="icon-sm text-muted-foreground shrink-0 mt-3" />
                     <div className="flex-1 min-w-0">
                         <span className="text-muted-foreground block uppercase font-bold text-[9px] tracking-wider">
                             Destination
@@ -177,7 +177,7 @@ export const MoveModal: React.FC<MoveModalProps> = ({
 
                 {/* Search Input */}
                 <div className="shrink-0 relative mb-3">
-                    <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground/60" />
+                    <Search className="absolute left-3 top-2.5 icon-sm text-muted-foreground/60" />
                     <Input
                         placeholder={`Search destination ${isExam ? "courses" : "exams"}...`}
                         value={searchQuery}
@@ -206,7 +206,7 @@ export const MoveModal: React.FC<MoveModalProps> = ({
                                     {isExam ? (
                                         <Book
                                             className={cn(
-                                                "w-4 h-4 mt-0.5 shrink-0",
+                                                "icon-sm mt-0.5 shrink-0",
                                                 selectedDestinationId ===
                                                     option.id
                                                     ? "text-primary"
@@ -216,7 +216,7 @@ export const MoveModal: React.FC<MoveModalProps> = ({
                                     ) : (
                                         <FileText
                                             className={cn(
-                                                "w-4 h-4 mt-0.5 shrink-0",
+                                                "icon-sm mt-0.5 shrink-0",
                                                 selectedDestinationId ===
                                                     option.id
                                                     ? "text-primary"
@@ -250,14 +250,14 @@ export const MoveModal: React.FC<MoveModalProps> = ({
                         variant="outline"
                         onClick={() => onOpenChange(false)}
                         disabled={processing}
-                        className="h-9 font-semibold text-xs"
+                        className="btn-size-lg font-semibold text-xs"
                     >
                         Cancel
                     </Button>
                     <Button
                         onClick={handleConfirm}
                         disabled={selectedDestinationId === null || processing}
-                        className="h-9 font-semibold text-xs min-w-[90px]"
+                        className="btn-size-lg font-semibold text-xs min-w-[90px]"
                     >
                         {processing ? "Moving..." : "Confirm Move"}
                     </Button>

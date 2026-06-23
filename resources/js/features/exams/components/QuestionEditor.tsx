@@ -59,7 +59,7 @@ export function QuestionEditor({
                     htmlFor={`question-text-${questionIndex}`}
                     className="text-sm font-semibold flex items-center gap-1.5 text-foreground"
                 >
-                    <HelpCircle className="w-4 h-4 text-primary" />
+                    <HelpCircle className="icon-sm text-primary" />
                     Question Prompt
                 </Label>
                 <div
@@ -106,7 +106,7 @@ export function QuestionEditor({
                             onClick={removeImage}
                             className="absolute -top-2 -right-2 bg-destructive text-destructive-foreground hover:bg-destructive/90 rounded-full w-5 h-5 p-0 flex items-center justify-center shadow-md"
                         >
-                            <X className="w-3.5 h-3.5" />
+                            <X className="icon-sm" />
                         </Button>
                     </div>
                 )}
@@ -126,7 +126,7 @@ export function QuestionEditor({
             {/* Selection Mode Switcher */}
             <div className="space-y-2">
                 <Label className="text-xs font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
-                    <Layers className="w-3.5 h-3.5" />
+                    <Layers className="icon-sm" />
                     Answer Selection Mode
                 </Label>
                 <div className="grid grid-cols-2 gap-3">
@@ -143,7 +143,7 @@ export function QuestionEditor({
                                 : "bg-transparent border-border text-muted-foreground hover:text-foreground hover:bg-muted/30",
                         )}
                     >
-                        <List className="w-4 h-4 shrink-0" />
+                        <List className="icon-sm shrink-0" />
                         Single Choice (Radio)
                     </button>
                     <button
@@ -159,7 +159,7 @@ export function QuestionEditor({
                                 : "bg-transparent border-border text-muted-foreground hover:text-foreground hover:bg-muted/30",
                         )}
                     >
-                        <CheckSquare className="w-4 h-4 shrink-0" />
+                        <CheckSquare className="icon-sm shrink-0" />
                         Multiple Choice (Checkbox)
                     </button>
                 </div>

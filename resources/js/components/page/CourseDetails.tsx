@@ -83,7 +83,7 @@ export const CourseDetails: React.FC<CourseDetailsProps> = ({
                                 )
                             }
                         >
-                            <Pen className="w-4 h-4 mr-1.5" />
+                            <Pen className="icon-sm mr-1.5" />
                             Edit
                         </Button>
                         <Button
@@ -95,7 +95,7 @@ export const CourseDetails: React.FC<CourseDetailsProps> = ({
                                 )
                             }
                         >
-                            <Trash className="w-4 h-4 mr-1.5" />
+                            <Trash className="icon-sm mr-1.5" />
                             Delete
                         </Button>
                     </div>
@@ -112,7 +112,7 @@ export const CourseDetails: React.FC<CourseDetailsProps> = ({
                         </span>
                     </div>
                     <div className="p-3 bg-muted/20 border rounded-lg flex items-center gap-2">
-                        <Calendar className="w-4 h-4 text-muted-foreground" />
+                        <Calendar className="icon-sm text-muted-foreground" />
                         <div>
                             <span className="text-xs text-muted-foreground block">
                                 Created
@@ -137,7 +137,7 @@ export const CourseDetails: React.FC<CourseDetailsProps> = ({
                                 )
                             }
                         >
-                            <Plus className="w-3.5 h-3.5 mr-1" /> Add Exam
+                            <Plus className="icon-sm mr-1" /> Add Exam
                         </Button>
                     </div>
                     {selectedNodeExams.length > 0 ? (
@@ -168,7 +168,7 @@ export const CourseDetails: React.FC<CourseDetailsProps> = ({
                                                 //     exam: exam.id,
                                                 // })}
                                                 >
-                                                    <Eye className="w-3.5 h-3.5 mr-1" />{" "}
+                                                    <Eye className="icon-sm mr-1" />{" "}
                                                     View
                                                 </Link>
                                             </Button>
@@ -178,7 +178,7 @@ export const CourseDetails: React.FC<CourseDetailsProps> = ({
                                                 variant="outline"
                                                 disabled
                                             >
-                                                <Eye className="w-3.5 h-3.5 mr-1" />{" "}
+                                                <Eye className="icon-sm mr-1" />{" "}
                                                 View
                                             </Button>
                                         )}
@@ -187,7 +187,7 @@ export const CourseDetails: React.FC<CourseDetailsProps> = ({
                                             variant="outline"
                                             onClick={() => onDownloadExam(exam)}
                                         >
-                                            <Download className="w-3.5 h-3.5" />
+                                            <Download className="icon-sm" />
                                         </Button>
                                     </div>
                                 </div>

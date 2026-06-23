@@ -69,7 +69,7 @@ export const ExamDetails: React.FC<ExamDetailsProps> = ({
                                 )
                             }
                         >
-                            <Pen className="w-4 h-4 mr-1.5" />
+                            <Pen className="icon-sm mr-1.5" />
                             Edit
                         </Button>
                         <Button
@@ -81,7 +81,7 @@ export const ExamDetails: React.FC<ExamDetailsProps> = ({
                                 )
                             }
                         >
-                            <Trash className="w-4 h-4 mr-1.5" />
+                            <Trash className="icon-sm mr-1.5" />
                             Delete
                         </Button>
                     </div>
@@ -98,7 +98,7 @@ export const ExamDetails: React.FC<ExamDetailsProps> = ({
                         </span>
                     </div>
                     <div className="p-3 bg-muted/20 border rounded-lg col-span-2 flex items-center gap-2">
-                        <Calendar className="w-4 h-4 text-muted-foreground" />
+                        <Calendar className="icon-sm text-muted-foreground" />
                         <div>
                             <span className="text-xs text-muted-foreground block">
                                 Created
@@ -135,7 +135,7 @@ export const ExamDetails: React.FC<ExamDetailsProps> = ({
                             )
                         }
                     >
-                        <Download className="w-4 h-4 mr-2" /> Download Package
+                        <Download className="icon-sm mr-2" /> Download Package
                         (.elr)
                     </Button>
                 </div>

@@ -34,7 +34,7 @@ function ImageCustom({ name, id, action }: Props) {
                     onChange={action}
                 />
                 <label htmlFor={id} className="cursor-pointer">
-                    <Paperclip className="w-5 h-5" />
+                    <Paperclip className="icon-md" />
                 </label>
             </div>
         </div>

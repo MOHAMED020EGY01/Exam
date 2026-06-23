@@ -49,12 +49,12 @@ export const AvatarBadgeIcon = () => {
     return (
         <DropdownMenuDestructive
             target={
-                <Avatar className="size-7 md:size-8">
+                <Avatar className="avatar-md md:avatar-default">
                     <AvatarImage src={user.user?.avatar} alt="@pranathip" />
-                    <AvatarFallback className="text-[10px] md:text-xs">
+                    <AvatarFallback className="text-xs md:text-xs">
                         PP
                     </AvatarFallback>
-                    <AvatarBadge className="size-2 md:size-2.5 [&>svg]:size-1.5 md:[&>svg]:size-2">
+                    <AvatarBadge className="square-sm md:square-xs [&>svg]:size-1.5 md:[&>svg]:size-2">
                         <PlusIcon />
                     </AvatarBadge>
                 </Avatar>

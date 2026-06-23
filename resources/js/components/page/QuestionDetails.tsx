@@ -82,9 +82,9 @@ export const QuestionDetails: React.FC<QuestionDetailsProps> = ({
                                     }`}
                                 >
                                     {answer?.is_correct ? (
-                                        <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />
+                                        <CheckCircle2 className="icon-md text-emerald-500 shrink-0 mt-0.5" />
                                     ) : (
-                                        <XCircle className="w-5 h-5 text-muted-foreground/30 shrink-0 mt-0.5" />
+                                        <XCircle className="icon-md text-muted-foreground/30 shrink-0 mt-0.5" />
                                     )}
                                     <div className="flex-1 space-y-2">
                                         <p className="text-sm font-medium leading-relaxed">

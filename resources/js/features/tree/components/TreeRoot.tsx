@@ -152,7 +152,7 @@ const TreeContent: React.FC = () => {
 
 export const TreeRoot: React.FC = () => {
   return (
-    <div className="flex flex-col h-full bg-background border border-border rounded-xl shadow-sm min-h-[380px] md:min-h-[500px]">
+    <div className="flex flex-col h-full bg-background border border-border rounded-xl shadow-sm min-h-200 md:min-h-300">
       <TitleBar />
       <SearchBar />
       <TreeContent />

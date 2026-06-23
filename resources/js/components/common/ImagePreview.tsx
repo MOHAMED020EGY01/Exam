@@ -47,7 +47,7 @@ function ImagePreview({ image, className, children }: Props) {
     if (!image || !previewSrc) return null;
 
     return (
-        <div className={cn("relative w-16 h-16 shrink-0", className)}>
+        <div className={cn("relative size-16 shrink-0", className)}>
             {!loaded && (
                 <div className="absolute inset-0 animate-pulse rounded-lg outline-2 outline-dashed outline-card-foreground" />
             )}

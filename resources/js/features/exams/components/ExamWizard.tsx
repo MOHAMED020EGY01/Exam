@@ -294,7 +294,7 @@ export function ExamWizard({
                             type="button"
                             variant="ghost"
                             onClick={() => setActiveStep(0)}
-                            className="font-semibold text-xs gap-1.5 h-9"
+                            className="font-semibold text-xs gap-1.5 btn-size-lg"
                         >
                             ← Back to basic details
                         </Button>
@@ -303,7 +303,7 @@ export function ExamWizard({
                             type="button"
                             variant="ghost"
                             onClick={handleCancel}
-                            className="font-semibold text-xs text-muted-foreground hover:text-foreground h-9"
+                            className="font-semibold text-xs text-muted-foreground hover:text-foreground btn-size-lg"
                         >
                             Cancel
                         </Button>
@@ -329,7 +329,7 @@ export function ExamWizard({
                                     addQuestion();
                                 }
                             }}
-                            className="font-semibold text-xs h-9 gap-1"
+                            className="font-semibold text-xs btn-size-lg gap-1"
                         >
                             Configure questions →
                         </Button>
@@ -339,14 +339,14 @@ export function ExamWizard({
                                 type="button"
                                 variant="outline"
                                 onClick={handleCancel}
-                                className="font-semibold text-xs h-9"
+                                className="font-semibold text-xs btn-size-lg"
                             >
                                 Cancel
                             </Button>
                             <Button
                                 type="submit"
                                 disabled={processing}
-                                className="font-semibold text-xs h-9 gap-1.5 min-w-[120px]"
+                                className="font-semibold text-xs btn-size-lg gap-1.5 min-w-[120px]"
                             >
                                 {processing ? (
                                     <>

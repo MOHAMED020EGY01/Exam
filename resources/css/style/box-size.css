@@ -211,3 +211,52 @@
 .square-xl {
   @apply size-5;
 }
+
+/* Additional size utilities */
+.min-h-200 {
+  min-height: 200px;
+}
+
+.md\:min-h-300 {
+  @media (min-width: 768px) {
+    min-height: 300px;
+  }
+}
+
+.max-h-56 {
+  max-height: 56px;
+}
+
+.min-w-120 {
+  min-width: 120px;
+}
+
+.size-1\.5 {
+  width: 0.375rem;
+  height: 0.375rem;
+}
+
+.size-2\.5 {
+  width: 0.625rem;
+  height: 0.625rem;
+}
+
+.size-3\.5 {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+.avatar-md {
+  width: 1.75rem;
+  height: 1.75rem;
+}
+
+.size-16 {
+  width: 4rem;
+  height: 4rem;
+}
+
+.size-32 {
+  width: 8rem;
+  height: 6rem;
+}

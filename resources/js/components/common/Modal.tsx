@@ -95,15 +95,15 @@ const ModalDynamic = <T extends Record<string, any>>({
     // Beautiful dynamic title icon based on type and action
     const renderTitleIcon = () => {
         if (isDelete) {
-            return <Trash2 className="w-5 h-5 text-destructive shrink-0" />;
+            return <Trash2 className="icon-md text-destructive shrink-0" />;
         }
         if (title.toLowerCase().includes("course")) {
-            return <Book className="w-5 h-5 icon-indigo shrink-0" />;
+            return <Book className="icon-md icon-indigo shrink-0" />;
         }
         if (title.toLowerCase().includes("exam")) {
-            return <GraduationCap className="w-5 h-5 icon-amber shrink-0" />;
+            return <GraduationCap className="icon-md icon-amber shrink-0" />;
         }
-        return <HelpCircle className="w-5 h-5 text-primary shrink-0" />;
+        return <HelpCircle className="icon-md text-primary shrink-0" />;
     };
 
     return (
@@ -205,7 +205,7 @@ const ModalDynamic = <T extends Record<string, any>>({
 
                                                 {hasError && (
                                                     <p className="text-destructive text-xs font-semibold mt-1 flex items-center gap-1.5 animate-in fade-in slide-in-from-top-1 duration-150 select-none">
-                                                        <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                                                        <AlertCircle className="size-3.5 shrink-0" />
                                                         {errors[item.field]}
                                                     </p>
                                                 )}
@@ -243,7 +243,7 @@ const ModalDynamic = <T extends Record<string, any>>({
                         >
                             {processing ? (
                                 <>
-                                    <Spinner className="w-3.5 h-3.5 animate-spin" />
+                                    <Spinner className="size-3.5 animate-spin" />
                                     {isDelete ? "Deleting..." : "Saving..."}
                                 </>
                             ) : isDelete ? (

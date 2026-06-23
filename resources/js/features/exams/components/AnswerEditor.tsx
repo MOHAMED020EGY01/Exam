@@ -150,7 +150,7 @@ export function AnswerEditor({
                             onClick={removeImage}
                             className="absolute -top-1.5 -right-1.5 bg-destructive text-destructive-foreground hover:bg-destructive/90 rounded-full w-4 h-4 p-0 flex items-center justify-center shadow-xs"
                         >
-                            <X className="w-2.5 h-2.5" />
+                            <X className="icon-sm" />
                         </Button>
                     </div>
                 )}
@@ -180,7 +180,7 @@ export function AnswerEditor({
                     className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-md w-7 h-7 shrink-0"
                     onClick={() => removeAnswer(questionIndex, answerIndex)}
                 >
-                    <Trash className="w-4 h-4" />
+                    <Trash className="icon-sm" />
                 </Button>
             </div>
         </div>

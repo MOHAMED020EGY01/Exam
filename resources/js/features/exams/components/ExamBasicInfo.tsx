@@ -70,7 +70,7 @@ export function ExamBasicInfo({ errors, data, setData, course }: ExamBasicInfoPr
                         setData("name", e.target.value)
                     }
                     className={cn(
-                        "h-10 transition-all focus-visible:ring-primary",
+                        "input-height-lg transition-all focus-visible:ring-primary",
                         errors.name &&
                             "border-destructive focus-visible:ring-destructive",
                     )}

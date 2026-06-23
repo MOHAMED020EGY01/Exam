@@ -195,7 +195,7 @@ export function ExamQuestionsEditor({
                     </span>
                 </div>
 
-                <div className="flex flex-row md:flex-col overflow-x-auto md:overflow-y-auto p-2 gap-1.5 md:space-y-1 max-h-[56px] md:max-h-none items-center scrollbar-none">
+                <div className="flex flex-row md:flex-col overflow-x-auto md:overflow-y-auto p-2 gap-1.5 md:space-y-1 max-h-56 md:max-h-none items-center scrollbar-none">
                     {questions.map((q: Question, idx: number) => {
                         const hasError = errorSet.has(idx);
                         const isActive = idx === questionCurrent;
@@ -237,7 +237,7 @@ export function ExamQuestionsEditor({
 
                                 {/* Danger Error Dot indicator */}
                                 {hasError && (
-                                    <div className="absolute right-1 top-1 md:right-8 md:top-auto w-1.5 h-1.5 rounded-full bg-destructive" />
+                                    <div className="absolute right-1 top-1 md:right-8 md:top-auto size-1.5 rounded-full bg-destructive" />
                                 )}
 
                                 {/* Delete Question trigger */}
@@ -249,7 +249,7 @@ export function ExamQuestionsEditor({
                                     }}
                                     className="hidden md:group-hover:flex p-1 hover:bg-destructive/10 text-muted-foreground hover:text-destructive rounded transition-all absolute right-2"
                                 >
-                                    <X className="w-3.5 h-3.5" />
+                                    <X className="size-3.5" />
                                 </button>
                             </div>
                         );
@@ -273,7 +273,7 @@ export function ExamQuestionsEditor({
                         variant="outline"
                         className="w-full justify-center gap-2 h-9 border-dashed font-semibold text-xs"
                     >
-                        <Plus className="w-4 h-4" /> Add Question
+                        <Plus className="icon-sm" /> Add Question
                     </Button>
                 </div>
             </div>
@@ -306,7 +306,7 @@ export function ExamQuestionsEditor({
                             className="w-8 h-8 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 md:hidden"
                             title="Delete Current Question"
                         >
-                            <X className="w-4 h-4" />
+                            <X className="icon-sm" />
                         </Button>
                         <Button
                             type="button"
@@ -316,7 +316,7 @@ export function ExamQuestionsEditor({
                             disabled={questionCurrent === 0}
                             className="w-8 h-8 rounded-md"
                         >
-                            <ChevronLeft className="w-4 h-4" />
+                            <ChevronLeft className="icon-sm" />
                         </Button>
                         <Button
                             type="button"
@@ -326,7 +326,7 @@ export function ExamQuestionsEditor({
                             disabled={questionCurrent === totalQuestions - 1}
                             className="w-8 h-8 rounded-md"
                         >
-                            <ChevronRight className="w-4 h-4" />
+                            <ChevronRight className="icon-sm" />
                         </Button>
                     </div>
                 </div>
@@ -356,7 +356,7 @@ export function ExamQuestionsEditor({
                             <div className="space-y-3 pt-4 border-t border-border">
                                 <div className="flex justify-between items-center">
                                     <Label className="text-sm font-semibold flex items-center gap-1.5 text-foreground">
-                                        <HelpCircle className="w-4 h-4 text-primary" />
+                                        <HelpCircle className="icon-sm text-primary" />
                                         Answer Options
                                     </Label>
                                     <Button
@@ -368,8 +368,7 @@ export function ExamQuestionsEditor({
                                         size="sm"
                                         className="h-8 gap-1.5 text-xs font-semibold"
                                     >
-                                        <Plus className="w-3.5 h-3.5" /> Add
-                                        Option
+                                        <Plus className="size-3.5" /> Add Option
                                     </Button>
                                 </div>
 
@@ -400,7 +399,7 @@ export function ExamQuestionsEditor({
                                     `questions.${questionCurrent}.answers`
                                 ] && (
                                     <p className="text-destructive text-xs font-medium flex items-center gap-1 mt-1">
-                                        <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                                        <AlertCircle className="size-3.5 shrink-0" />
                                         {
                                             errors[
                                                 `questions.${questionCurrent}.answers`
