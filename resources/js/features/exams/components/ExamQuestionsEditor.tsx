@@ -262,7 +262,7 @@ export function ExamQuestionsEditor({
                         className="flex md:hidden items-center justify-center w-9 h-9 rounded-full border border-dashed border-primary/40 text-primary hover:bg-primary/5 shrink-0 transition-all"
                         title="Add Question"
                     >
-                        <Plus className="w-4 h-4" />
+                        <Plus className="icon-sm" />
                     </button>
                 </div>
 
@@ -303,7 +303,7 @@ export function ExamQuestionsEditor({
                             onClick={() =>
                                 handleRemoveQuestion(questionCurrent)
                             }
-                            className="w-8 h-8 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 md:hidden"
+                            className="btn-size-default rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 md:hidden"
                             title="Delete Current Question"
                         >
                             <X className="icon-sm" />
@@ -314,7 +314,7 @@ export function ExamQuestionsEditor({
                             size="icon"
                             onClick={handlePrevious}
                             disabled={questionCurrent === 0}
-                            className="w-8 h-8 rounded-md"
+                            className="btn-size-default rounded-md"
                         >
                             <ChevronLeft className="icon-sm" />
                         </Button>
@@ -324,7 +324,7 @@ export function ExamQuestionsEditor({
                             size="icon"
                             onClick={handleNext}
                             disabled={questionCurrent === totalQuestions - 1}
-                            className="w-8 h-8 rounded-md"
+                            className="btn-size-default rounded-md"
                         >
                             <ChevronRight className="icon-sm" />
                         </Button>
@@ -366,7 +366,7 @@ export function ExamQuestionsEditor({
                                         }
                                         variant="outline"
                                         size="sm"
-                                        className="h-8 gap-1.5 text-xs font-semibold"
+                                        className="btn-size-default gap-1.5 text-xs font-semibold"
                                     >
                                         <Plus className="size-3.5" /> Add Option
                                     </Button>

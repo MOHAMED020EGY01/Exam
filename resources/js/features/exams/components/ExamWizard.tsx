@@ -346,7 +346,7 @@ export function ExamWizard({
                             <Button
                                 type="submit"
                                 disabled={processing}
-                                className="font-semibold text-xs btn-size-lg gap-1.5 min-w-[120px]"
+                                className="font-semibold text-xs btn-size-lg gap-1.5 min-w-120"
                             >
                                 {processing ? (
                                     <>
