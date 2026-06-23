@@ -12,6 +12,9 @@
  * Dependencies:
  * - Dialog and Input components (Shadcn UI)
  * - Lucide icons
+ *
+ * Notes:
+ * - Moved from components/tree to features/tree for feature-based organization
  */
 
 import React, { useState, useMemo } from 'react';

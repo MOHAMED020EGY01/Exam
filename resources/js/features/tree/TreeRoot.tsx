@@ -6,18 +6,20 @@
  * Acts as the Context Provider — it builds TreeContextValue from its props
  * and wraps all sub-components inside <TreeProvider>.
  *
- * Sub-components defined here:
- *  - TitleBar   — Explorer header with "Add Course / Expand All / Collapse All" buttons
- *  - SearchBar  — Scoped search input
- *  - TreeContent — Virtual "Courses" root folder + RecursiveTree
- *
- * All sub-components read state/actions via useTreeContext(); no prop drilling.
+ * Responsibilities:
+ * - Provide TreeContext to all tree components
+ * - Render title bar with explorer controls
+ * - Render search bar with scope selector
+ * - Render tree content with recursive rendering
  *
  * Dependencies:
  * - TreeContext (TreeProvider, useTreeContext)
  * - SearchInput, RecursiveTree
  * - TreeIcon, ChevronIcon
  * - Lucide icons
+ *
+ * Notes:
+ * - Moved from components/tree to features/tree for feature-based organization
  */
 
 import React, { useMemo } from "react";

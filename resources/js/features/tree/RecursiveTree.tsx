@@ -4,16 +4,17 @@
  * Purpose:
  * Renders a list of TreeNode components for a given depth level.
  *
- * Changes from previous version:
- * - Props reduced to `nodes` and `depth` only.
- * - All shared state / actions are now consumed via useTreeContext()
- *   inside each TreeNode, so this component no longer needs to forward them.
- * - React.memo applied with a comparison on nodes array identity and depth,
- *   preventing unnecessary re-renders when only context values change.
+ * Responsibilities:
+ * - Map through nodes array and render TreeNode for each
+ * - Pass depth to TreeNode for indentation calculation
+ * - Use React.memo for performance optimization
  *
  * Dependencies:
  * - TreeNode component
  * - TreeNodeData interface
+ *
+ * Notes:
+ * - Moved from components/tree to features/tree for feature-based organization
  */
 
 import React from 'react';

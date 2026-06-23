@@ -12,6 +12,9 @@
  * Dependencies:
  * - FileCustom and ImagePreview components (Common)
  * - RadioGroupItem and Checkbox components (Shadcn UI)
+ *
+ * Notes:
+ * - Type-safe: Uses Answer type from lib/questionHelpers
  */
 
 import { Button } from "@/components/ui/button";
@@ -21,14 +24,20 @@ import ImageCustom from "@/components/common/FileCustom";
 import ImagePreview from "@/components/common/ImagePreview";
 import { cn } from "@/lib/utils";
 import { Trash, X } from "lucide-react";
+import { Answer } from "@/lib/questionHelpers/question";
 
-interface Props {
+interface ExamAnswersProps {
     questionIndex: number;
-    answer: any;
+    answer: Answer;
     answerIndex: number;
-    updateAnswer: any;
-    removeAnswer: any;
-    errors: any;
+    updateAnswer: <K extends keyof Answer>(
+        questionIndex: number,
+        answerIndex: number,
+        key: K,
+        value: Answer[K],
+    ) => void;
+    removeAnswer: (questionIndex: number, answerIndex: number) => void;
+    errors: Record<string, string>;
     multiChosen: boolean;
 }
 
@@ -40,7 +49,7 @@ function ExamAnswers({
     removeAnswer,
     errors,
     multiChosen,
-}: Props) {
+}: ExamAnswersProps) {
     const removeImage = () => {
         updateAnswer(questionIndex, answerIndex, "image", null);
     };
@@ -48,20 +57,24 @@ function ExamAnswers({
     const letter = String.fromCharCode(65 + answerIndex);
 
     return (
-        <div className={cn(
-            "flex flex-col sm:flex-row items-stretch sm:items-center gap-3 p-3 rounded-lg border bg-card transition-all",
-            answer.is_correct 
-                ? "answer-correct-card" 
-                : "border-border hover:border-muted-foreground/30"
-        )}>
+        <div
+            className={cn(
+                "flex flex-col sm:flex-row items-stretch sm:items-center gap-3 p-3 rounded-lg border bg-card transition-all",
+                answer.is_correct
+                    ? "answer-correct-card"
+                    : "border-border hover:border-muted-foreground/30",
+            )}
+        >
             {/* Left Selection Controls */}
             <div className="flex items-center gap-3 shrink-0 select-none">
-                <span className={cn(
-                    "flex items-center justify-center w-6 h-6 rounded-full text-[10px] font-bold border transition-all duration-200",
-                    answer.is_correct
-                        ? "answer-correct-badge shadow-xs"
-                        : "answer-default-badge"
-                )}>
+                <span
+                    className={cn(
+                        "flex items-center justify-center w-6 h-6 rounded-full text-[10px] font-bold border transition-all duration-200",
+                        answer.is_correct
+                            ? "answer-correct-badge shadow-xs"
+                            : "answer-default-badge",
+                    )}
+                >
                     {letter}
                 </span>
 
@@ -105,12 +118,20 @@ function ExamAnswers({
                     }
                     className={cn(
                         "w-full bg-transparent border-0 outline-none text-sm placeholder:text-muted-foreground font-medium p-0 focus:ring-0 focus:border-0",
-                        errors[`questions.${questionIndex}.answers.${answerIndex}.text`] && "text-destructive"
+                        errors[
+                            `questions.${questionIndex}.answers.${answerIndex}.text`
+                        ] && "text-destructive",
                     )}
                 />
-                {errors[`questions.${questionIndex}.answers.${answerIndex}.text`] && (
+                {errors[
+                    `questions.${questionIndex}.answers.${answerIndex}.text`
+                ] && (
                     <p className="text-destructive text-[11px] font-medium mt-1">
-                        {errors[`questions.${questionIndex}.answers.${answerIndex}.text`]}
+                        {
+                            errors[
+                                `questions.${questionIndex}.answers.${answerIndex}.text`
+                            ]
+                        }
                     </p>
                 )}
             </div>
@@ -120,7 +141,10 @@ function ExamAnswers({
                 {/* Answer Image Preview */}
                 {answer.image && (
                     <div className="relative shrink-0">
-                        <ImagePreview image={answer.image} className="w-10 h-10 object-cover rounded-md border" />
+                        <ImagePreview
+                            image={answer.image}
+                            className="w-10 h-10 object-cover rounded-md border"
+                        />
                         <Button
                             type="button"
                             onClick={removeImage}

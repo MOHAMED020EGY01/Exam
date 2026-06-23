@@ -5,10 +5,18 @@
  * Provides a React Context to share tree state and actions across all tree components
  * without prop drilling. Replaces passing 15+ props through every component layer.
  *
- * Exports:
- * - TreeContextValue   — Type definition for everything the context holds
- * - TreeProvider       — Wrapper component that supplies the context value
- * - useTreeContext     — Custom hook to consume the context (with existence guard)
+ * Responsibilities:
+ * - Define TreeContextValue interface for all tree state
+ * - Define TreeActions interface for grouped operations
+ * - Provide TreeProvider component
+ * - Export useTreeContext hook for consuming context
+ *
+ * Dependencies:
+ * - React context hooks
+ * - Type definitions from @/interface/global
+ *
+ * Notes:
+ * - Moved from components/tree to features/tree for feature-based organization
  */
 
 import React, { createContext, useContext } from 'react';

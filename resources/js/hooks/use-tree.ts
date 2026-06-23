@@ -23,7 +23,7 @@
 import { useState, useMemo, useCallback, useEffect, useTransition } from "react";
 import { filterTree, getFolderNodeIds } from "../lib/treeHelpers";
 import { TreeNodeData } from "@/interface/global";
-import { SearchScope } from "@/components/tree/SearchInput";
+import { SearchScope } from "@/features/tree/SearchInput";
 
 export function useTree(initialNodes: any) {
     // ── Tree UI state ───────────────────────────────────────────

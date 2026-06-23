@@ -9,6 +9,11 @@
  * - Encapsulate question array CRUD actions (add, remove, update)
  * - Encapsulate answer options array CRUD actions
  * - Coordinate single/multiple option answer selection rules
+ *
+ * Notes:
+ * - Images are stored as File | null for form uploads
+ * - Types are shared across features/exams components
+ * - Moved from features/questions/class to lib/questionHelpers for better organization
  */
 
 export type Answer = {

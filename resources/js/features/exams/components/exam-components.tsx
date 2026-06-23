@@ -8,32 +8,65 @@
  * - Render step headers and navigation indicator dots
  * - Maintain multi-step validation logic and Inertia post action
  * - Coordinate state updates of the questions array
+ * - Convert backend QuestionsData to form-compatible Question type
  *
  * Dependencies:
  * - ExamData and ExamFormQuestions components
  * - Questions state class
  * - Inertia useForm hook
+ *
+ * Notes:
+ * - Type-safe: Uses proper TypeScript types for all props
+ * - Supports create/edit modes via exam prop
+ * - Uses local error state to avoid mutating Inertia's errors object
+ * - Converts backend image strings to File|null for form handling
  */
 
 import { Button } from "@/components/ui/button";
 import { useEffect, useMemo, useState } from "react";
 import { useForm } from "@inertiajs/react";
-import {
-    Answer,
-    Question,
-    Questions,
-} from "@/features/questions/class/question";
+import { Answer, Question, Questions } from "@/lib/questionHelpers/question";
 import { ExamData } from "./exam-data";
 import { ExamFormQuestions } from "./exam-questions-main";
 import { Spinner } from "@/components/ui/spinner";
 import { cn } from "@/lib/utils";
 import { TypeMethodHTTP } from "@/interface/global";
+import {
+    CourseData,
+    ExamsData,
+    QuestionsData,
+    AnswerData,
+} from "@/interface/global";
 
 type FormData = {
     name: string;
     description: string;
     questions: Question[];
 };
+
+// Convert QuestionsData (from backend) to Question (for form)
+function convertQuestionsDataToFormQuestions(qd: QuestionsData[]): Question[] {
+    return qd.map((q) => ({
+        text: q.text,
+        multiple: q.multiple,
+        image: null, // Images are handled as File uploads in form, not strings from backend
+        answers: q.answers.map((a) => ({
+            text: a.text,
+            is_correct: a.is_correct,
+            image: null, // Same for answer images
+        })),
+    }));
+}
+
+interface ExamModalFormQuestionsProps {
+    setOpen: (open: boolean) => void;
+    label: string;
+    exam?: ExamsData | null;
+    method?: TypeMethodHTTP;
+    url?: string;
+    course?: CourseData | null;
+    onStepChange?: (step: number) => void;
+}
 
 function ExamModalFormQuestions({
     setOpen,
@@ -43,24 +76,17 @@ function ExamModalFormQuestions({
     url = "#",
     course = null,
     onStepChange,
-}: {
-    setOpen: (open: boolean) => void;
-    label: string;
-    exam?: any;
-    method?: TypeMethodHTTP;
-    url?: any;
-    course?: any;
-    onStepChange?: (step: number) => void;
-}) {
+}: ExamModalFormQuestionsProps) {
     const [activeStep, setActiveStep] = useState(0);
+    const [localErrors, setLocalErrors] = useState<Record<string, string>>({});
     const { data, setData, processing, resetAndClearErrors, errors, submit } =
         useForm<FormData>({
             name: exam?.name ? exam.name : "",
             description: exam?.description ? exam.description : "",
-            questions: exam?.questions_package ? exam.questions_package : [],
+            questions: exam?.questions_package
+                ? convertQuestionsDataToFormQuestions(exam.questions_package)
+                : [],
         });
-
-    // Notify parent when activeStep changes to adjust modal size dynamically
     useEffect(() => {
         onStepChange?.(activeStep);
     }, [activeStep, onStepChange]);
@@ -116,12 +142,14 @@ function ExamModalFormQuestions({
     /* ================= SUBMIT ================= */
     const handleSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setLocalErrors({}); // Clear local errors on submit
 
         // The Laravel route expects standard multi-part payload.
         // We let Inertia post the data directly as configured.
         submit(method, url, {
             onSuccess: () => {
                 resetAndClearErrors();
+                setLocalErrors({});
                 setOpen(false);
             },
         });
@@ -129,21 +157,25 @@ function ExamModalFormQuestions({
 
     const handleCancel = () => {
         resetAndClearErrors();
+        setLocalErrors({});
         setOpen(false);
     };
 
     /* ================= UI ================= */
     const [showErrors, setShowErrors] = useState(false);
 
+    // Combine Inertia errors with local errors
+    const allErrors = { ...errors, ...localErrors };
+
     useEffect(() => {
-        if (Object.keys(errors).length > 0) {
+        if (Object.keys(allErrors).length > 0) {
             setShowErrors(true);
             const timer = setTimeout(() => {
                 setShowErrors(false);
             }, 6000);
             return () => clearTimeout(timer);
         }
-    }, [errors]);
+    }, [allErrors]);
 
     return (
         <form
@@ -187,16 +219,21 @@ function ExamModalFormQuestions({
             </div>
 
             {/* Error Notification Area */}
-            {showErrors && Object.entries(errors).length > 0 && (
+            {showErrors && Object.entries(allErrors).length > 0 && (
                 <div className="px-6 py-2.5 error-banner border-b text-xs space-y-0.5 max-h-24 overflow-y-auto shrink-0 select-none">
-                    {Object.entries(errors).map(([field, message], index) => (
-                        <div key={index} className="flex items-start gap-1.5">
-                            <span className="font-semibold capitalize shrink-0">
-                                {field.replace(/_/g, " ")}:
-                            </span>
-                            <span>{message}</span>
-                        </div>
-                    ))}
+                    {Object.entries(allErrors).map(
+                        ([field, message], index) => (
+                            <div
+                                key={index}
+                                className="flex items-start gap-1.5"
+                            >
+                                <span className="font-semibold capitalize shrink-0">
+                                    {field.replace(/_/g, " ")}:
+                                </span>
+                                <span>{message}</span>
+                            </div>
+                        ),
+                    )}
                 </div>
             )}
 
@@ -210,21 +247,21 @@ function ExamModalFormQuestions({
                 {activeStep === 0 ? (
                     <ExamData
                         data={data}
-                        errors={errors}
+                        errors={allErrors}
                         setData={setData}
-                        course={course}
+                        course={course || undefined}
                     />
                 ) : (
                     <div className="h-full flex flex-col">
-                        {errors[`questions`] && (
+                        {allErrors[`questions`] && (
                             <p className="text-destructive text-xs font-semibold px-6 py-2.5 border-b bg-destructive/5 flex items-center gap-1">
-                                {errors[`questions`]}
+                                {allErrors[`questions`]}
                             </p>
                         )}
                         <ExamFormQuestions
                             backSelf={setActiveStep}
                             data={data}
-                            errors={errors}
+                            errors={allErrors}
                             updateQuestion={updateQuestion}
                             updateAnswer={updateAnswer}
                             removeQuestion={removeQuestion}
@@ -268,10 +305,13 @@ function ExamModalFormQuestions({
                             onClick={() => {
                                 // Validate basic fields before advancing
                                 if (!data.name.trim()) {
-                                    errors.name = "Exam name is required";
+                                    setLocalErrors({
+                                        name: "Exam name is required",
+                                    });
                                     setShowErrors(true);
                                     return;
                                 }
+                                setLocalErrors({}); // Clear local errors when validation passes
                                 setActiveStep(1);
                                 if (data.questions.length === 0) {
                                     addQuestion();

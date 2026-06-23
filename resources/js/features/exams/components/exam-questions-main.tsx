@@ -13,6 +13,10 @@
  * - RadioGroup and Progress components (Shadcn UI)
  * - Lucide icons
  * - framer-motion animations
+ *
+ * Notes:
+ * - Type-safe: Uses Question and Answer types from lib/questionHelpers
+ * - Supports keyboard navigation for accessibility
  */
 
 import { Button } from "@/components/ui/button";
@@ -22,21 +26,40 @@ import ExamQuestions from "./exam-questions";
 import { RadioGroup } from "@/components/ui/radio-group";
 import ExamAnswers from "./exam-answers";
 import { cn } from "@/lib/utils";
-import { X, Plus, HelpCircle, AlertCircle, ChevronLeft, ChevronRight } from "lucide-react";
+import {
+    X,
+    Plus,
+    HelpCircle,
+    AlertCircle,
+    ChevronLeft,
+    ChevronRight,
+} from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Label } from "@/components/ui/label";
+import { Question, Answer } from "@/lib/questionHelpers/question";
 
 interface ExamFormQuestionsProps {
-    backSelf: any;
-    data: any;
-    errors: any;
-    updateQuestion: any;
-    updateAnswer: any;
-    removeQuestion: any;
-    addAnswer: any;
-    removeAnswer: any;
-    toggleCorrect: any;
-    addQuestion: any;
+    backSelf: (step: number) => void;
+    data: {
+        questions: Question[];
+    };
+    errors: Record<string, string>;
+    updateQuestion: <K extends keyof Question>(
+        questionIndex: number,
+        key: K,
+        value: Question[K],
+    ) => void;
+    updateAnswer: <K extends keyof Answer>(
+        questionIndex: number,
+        answerIndex: number,
+        key: K,
+        value: Answer[K],
+    ) => void;
+    removeQuestion: (questionIndex: number) => void;
+    addAnswer: (questionIndex: number) => void;
+    removeAnswer: (questionIndex: number, answerIndex: number) => void;
+    toggleCorrect: (questionIndex: number, answerIndex: number) => void;
+    addQuestion: () => void;
 }
 
 function ExamFormQuestions({
@@ -71,19 +94,20 @@ function ExamFormQuestions({
         }
     }, [questionCurrent, currentQuestion]);
 
-    const progressQuestions = totalQuestions > 0
-        ? Math.floor(((questionCurrent + 1) / totalQuestions) * 100)
-        : 0;
+    const progressQuestions =
+        totalQuestions > 0
+            ? Math.floor(((questionCurrent + 1) / totalQuestions) * 100)
+            : 0;
 
     const handleNext = useCallback(() => {
         if (questionCurrent + 1 < totalQuestions) {
-            setQuestionCurrent(prev => prev + 1);
+            setQuestionCurrent((prev) => prev + 1);
         }
     }, [questionCurrent, totalQuestions]);
 
     const handlePrevious = useCallback(() => {
         if (questionCurrent > 0) {
-            setQuestionCurrent(prev => prev - 1);
+            setQuestionCurrent((prev) => prev - 1);
         }
     }, [questionCurrent]);
 
@@ -140,11 +164,13 @@ function ExamFormQuestions({
 
     if (!currentQuestion) return null;
 
-    const answers = Array.isArray(currentQuestion.answers) ? currentQuestion.answers : [];
+    const answers = Array.isArray(currentQuestion.answers)
+        ? currentQuestion.answers
+        : [];
 
     const answersList = (
         <div className="space-y-2.5">
-            {answers.map((answer: any, answerIndex: number) => (
+            {answers.map((answer: Answer, answerIndex: number) => (
                 <ExamAnswers
                     key={answerIndex}
                     questionIndex={questionCurrent}
@@ -170,7 +196,7 @@ function ExamFormQuestions({
                 </div>
 
                 <div className="flex flex-row md:flex-col overflow-x-auto md:overflow-y-auto p-2 gap-1.5 md:space-y-1 max-h-[56px] md:max-h-none items-center scrollbar-none">
-                    {questions.map((q: any, idx: number) => {
+                    {questions.map((q: Question, idx: number) => {
                         const hasError = errorSet.has(idx);
                         const isActive = idx === questionCurrent;
                         return (
@@ -182,20 +208,30 @@ function ExamFormQuestions({
                                     isActive
                                         ? "bg-primary/10 border-primary text-primary font-semibold md:bg-primary/5 md:border-primary/20 shadow-xs"
                                         : "bg-background md:bg-transparent border-border md:border-transparent hover:bg-muted/50 text-muted-foreground hover:text-foreground",
-                                    hasError && !isActive && "border-destructive bg-destructive/5 text-destructive"
+                                    hasError &&
+                                        !isActive &&
+                                        "border-destructive bg-destructive/5 text-destructive",
                                 )}
                             >
                                 <div className="flex items-center gap-2 truncate md:pr-6">
-                                    <span className={cn(
-                                        "flex items-center justify-center w-6 h-6 md:w-5 md:h-5 text-xs rounded-full border shrink-0 transition-all font-semibold",
-                                        isActive 
-                                            ? "bg-primary text-primary-foreground border-primary" 
-                                            : "bg-muted border-border text-muted-foreground"
-                                    )}>
+                                    <span
+                                        className={cn(
+                                            "flex items-center justify-center w-6 h-6 md:w-5 md:h-5 text-xs rounded-full border shrink-0 transition-all font-semibold",
+                                            isActive
+                                                ? "bg-primary text-primary-foreground border-primary"
+                                                : "bg-muted border-border text-muted-foreground",
+                                        )}
+                                    >
                                         {idx + 1}
                                     </span>
                                     <span className="hidden md:inline truncate">
-                                        {q.text ? q.text : <span className="italic opacity-60">Empty question</span>}
+                                        {q.text ? (
+                                            q.text
+                                        ) : (
+                                            <span className="italic opacity-60">
+                                                Empty question
+                                            </span>
+                                        )}
                                     </span>
                                 </div>
 
@@ -218,7 +254,7 @@ function ExamFormQuestions({
                             </div>
                         );
                     })}
-                    
+
                     {/* Add Question Button on Mobile */}
                     <button
                         type="button"
@@ -249,10 +285,14 @@ function ExamFormQuestions({
                     <div className="space-y-0.5">
                         <div className="flex items-center gap-2">
                             <span className="text-xs font-semibold text-muted-foreground">
-                                Question {questionCurrent + 1} of {totalQuestions}
+                                Question {questionCurrent + 1} of{" "}
+                                {totalQuestions}
                             </span>
                         </div>
-                        <Progress value={progressQuestions} className="w-24 sm:w-36 h-1.5" />
+                        <Progress
+                            value={progressQuestions}
+                            className="w-24 sm:w-36 h-1.5"
+                        />
                     </div>
 
                     <div className="flex gap-1.5">
@@ -260,7 +300,9 @@ function ExamFormQuestions({
                             type="button"
                             variant="ghost"
                             size="icon"
-                            onClick={() => handleRemoveQuestion(questionCurrent)}
+                            onClick={() =>
+                                handleRemoveQuestion(questionCurrent)
+                            }
                             className="w-8 h-8 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 md:hidden"
                             title="Delete Current Question"
                         >
@@ -319,22 +361,30 @@ function ExamFormQuestions({
                                     </Label>
                                     <Button
                                         type="button"
-                                        onClick={() => addAnswer(questionCurrent)}
+                                        onClick={() =>
+                                            addAnswer(questionCurrent)
+                                        }
                                         variant="outline"
                                         size="sm"
                                         className="h-8 gap-1.5 text-xs font-semibold"
                                     >
-                                        <Plus className="w-3.5 h-3.5" /> Add Option
+                                        <Plus className="w-3.5 h-3.5" /> Add
+                                        Option
                                     </Button>
                                 </div>
 
                                 {!multiChosen ? (
                                     <RadioGroup
                                         value={answers
-                                            .findIndex((a: any) => a.is_correct)
+                                            .findIndex(
+                                                (a: Answer) => a.is_correct,
+                                            )
                                             .toString()}
                                         onValueChange={(value) =>
-                                            toggleCorrect(questionCurrent, Number(value))
+                                            toggleCorrect(
+                                                questionCurrent,
+                                                Number(value),
+                                            )
                                         }
                                         className="space-y-2"
                                     >
@@ -346,10 +396,16 @@ function ExamFormQuestions({
                                     </div>
                                 )}
 
-                                {errors[`questions.${questionCurrent}.answers`] && (
+                                {errors[
+                                    `questions.${questionCurrent}.answers`
+                                ] && (
                                     <p className="text-destructive text-xs font-medium flex items-center gap-1 mt-1">
                                         <AlertCircle className="w-3.5 h-3.5 shrink-0" />
-                                        {errors[`questions.${questionCurrent}.answers`]}
+                                        {
+                                            errors[
+                                                `questions.${questionCurrent}.answers`
+                                            ]
+                                        }
                                     </p>
                                 )}
                             </div>

@@ -4,21 +4,21 @@
  * Purpose:
  * Renders course and exam container nodes in the tree structure.
  *
- * Changes from previous version:
- * - All action callbacks (onAddExam, onEditCourse, onCopy, etc.) and clipboard
- *   state are now consumed via useTreeContext().actions instead of being passed
- *   as props — reducing the interface from ~15 props to 7.
- * - React.memo applied with comparison on node.id, isExpanded, isSelected,
- *   and clipboard.id to avoid re-renders when unrelated context slices change.
- *
- * Props kept:
- *   node, depth, isExpanded, isSelected, onToggle, onSelect, children
+ * Responsibilities:
+ * - Display folder icon, label, and item count
+ * - Show/hide expand/collapse chevron
+ * - Render dropdown menu with course/exam actions
+ * - Render children when expanded
+ * - Display "Copied" indicator when node is in clipboard
  *
  * Dependencies:
  * - TreeIcon, ChevronIcon
  * - DropdownMenu (Shadcn UI)
  * - Lucide icons
  * - useTreeContext
+ *
+ * Notes:
+ * - Moved from components/tree to features/tree for feature-based organization
  */
 
 import React from "react";

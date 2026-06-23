@@ -4,17 +4,19 @@
  * Purpose:
  * Renders a question leaf node in the explorer tree.
  *
- * Changes from previous version:
- * - clipboard, onCopy, onMove, onDuplicate, onDeleteQuestion are now consumed
- *   via useTreeContext().actions instead of being passed as props.
- * - Props reduced to: node, depth, isSelected, onSelect.
- * - React.memo applied with comparison on node.id, isSelected, and clipboard.id.
+ * Responsibilities:
+ * - Display question icon and label
+ * - Render dropdown menu with question actions
+ * - Display "Copied" indicator when node is in clipboard
  *
  * Dependencies:
  * - TreeIcon
  * - DropdownMenu (Shadcn UI)
  * - Lucide icons
  * - useTreeContext
+ *
+ * Notes:
+ * - Moved from components/tree to features/tree for feature-based organization
  */
 
 import React from 'react';

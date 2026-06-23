@@ -5,15 +5,18 @@
  * Decides whether to render a folder node (TreeFolder) or leaf node (TreeItem)
  * based on node.type, and handles recursive child rendering.
  *
- * Changes from previous version:
- * - Props reduced to `node` and `depth` only.
- * - expandedKeys, selectedNode, toggleExpand, setSelectedNode and all action
- *   callbacks are now read from useTreeContext() instead of being passed as props.
- * - React.memo applied with comparison on node.id and depth for performance.
+ * Responsibilities:
+ * - Route rendering based on node type
+ * - Render TreeFolder for courses/exams
+ * - Render TreeItem for questions
+ * - Render RecursiveTree for children
  *
  * Dependencies:
  * - TreeFolder, TreeItem, RecursiveTree
  * - useTreeContext
+ *
+ * Notes:
+ * - Moved from components/tree to features/tree for feature-based organization
  */
 
 import React from 'react';

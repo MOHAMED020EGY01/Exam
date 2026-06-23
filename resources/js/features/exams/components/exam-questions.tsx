@@ -12,6 +12,9 @@
  * Dependencies:
  * - FileCustom and ImagePreview components (Common)
  * - Input/Label components (Shadcn UI)
+ *
+ * Notes:
+ * - Type-safe: Uses Question type from lib/questionHelpers
  */
 
 import { Button } from "@/components/ui/button";
@@ -21,12 +24,17 @@ import ImageCustom from "@/components/common/FileCustom";
 import ImagePreview from "@/components/common/ImagePreview";
 import { cn } from "@/lib/utils";
 import { X, HelpCircle, Layers, CheckSquare, List } from "lucide-react";
+import { Question } from "@/lib/questionHelpers/question";
 
-interface Props {
-    question: any;
+interface ExamQuestionsProps {
+    question: Question;
     questionIndex: number;
-    updateQuestion: any;
-    errors: any;
+    updateQuestion: <K extends keyof Question>(
+        questionIndex: number,
+        key: K,
+        value: Question[K],
+    ) => void;
+    errors: Record<string, string>;
     multiChosen: boolean;
     setMultiChosen: (chosen: boolean) => void;
 }
@@ -38,7 +46,7 @@ function ExamQuestions({
     errors,
     multiChosen,
     setMultiChosen,
-}: Props) {
+}: ExamQuestionsProps) {
     const removeImage = () => {
         updateQuestion(questionIndex, "image", null);
     };
@@ -47,14 +55,20 @@ function ExamQuestions({
         <div className="space-y-6 animate-in fade-in-10 duration-200">
             {/* Question Text */}
             <div className="space-y-2">
-                <Label htmlFor={`question-text-${questionIndex}`} className="text-sm font-semibold flex items-center gap-1.5 text-foreground">
+                <Label
+                    htmlFor={`question-text-${questionIndex}`}
+                    className="text-sm font-semibold flex items-center gap-1.5 text-foreground"
+                >
                     <HelpCircle className="w-4 h-4 text-primary" />
                     Question Prompt
                 </Label>
-                <div className={cn(
-                    "flex items-stretch rounded-lg border border-input shadow-xs focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary transition-all overflow-hidden bg-background",
-                    errors[`questions.${questionIndex}.text`] && "border-destructive focus-within:ring-destructive/20 focus-within:border-destructive"
-                )}>
+                <div
+                    className={cn(
+                        "flex items-stretch rounded-lg border border-input shadow-xs focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary transition-all overflow-hidden bg-background",
+                        errors[`questions.${questionIndex}.text`] &&
+                            "border-destructive focus-within:ring-destructive/20 focus-within:border-destructive",
+                    )}
+                >
                     <input
                         id={`question-text-${questionIndex}`}
                         value={question?.text || ""}
@@ -83,7 +97,10 @@ function ExamQuestions({
 
                 {question?.image && (
                     <div className="mt-3 relative inline-block">
-                        <ImagePreview image={question.image} className="w-32 h-24 object-contain rounded-lg border border-dashed p-1" />
+                        <ImagePreview
+                            image={question.image}
+                            className="w-32 h-24 object-contain rounded-lg border border-dashed p-1"
+                        />
                         <Button
                             type="button"
                             onClick={removeImage}
@@ -123,7 +140,7 @@ function ExamQuestions({
                             "flex items-center justify-center gap-2 py-2.5 px-4 border rounded-lg text-sm transition-all font-medium",
                             !question?.multiple
                                 ? "bg-primary/5 border-primary text-primary shadow-xs"
-                                : "bg-transparent border-border text-muted-foreground hover:text-foreground hover:bg-muted/30"
+                                : "bg-transparent border-border text-muted-foreground hover:text-foreground hover:bg-muted/30",
                         )}
                     >
                         <List className="w-4 h-4 shrink-0" />
@@ -139,7 +156,7 @@ function ExamQuestions({
                             "flex items-center justify-center gap-2 py-2.5 px-4 border rounded-lg text-sm transition-all font-medium",
                             question?.multiple
                                 ? "bg-primary/5 border-primary text-primary shadow-xs"
-                                : "bg-transparent border-border text-muted-foreground hover:text-foreground hover:bg-muted/30"
+                                : "bg-transparent border-border text-muted-foreground hover:text-foreground hover:bg-muted/30",
                         )}
                     >
                         <CheckSquare className="w-4 h-4 shrink-0" />

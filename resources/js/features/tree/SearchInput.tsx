@@ -12,18 +12,21 @@
  * Dependencies:
  * - DropdownMenu and Input components (Shadcn UI)
  * - Lucide icons
+ *
+ * Notes:
+ * - Moved from components/tree to features/tree for feature-based organization
  */
 
 import React from 'react';
 import { Search, ChevronDown, Loader2 } from 'lucide-react';
-import { Input } from '../ui/input';
+import { Input } from '@/components/ui/input';
 import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
-} from '../ui/dropdown-menu';
+} from '@/components/ui/dropdown-menu';
 
 export type SearchScope = 'all' | 'course' | 'exam' | 'question';
 
