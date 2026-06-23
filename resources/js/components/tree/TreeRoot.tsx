@@ -17,13 +17,14 @@
  */
 
 import React from 'react';
-import { TreeNodeData } from '@/interface/global';
+import { CourseData, ExamsData, TreeNodeData } from '@/interface/global';
 import { RecursiveTree } from './RecursiveTree';
 import { TreeIcon, ChevronIcon } from './TreeIcon';
 import { Search, FolderPlus, ChevronsDown, ChevronsUp, FolderTree } from 'lucide-react';
 import { SearchInput, SearchScope } from './SearchInput';
 
 interface TreeRootProps {
+  // Data useTree hook
   filteredNodes: TreeNodeData[];
   expandedKeys: Record<string, boolean>;
   selectedNode: TreeNodeData | null;
@@ -39,12 +40,12 @@ interface TreeRootProps {
 
   // Callback actions
   onAddCourse: () => void;
-  onAddExam: (course: any) => void;
-  onEditCourse: (course: any) => void;
-  onDeleteCourse: (course: any) => void;
-  onEditExam: (exam: any) => void;
-  onDeleteExam: (exam: any) => void;
-  onDownloadExam: (exam: any) => void;
+  onAddExam: (course: CourseData) => void;
+  onEditCourse: (course: CourseData) => void;
+  onDeleteCourse: (course: CourseData) => void;
+  onEditExam: (exam: ExamsData) => void;
+  onDeleteExam: (exam: ExamsData) => void;
+  onDownloadExam: (exam: ExamsData) => void;
 
   // Clipboard & Move operations
   clipboard?: any;
@@ -56,6 +57,7 @@ interface TreeRootProps {
 }
 
 export const TreeRoot: React.FC<TreeRootProps> = ({
+  // Data useTree hook
   filteredNodes,
   expandedKeys,
   selectedNode,
@@ -68,6 +70,8 @@ export const TreeRoot: React.FC<TreeRootProps> = ({
   scope,
   setScope,
   isPending,
+
+  // Callback actions
   onAddCourse,
   onAddExam,
   onEditCourse,
@@ -75,6 +79,7 @@ export const TreeRoot: React.FC<TreeRootProps> = ({
   onEditExam,
   onDeleteExam,
   onDownloadExam,
+  // Clipboard & Move operations
   clipboard,
   onCopy,
   onPaste,
@@ -82,6 +87,21 @@ export const TreeRoot: React.FC<TreeRootProps> = ({
   onDuplicate,
   onDeleteQuestion,
 }) => {
+  /*
+  !used in TreeRoot
+    expandedKeys
+    onAddCourse
+    expandAll
+    collapseAll
+
+    searchQuery
+    setSearchQuery
+    scope
+    setScope
+    isPending
+
+    toggleExpand
+  */
   const isRootExpanded = expandedKeys['root'] !== false; // Default expanded to true
 
   return (
@@ -117,7 +137,7 @@ export const TreeRoot: React.FC<TreeRootProps> = ({
         </div>
       </div>
 
-      {/* Explorer Search Scoped Input */}
+      {/*//! Explorer Search Scoped Input */}
       <div className="p-3 border-b border-border bg-muted/10">
         <SearchInput
           searchQuery={searchQuery}
@@ -134,11 +154,10 @@ export const TreeRoot: React.FC<TreeRootProps> = ({
         <div>
           <div
             onClick={() => toggleExpand('root')}
-            className={`flex items-center gap-2 py-1.5 px-3 mx-1 my-0.5 rounded-md cursor-pointer transition-colors duration-150 text-sm select-none hover:bg-foreground/5 ${
-              selectedNode?.id === 'root'
+            className={`flex items-center gap-2 py-1.5 px-3 mx-1 my-0.5 rounded-md cursor-pointer transition-colors duration-150 text-sm select-none hover:bg-foreground/5 ${selectedNode?.id === 'root'
                 ? 'bg-primary/10 text-primary font-medium border-l-2 border-primary pl-2.5'
                 : 'text-foreground'
-            }`}
+              }`}
           >
             <ChevronIcon expanded={isRootExpanded} />
             <TreeIcon type="root" />
@@ -153,18 +172,23 @@ export const TreeRoot: React.FC<TreeRootProps> = ({
             <div className="flex flex-col mt-1">
               {filteredNodes.length > 0 ? (
                 <RecursiveTree
+                  // Data useTree hook
                   nodes={filteredNodes}
                   depth={1}
                   expandedKeys={expandedKeys}
                   selectedNode={selectedNode}
                   toggleExpand={toggleExpand}
                   setSelectedNode={setSelectedNode}
+
+                  // Callback actions
                   onAddExam={onAddExam}
                   onEditCourse={onEditCourse}
                   onDeleteCourse={onDeleteCourse}
                   onEditExam={onEditExam}
                   onDeleteExam={onDeleteExam}
                   onDownloadExam={onDownloadExam}
+
+                  // Clipboard & Move operations
                   clipboard={clipboard}
                   onCopy={onCopy}
                   onPaste={onPaste}

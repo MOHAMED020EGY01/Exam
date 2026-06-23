@@ -45,15 +45,18 @@ const form = [
 
 function Home ({ courses }: Props){
 
+    //! Not work if change in courses
     const safeCourses = useMemo((): CourseData[] => {
         return courses;
     }, [courses]);
 
+    //! Change Data from Object Api to TreeNodeData
     const treeNodes = useMemo(
         () => normalizeCoursesToTree(safeCourses),
         [safeCourses],
     );
 
+    //! Add all feature to new TreeNodeData
     const {
         filteredNodes,
         expandedKeys,
@@ -70,6 +73,7 @@ function Home ({ courses }: Props){
         setExpand,
     } = useTree(treeNodes);
 
+    //! Clipboard
     const {
         clipboard,
         moveTarget,
@@ -83,6 +87,8 @@ function Home ({ courses }: Props){
         handleMoveConfirm,
         handleDeleteQuestion,
     } = useClipboard();
+
+    //TODO uesState instead of useState
 
     const [courseCreateOpen, setCourseCreateOpen] = useState(false);
     const [courseEditOpen, setCourseEditOpen] = useState(false);
@@ -129,7 +135,7 @@ function Home ({ courses }: Props){
         }
     };
 
-    const handleDeleteExam = (exam: any) => {
+    const handleDeleteExam = (exam: ExamsData) => {
         setActiveExam(exam);
         const course = safeCourses.find(
             (c) => String(c?.id) === String(exam?.course_id),
@@ -138,7 +144,7 @@ function Home ({ courses }: Props){
         setExamDeleteOpen(true);
     };
 
-    const handleDownloadExam = (exam: any) => {
+    const handleDownloadExam = (exam: ExamsData) => {
         if (exam && exam.course_id && exam.id) {
             courseService.downloadExam(exam.course_id, exam.id);
         }

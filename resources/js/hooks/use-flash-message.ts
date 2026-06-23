@@ -13,12 +13,12 @@
 
 import { usePage } from "@inertiajs/react";
 export interface FlashMessage {
-    code: string;
-    message: string;
-    title: string;
-    type: "success" | "error" | "warning" | "info";
+    success?: string;
+    error?: string;
+    info?: string;
+    warning?: string;
 }
 export const useFlashMessage = () => {
-    const flashMessage = usePage().props.flash_message as FlashMessage | null;
+    const flashMessage = usePage().props.flash as FlashMessage | null;
     return flashMessage;
 };

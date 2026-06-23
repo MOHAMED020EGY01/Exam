@@ -19,21 +19,22 @@ class ExamClipboardController extends Controller
     /**
      * Copy an exam and paste it into a destination course.
      */
-    public function pasteExam(Request $request){
+    public function pasteExam(Request $request)
+    {
         $request->validate([
             'exam_id' => 'required|exists:exams,id',
             'destination_course_id' => 'required|exists:courses,id',
         ]);
 
         $user = Auth::user();
-        $sourceExam = Exam::where('id', '=' ,$request->exam_id,'and')->where('user_id', $user->id)->firstOrFail();
-        $destinationCourse = Course::where('id', '=' ,$request->destination_course_id,'and')->where('user_id', $user->id)->firstOrFail();
+        $sourceExam = Exam::where('id', '=', $request->exam_id, 'and')->where('user_id', $user->id)->firstOrFail();
+        $destinationCourse = Course::where('id', '=', $request->destination_course_id, 'and')->where('user_id', $user->id)->firstOrFail();
 
         // Resolve name collision in the destination course
         $baseName = $sourceExam->name;
         $newName = $baseName;
         $suffix = 1;
-        while (Exam::where('name', '=' ,$newName,'and')->where('course_id', $destinationCourse->id)->where('user_id', $user->id)->exists()) {
+        while (Exam::where('name', '=', $newName, 'and')->where('course_id', $destinationCourse->id)->where('user_id', $user->id)->exists()) {
             $newName = $baseName . " - Copy" . ($suffix > 1 ? " $suffix" : "");
             $suffix++;
         }
@@ -74,22 +75,23 @@ class ExamClipboardController extends Controller
     /**
      * Move an exam from its current course to a destination course.
      */
-    public function moveExam(Request $request){
+    public function moveExam(Request $request)
+    {
         $request->validate([
             'exam_id' => 'required|exists:exams,id',
             'destination_course_id' => 'required|exists:courses,id',
         ]);
 
         $user = Auth::user();
-        $exam = Exam::where('id', '=' ,$request->exam_id,'and')->where('user_id', $user->id)->firstOrFail();
-        $destinationCourse = Course::where('id', '=' ,$request->destination_course_id,'and')->where('user_id', $user->id)->firstOrFail();
+        $exam = Exam::where('id', '=', $request->exam_id, 'and')->where('user_id', $user->id)->firstOrFail();
+        $destinationCourse = Course::where('id', '=', $request->destination_course_id, 'and')->where('user_id', $user->id)->firstOrFail();
 
         if ($exam->course_id === $destinationCourse->id) {
             return back()->with('error', 'Exam is already in the selected destination course.');
         }
 
         // Prevent name collisions in destination course
-        $conflictExists = Exam::where('name', '=' ,$exam->name,'and')
+        $conflictExists = Exam::where('name', '=', $exam->name, 'and')
             ->where('course_id', $destinationCourse->id)
             ->where('user_id', $user->id)
             ->exists();
@@ -124,13 +126,14 @@ class ExamClipboardController extends Controller
     /**
      * Duplicate an exam inside the same course.
      */
-    public function duplicateExam(Request $request){
+    public function duplicateExam(Request $request)
+    {
         $request->validate([
             'exam_id' => 'required|exists:exams,id',
         ]);
 
         $user = Auth::user();
-        $sourceExam = Exam::where('id', '=' ,$request->exam_id,'and')->where('user_id', $user->id)->firstOrFail();
+        $sourceExam = Exam::where('id', '=', $request->exam_id, 'and')->where('user_id', $user->id)->firstOrFail();
 
         $request->merge([
             'destination_course_id' => $sourceExam->course_id

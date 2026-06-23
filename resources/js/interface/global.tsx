@@ -17,8 +17,9 @@ import { ReactNode } from "react";
 
 export type TypeMethodHTTP = "get" | "post" | "put" | "delete";
 export type Variant = "default" | "destructive";
-export type nodeType = "course" | "exam" | "question";
-export type originalData = CourseData | QuestionsData | ExamsData;
+export type NodeType = "course" | "exam" | "question";
+export type OriginalData = CourseData | QuestionsData | ExamsData;
+
 export interface DropdownItemInterface {
     label: string;
     icon: ReactNode;
@@ -70,9 +71,9 @@ export interface CourseData {
 export interface TreeNodeData {
     id: string; // e.g. 'course-1', 'exam-3', 'question-3-0'
     label: string;
-    type: nodeType;
+    type: NodeType;
     parentId?: string;
     originalId: string | number;
-    originalData?: originalData;
+    originalData?: OriginalData;
     children?: TreeNodeData[];
 }

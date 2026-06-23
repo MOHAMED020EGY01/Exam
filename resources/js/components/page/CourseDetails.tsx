@@ -35,18 +35,15 @@ import {
     Eye,
     Download,
 } from "lucide-react";
-import { CourseData, TreeNodeData } from "@/interface/global";
-
-// Declare route function for TS compilation
-declare function route(name: string, params?: any): string;
+import { CourseData, ExamsData, TreeNodeData } from "@/interface/global";
 
 interface CourseDetailsProps {
     selectedNode: TreeNodeData;
-    selectedNodeExams: any[];
-    onEditCourse: (course: any) => void;
-    onDeleteCourse: (course: any) => void;
-    onAddExam: (course: any) => void;
-    onDownloadExam: (exam: any) => void;
+    selectedNodeExams: ExamsData[];
+    onEditCourse: (course: CourseData) => void;
+    onDeleteCourse: (course: CourseData) => void;
+    onAddExam: (course: CourseData) => void;
+    onDownloadExam: (exam: ExamsData) => void;
 }
 
 export const CourseDetails: React.FC<CourseDetailsProps> = ({
@@ -81,7 +78,7 @@ export const CourseDetails: React.FC<CourseDetailsProps> = ({
                             variant="outline"
                             size="sm"
                             onClick={() =>
-                                onEditCourse(selectedNode.originalData)
+                                onEditCourse(selectedNode.originalData as CourseData)
                             }
                         >
                             <Pen className="w-4 h-4 mr-1.5" />
@@ -91,7 +88,7 @@ export const CourseDetails: React.FC<CourseDetailsProps> = ({
                             variant="destructive"
                             size="sm"
                             onClick={() =>
-                                onDeleteCourse(selectedNode.originalData)
+                                onDeleteCourse(selectedNode.originalData as CourseData)
                             }
                         >
                             <Trash className="w-4 h-4 mr-1.5" />
@@ -130,14 +127,14 @@ export const CourseDetails: React.FC<CourseDetailsProps> = ({
                         </h4>
                         <Button
                             size="xs"
-                            onClick={() => onAddExam(selectedNode.originalData)}
+                            onClick={() => onAddExam(selectedNode.originalData as CourseData)}
                         >
                             <Plus className="w-3.5 h-3.5 mr-1" /> Add Exam
                         </Button>
                     </div>
                     {selectedNodeExams.length > 0 ? (
                         <div className="border rounded-lg overflow-hidden divide-y">
-                            {selectedNodeExams.map((exam: any) => (
+                            {selectedNodeExams.map((exam: ExamsData) => (
                                 <div
                                     key={exam?.id || String(Math.random())}
                                     className="flex justify-between items-center p-3 hover:bg-muted/10 transition-colors text-sm"

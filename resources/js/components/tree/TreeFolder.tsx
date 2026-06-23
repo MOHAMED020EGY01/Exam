@@ -17,7 +17,7 @@
  */
 
 import React from 'react';
-import { TreeNodeData } from '@/interface/global';
+import { CourseData, ExamsData, TreeNodeData } from '@/interface/global';
 import { TreeIcon, ChevronIcon } from './TreeIcon';
 import {
   Plus,
@@ -50,12 +50,12 @@ interface TreeFolderProps {
   children?: React.ReactNode;
 
   // Action triggers
-  onAddExam?: (course: any) => void;
-  onEditCourse?: (course: any) => void;
-  onDeleteCourse?: (course: any) => void;
-  onEditExam?: (exam: any) => void;
-  onDeleteExam?: (exam: any) => void;
-  onDownloadExam?: (exam: any) => void;
+  onAddExam?: (course: CourseData) => void;
+  onEditCourse?: (course: CourseData) => void;
+  onDeleteCourse?: (course: CourseData) => void;
+  onEditExam?: (exam: ExamsData) => void;
+  onDeleteExam?: (exam: ExamsData) => void;
+  onDownloadExam?: (exam: ExamsData) => void;
 
   // Clipboard & Move operations
   clipboard?: any;
@@ -155,13 +155,13 @@ export const TreeFolder: React.FC<TreeFolderProps> = ({
               {isCourse && (
                 <>
                   {onAddExam && (
-                    <DropdownMenuItem onClick={() => onAddExam(node.originalData)}>
+                    <DropdownMenuItem onClick={() => onAddExam(node.originalData as CourseData)}>
                       <Plus className="w-4 h-4 mr-2" />
                       Create Exam
                     </DropdownMenuItem>
                   )}
                   {onEditCourse && (
-                    <DropdownMenuItem onClick={() => onEditCourse(node.originalData)}>
+                    <DropdownMenuItem onClick={() => onEditCourse(node.originalData as CourseData)}>
                       <Pen className="w-4 h-4 mr-2" />
                       Edit Course
                     </DropdownMenuItem>
@@ -176,7 +176,7 @@ export const TreeFolder: React.FC<TreeFolderProps> = ({
                   {onDeleteCourse && (
                     <DropdownMenuItem
                       variant="destructive"
-                      onClick={() => onDeleteCourse(node.originalData)}
+                      onClick={() => onDeleteCourse(node.originalData as CourseData)}
                     >
                       <Trash className="w-4 h-4 mr-2" />
                       Delete Course
@@ -188,13 +188,13 @@ export const TreeFolder: React.FC<TreeFolderProps> = ({
               {isExam && (
                 <>
                   {onDownloadExam && (
-                    <DropdownMenuItem onClick={() => onDownloadExam(node.originalData)}>
+                    <DropdownMenuItem onClick={() => onDownloadExam(node.originalData as ExamsData)}>
                       <Download className="w-4 h-4 mr-2" />
                       Download Zip
                     </DropdownMenuItem>
                   )}
                   {onEditExam && (
-                    <DropdownMenuItem onClick={() => onEditExam(node.originalData)}>
+                    <DropdownMenuItem onClick={() => onEditExam(node.originalData as ExamsData)}>
                       <Pen className="w-4 h-4 mr-2" />
                       Edit Exam
                     </DropdownMenuItem>
@@ -228,7 +228,7 @@ export const TreeFolder: React.FC<TreeFolderProps> = ({
                   {onDeleteExam && (
                     <DropdownMenuItem
                       variant="destructive"
-                      onClick={() => onDeleteExam(node.originalData)}
+                      onClick={() => onDeleteExam(node.originalData as ExamsData)}
                     >
                       <Trash className="w-4 h-4 mr-2" />
                       Delete Exam

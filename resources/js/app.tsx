@@ -14,25 +14,38 @@
  * - ThemeProvider (Common components)
  */
 
-import './bootstrap';
-import '../css/app.css';
-import { createInertiaApp } from '@inertiajs/react';
-import { createRoot } from 'react-dom/client';
-import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
-import { ThemeProvider } from './components/common/ThemeProvider';
+import "./bootstrap";
+import "../css/app.css";
+import { createInertiaApp } from "@inertiajs/react";
+import { createRoot } from "react-dom/client";
+import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers";
+import { ThemeProvider } from "./components/common/ThemeProvider";
+import Echo from "laravel-echo";
+import Pusher from "pusher-js";
+
+window.Pusher = Pusher;
+
+window.Echo = new Echo({
+    broadcaster: "pusher",
+    key: import.meta.env.VITE_PUSHER_APP_KEY,
+    cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER,
+    forceTLS: true,
+});
 
 createInertiaApp({
     title: (title) => `${title} - Exam App`,
-    resolve: (name) =>
-        resolvePageComponent(
+    resolve: (name) => {
+        console.log("Requested Page:", name);
+        return resolvePageComponent(
             `./Pages/${name}.tsx`,
-            import.meta.glob('./Pages/**/*.tsx')
-        ),
+            import.meta.glob("./Pages/**/*.tsx"),
+        ) as Promise<any>;
+    },
     setup({ el, App, props }) {
         createRoot(el).render(
             <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
                 <App {...props} />
-            </ThemeProvider>
+            </ThemeProvider>,
         );
     },
 

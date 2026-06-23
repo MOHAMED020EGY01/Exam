@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Http\Requests\ExamRequest;
 use App\Models\Exam;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -37,13 +36,13 @@ class ExamServices
             self::disk()->makeDirectory($path);
         }
     }
-    public static function processExamData(ExamRequest $request, string $path, $exam = null)
+    public static function processExamData(array $request, string $path, $exam = null)
     {
         $processedQuestions = [];
         $questionAnswerMap = [];
         $questionCounter = 1;
 
-        foreach ($request->questions as $qIndex => $question) {
+        foreach ($request["questions"] as $qIndex => $question) {
 
             $answers = [];
             $correctIndexes = [];
@@ -89,7 +88,7 @@ class ExamServices
             $path . "/answer.json",
             $answerString
         );
-        self::metaFile(count($request->questions), $path);
+        self::metaFile(count($request["questions"]), $path);
     }
 
     public static function saveFile(string $jsonPath, array|string $processedQuestions)

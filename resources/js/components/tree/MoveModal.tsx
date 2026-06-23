@@ -27,12 +27,13 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Search, Book, FileText, ArrowRight, Move } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { CourseData } from '@/interface/global';
 
 interface MoveModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   nodeToMove: any; // The tree node we want to move
-  courses: any[];  // Full courses list from props
+  courses: CourseData[];  // Full courses list from props
   onMoveConfirm: (destinationId: string | number) => void;
   processing?: boolean;
 }

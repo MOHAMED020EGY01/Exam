@@ -17,11 +17,11 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { HelpCircle, CheckCircle2, XCircle } from "lucide-react";
-import { QuestionsData, TreeNodeData } from "@/interface/global";
+import { AnswerData, QuestionsData, TreeNodeData } from "@/interface/global";
 
 interface QuestionDetailsProps {
   selectedNode: TreeNodeData;
-  selectedNodeAnswers: any[];
+  selectedNodeAnswers: AnswerData[];
 }
 
 export const QuestionDetails: React.FC<QuestionDetailsProps> = ({
@@ -63,7 +63,7 @@ export const QuestionDetails: React.FC<QuestionDetailsProps> = ({
         <div className="space-y-3">
           <h4 className="text-sm font-semibold text-muted-foreground">Options:</h4>
           <div className="flex flex-col gap-3">
-            {selectedNodeAnswers.map((answer: any, index: number) => (
+            {selectedNodeAnswers.map((answer: AnswerData, index: number) => (
               <div
                 key={index}
                 className={`flex items-start gap-3 p-3 border rounded-lg transition-colors ${
@@ -73,9 +73,9 @@ export const QuestionDetails: React.FC<QuestionDetailsProps> = ({
                 }`}
               >
                 {answer?.is_correct ? (
-                  <CheckCircle2 className="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" />
+                  <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />
                 ) : (
-                  <XCircle className="w-5 h-5 text-muted-foreground/30 flex-shrink-0 mt-0.5" />
+                  <XCircle className="w-5 h-5 text-muted-foreground/30 shrink-0 mt-0.5" />
                 )}
                 <div className="flex-1 space-y-2">
                   <p className="text-sm font-medium leading-relaxed">{answer?.text || "No option text"}</p>

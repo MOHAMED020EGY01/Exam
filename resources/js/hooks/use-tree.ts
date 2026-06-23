@@ -40,8 +40,8 @@ export function useTree(initialNodes: any) {
         return Array.isArray(initialNodes)
             ? initialNodes
             : initialNodes && typeof initialNodes === "object"
-              ? Object.values(initialNodes)
-              : [];
+                ? Object.values(initialNodes)
+                : [];
     }, [initialNodes]);
 
     // Recursively find a node by ID in tree

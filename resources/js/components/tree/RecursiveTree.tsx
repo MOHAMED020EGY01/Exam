@@ -13,7 +13,7 @@
  */
 
 import React from 'react';
-import { TreeNodeData } from '@/interface/global';
+import { CourseData, ExamsData, TreeNodeData } from '@/interface/global';
 import { TreeNode } from './TreeNode';
 
 interface RecursiveTreeProps {
@@ -25,12 +25,12 @@ interface RecursiveTreeProps {
   setSelectedNode: (node: TreeNodeData) => void;
 
   // Action triggers
-  onAddExam?: (course: any) => void;
-  onEditCourse?: (course: any) => void;
-  onDeleteCourse?: (course: any) => void;
-  onEditExam?: (exam: any) => void;
-  onDeleteExam?: (exam: any) => void;
-  onDownloadExam?: (exam: any) => void;
+  onAddExam?: (course: CourseData) => void;
+  onEditCourse?: (course: CourseData) => void;
+  onDeleteCourse?: (course: CourseData) => void;
+  onEditExam?: (exam: ExamsData) => void;
+  onDeleteExam?: (exam: ExamsData) => void;
+  onDownloadExam?: (exam: ExamsData) => void;
 
   // Clipboard & Move operations
   clipboard?: any;

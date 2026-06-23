@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CourseRequest;
 use App\Http\Resources\CoursesResource;
 use App\Models\Course;
 use Illuminate\Http\Request;
@@ -28,20 +29,8 @@ class CourseController extends Controller
         ]);
     }
 
-    public function store(Request $request)
+    public function store(CourseRequest $request)
     {
-
-        $request->validate([
-            'name' => [
-                'required',
-                'string',
-                'max:255',
-                Rule::unique('courses')->where(function ($query) {
-                    return $query->where('user_id', Auth::id());
-                }),
-            ],
-            'description' => ['required', 'string', 'max:255'],
-        ]);
         $user = Auth::user();
         Course::create([
             'name' => $request->name,
@@ -58,16 +47,12 @@ class CourseController extends Controller
         return redirect()->route('courses.index', ['course_id' => $course->id]);
     }
 
-    public function update(Request $request, Course $course)
+    public function update(CourseRequest $request, Course $course)
     {
         $user = Auth::user();
         if ($course->user_id !== $user->id) {
             return back()->with('error', 'You are not authorized to update this course');
         }
-        $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'description' => ['required', 'string', 'max:255'],
-        ]);
 
         $course->update([
             'name' => $request->name,

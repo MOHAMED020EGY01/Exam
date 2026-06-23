@@ -19,14 +19,18 @@ class SocialiteController extends Controller
     public function login(){
         return Inertia::render('auth/login');
     }
-    public function redirect($provider)
+    public function redirect(string $provider)
     {
-        return Socialite::driver($provider)->stateless()->redirect();
+        /** @var \Laravel\Socialite\Two\AbstractProvider $socialDriver */
+        $socialDriver = Socialite::driver($provider);
+        return $socialDriver->stateless()->redirect();
     }
 
-    public function callback($provider)
+    public function callback(string $provider)
     {
-        $provider_user = Socialite::driver($provider)->stateless()->user();
+        /** @var \Laravel\Socialite\Two\AbstractProvider $socialDriver */
+        $socialDriver = Socialite::driver($provider);
+        $provider_user = $socialDriver->stateless()->user();
         $user = User::where([
             'provider' => $provider,
             'provider_id' => $provider_user->id,
@@ -44,6 +48,6 @@ class SocialiteController extends Controller
         }
 
         Auth::login($user);
-        return redirect()->route('home');
+        return redirect()->route('courses.index');
     }
 }
