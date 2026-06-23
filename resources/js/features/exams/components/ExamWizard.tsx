@@ -1,5 +1,5 @@
 /**
- * exam-components.tsx
+ * ExamWizard.tsx
  *
  * Purpose:
  * Container component that orchestrates the multi-step exam wizard form.
@@ -11,8 +11,8 @@
  * - Convert backend QuestionsData to form-compatible Question type
  *
  * Dependencies:
- * - ExamData and ExamFormQuestions components
- * - Questions state class
+ * - ExamBasicInfo and ExamQuestionsEditor components
+ * - QuestionService
  * - Inertia useForm hook
  *
  * Notes:
@@ -27,8 +27,8 @@ import { useEffect, useMemo, useState } from "react";
 import { useForm } from "@inertiajs/react";
 import type { Answer, Question } from "@/types";
 import { QuestionService } from "@/services";
-import { ExamData } from "./exam-data";
-import { ExamFormQuestions } from "./exam-questions-main";
+import { ExamBasicInfo } from "./ExamBasicInfo";
+import { ExamQuestionsEditor } from "./ExamQuestionsEditor";
 import { Spinner } from "@/components/ui/spinner";
 import { cn } from "@/lib/utils";
 import type {
@@ -47,11 +47,11 @@ type FormData = {
 
 // Convert QuestionsData (from backend) to Question (for form)
 function convertQuestionsDataToFormQuestions(qd: QuestionsData[]): Question[] {
-    return qd.map((q) => ({
+    return qd.map((q: QuestionsData) => ({
         text: q.text,
         multiple: q.multiple,
         image: null, // Images are handled as File uploads in form, not strings from backend
-        answers: q.answers.map((a) => ({
+        answers: q.answers.map((a: AnswerData) => ({
             text: a.text,
             is_correct: a.is_correct,
             image: null, // Same for answer images
@@ -69,7 +69,7 @@ interface ExamModalFormQuestionsProps {
     onStepChange?: (step: number) => void;
 }
 
-function ExamModalFormQuestions({
+export function ExamWizard({
     setOpen,
     label,
     method = "get",
@@ -257,7 +257,7 @@ function ExamModalFormQuestions({
                 )}
             >
                 {activeStep === 0 ? (
-                    <ExamData
+                    <ExamBasicInfo
                         data={data}
                         errors={allErrors}
                         setData={setData}
@@ -270,7 +270,7 @@ function ExamModalFormQuestions({
                                 {allErrors[`questions`]}
                             </p>
                         )}
-                        <ExamFormQuestions
+                        <ExamQuestionsEditor
                             backSelf={setActiveStep}
                             data={data}
                             errors={allErrors}
@@ -363,5 +363,3 @@ function ExamModalFormQuestions({
         </form>
     );
 }
-
-export { ExamModalFormQuestions };

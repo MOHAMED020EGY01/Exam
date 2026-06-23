@@ -1,5 +1,5 @@
 /**
- * exam-answers.tsx
+ * AnswerEditor.tsx
  *
  * Purpose:
  * Renders a single answer option input inside the question editor.
@@ -14,7 +14,7 @@
  * - RadioGroupItem and Checkbox components (Shadcn UI)
  *
  * Notes:
- * - Type-safe: Uses Answer type from lib/questionHelpers
+ * - Type-safe: Uses Answer type
  */
 
 import { Button } from "@/components/ui/button";
@@ -26,7 +26,7 @@ import { cn } from "@/lib/utils";
 import { Trash, X } from "lucide-react";
 import type { Answer } from "@/types";
 
-interface ExamAnswersProps {
+interface AnswerEditorProps {
     questionIndex: number;
     answer: Answer;
     answerIndex: number;
@@ -41,7 +41,7 @@ interface ExamAnswersProps {
     multiChosen: boolean;
 }
 
-function ExamAnswers({
+export function AnswerEditor({
     questionIndex,
     answer,
     answerIndex,
@@ -49,7 +49,7 @@ function ExamAnswers({
     removeAnswer,
     errors,
     multiChosen,
-}: ExamAnswersProps) {
+}: AnswerEditorProps) {
     const removeImage = () => {
         updateAnswer(questionIndex, answerIndex, "image", null);
     };
@@ -186,5 +186,3 @@ function ExamAnswers({
         </div>
     );
 }
-
-export default ExamAnswers;

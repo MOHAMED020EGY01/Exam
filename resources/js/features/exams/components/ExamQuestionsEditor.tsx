@@ -1,5 +1,5 @@
 /**
- * exam-questions-main.tsx
+ * ExamQuestionsEditor.tsx
  *
  * Purpose:
  * Renders the question editor interface (Step 2) with a question navigation list.
@@ -15,16 +15,16 @@
  * - framer-motion animations
  *
  * Notes:
- * - Type-safe: Uses Question and Answer types from lib/questionHelpers
+ * - Type-safe: Uses Question and Answer types
  * - Supports keyboard navigation for accessibility
  */
 
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { useEffect, useState, useMemo, useCallback } from "react";
-import ExamQuestions from "./exam-questions";
+import { QuestionEditor } from "./QuestionEditor";
 import { RadioGroup } from "@/components/ui/radio-group";
-import ExamAnswers from "./exam-answers";
+import { AnswerEditor } from "./AnswerEditor";
 import { cn } from "@/lib/utils";
 import {
     X,
@@ -38,7 +38,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Label } from "@/components/ui/label";
 import type { Question, Answer } from "@/types";
 
-interface ExamFormQuestionsProps {
+interface ExamQuestionsEditorProps {
     backSelf: (step: number) => void;
     data: {
         questions: Question[];
@@ -62,7 +62,7 @@ interface ExamFormQuestionsProps {
     addQuestion: () => void;
 }
 
-function ExamFormQuestions({
+export function ExamQuestionsEditor({
     backSelf,
     data,
     errors,
@@ -73,7 +73,7 @@ function ExamFormQuestions({
     removeAnswer,
     toggleCorrect,
     addQuestion,
-}: ExamFormQuestionsProps) {
+}: ExamQuestionsEditorProps) {
     const [questionCurrent, setQuestionCurrent] = useState(0);
 
     const questions = useMemo(() => {
@@ -171,7 +171,7 @@ function ExamFormQuestions({
     const answersList = (
         <div className="space-y-2.5">
             {answers.map((answer: Answer, answerIndex: number) => (
-                <ExamAnswers
+                <AnswerEditor
                     key={answerIndex}
                     questionIndex={questionCurrent}
                     answer={answer}
@@ -343,7 +343,7 @@ function ExamFormQuestions({
                             className="space-y-6"
                         >
                             {/* Question details components */}
-                            <ExamQuestions
+                            <QuestionEditor
                                 question={currentQuestion}
                                 questionIndex={questionCurrent}
                                 updateQuestion={updateQuestion}
@@ -416,5 +416,3 @@ function ExamFormQuestions({
         </div>
     );
 }
-
-export { ExamFormQuestions };

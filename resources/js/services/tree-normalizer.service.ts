@@ -1,4 +1,4 @@
-import type { CourseData, TreeNode } from "@/types";
+import type { CourseData, TreeNode, ExamsData, QuestionsData } from "@/types";
 
 export class TreeNormalizerService {
     static normalizeCoursesToTree(courses: CourseData[] = []): TreeNode[] {
@@ -9,7 +9,7 @@ export class TreeNormalizerService {
             originalId: course.id,
             originalData: course,
             children: Array.isArray(course?.exams)
-                ? course.exams.map((exam) => ({
+                ? course.exams.map((exam: ExamsData) => ({
                       id: `exam-${exam.id}`,
                       label: exam.name || "N/A Exam",
                       type: "exam",
@@ -20,19 +20,23 @@ export class TreeNormalizerService {
                           courseId: course.id,
                       },
                       children: Array.isArray(exam?.questions_package)
-                          ? exam.questions_package.map((question, index) => ({
-                                id: `question-${exam.id}-${index}`,
-                                label: question.text || `Question ${index + 1}`,
-                                type: "question",
-                                parentId: `exam-${exam.id}`,
-                                originalId: index,
-                                originalData: {
-                                    ...question,
-                                    index,
-                                    examId: exam.id,
-                                    courseId: course.id,
-                                },
-                            }))
+                          ? exam.questions_package.map(
+                                (question: QuestionsData, index: number) => ({
+                                    id: `question-${exam.id}-${index}`,
+                                    label:
+                                        question.text ||
+                                        `Question ${index + 1}`,
+                                    type: "question",
+                                    parentId: `exam-${exam.id}`,
+                                    originalId: index,
+                                    originalData: {
+                                        ...question,
+                                        index,
+                                        examId: exam.id,
+                                        courseId: course.id,
+                                    },
+                                }),
+                            )
                           : [],
                   }))
                 : [],

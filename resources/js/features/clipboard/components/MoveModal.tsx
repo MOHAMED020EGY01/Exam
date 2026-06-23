@@ -81,7 +81,13 @@ export const MoveModal: React.FC<MoveModalProps> = ({
                 examId?: string | number;
             };
             const currentExamId = String(originalData.examId);
-            const allExams: any[] = [];
+            const allExams: Array<{
+                id: string | number;
+                name: string;
+                description: string;
+                type: "exam";
+                meta: string;
+            }> = [];
             courses.forEach((course) => {
                 const exams = Array.isArray(course.exams)
                     ? course.exams
@@ -89,7 +95,7 @@ export const MoveModal: React.FC<MoveModalProps> = ({
                       ? Object.values(course.exams)
                       : [];
 
-                exams.forEach((exam: any) => {
+                exams.forEach((exam) => {
                     if (String(exam.id) !== currentExamId) {
                         allExams.push({
                             id: exam.id,

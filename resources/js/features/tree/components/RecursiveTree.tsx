@@ -17,26 +17,26 @@
  * - Moved from components/tree to features/tree for feature-based organization
  */
 
-import React from 'react';
-import type { TreeNode as TreeNodeType } from '@/types';
-import { TreeNode } from './TreeNode';
+import React from "react";
+import type { TreeNode as TreeNodeType } from "@/types";
+import { TreeNodeRenderer } from "./TreeNode";
 
 interface RecursiveTreeProps {
-  nodes: TreeNodeType[];
-  depth: number;
+    nodes: TreeNodeType[];
+    depth: number;
 }
 
 const RecursiveTreeInner: React.FC<RecursiveTreeProps> = ({ nodes, depth }) => (
-  <>
-    {nodes.map((node) => (
-      <TreeNode key={node.id} node={node} depth={depth} />
-    ))}
-  </>
+    <>
+        {nodes.map((node) => (
+            <TreeNodeRenderer key={node.id} node={node} depth={depth} />
+        ))}
+    </>
 );
 
 export const RecursiveTree = React.memo(
-  RecursiveTreeInner,
-  (prev, next) => prev.depth === next.depth && prev.nodes === next.nodes,
+    RecursiveTreeInner,
+    (prev, next) => prev.depth === next.depth && prev.nodes === next.nodes,
 );
 
-RecursiveTree.displayName = 'RecursiveTree';
+RecursiveTree.displayName = "RecursiveTree";

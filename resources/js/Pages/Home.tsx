@@ -4,20 +4,16 @@
  * Purpose:
  * Main Courses Explorer page component mapping courses, exams, and question trees.
  *
- * Changes from previous version:
- * - All handler functions are now wrapped with useCallback to prevent
- *   unnecessary re-creation on each render, keeping TreeRoot's context
- *   value stable and avoiding cascading re-renders inside the tree.
- *
  * Responsibilities:
  * - Render hierarchical explorer navigation tree on the left
  * - Render contextual detail panels dynamically on the right based on selection
  * - Coordinate course and exam creation, editing, and deletion via modals
- * - Support clipboard copy, paste, duplicate, and move tree node actions
+ * - Use separate TreeContext and ClipboardContext for state management
  *
  * Dependencies:
- * - useTree and useClipboard hooks
- * - CourseDetails, ExamDetails, QuestionDetails, and ExplorerEmptyState components
+ * - useTree (from features/tree)
+ * - ClipboardProvider and useClipboardContext
+ * - CourseDetails, ExamDetails, QuestionDetails, ExplorerEmptyState
  * - DashboardLayout
  */
 
@@ -25,13 +21,14 @@ import { ReactNode, useState, useMemo, useCallback, useEffect } from "react";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { ModalDynamic } from "@/components/common/Modal";
 import { ModalDynamicAdvanced } from "@/components/common/ModalAdvanced";
-import { ExamModalFormQuestions } from "@/features/exams/components/exam-components";
+import { ExamWizard } from "@/features/exams/components/ExamWizard";
 import { FieldForm } from "@/types";
-import { useTree } from "@/hooks/use-tree";
+import { useTree } from "@/features/tree/hooks/useTree";
 import { TreeNormalizerService, CourseService, Routes } from "@/services";
-import { TreeRoot } from "@/features/tree/TreeRoot";
-import { MoveModal } from "@/features/tree/MoveModal";
-import { useClipboard } from "@/hooks/use-clipboard";
+import { TreeRoot } from "@/features/tree/components/TreeRoot";
+import { MoveModal } from "@/features/clipboard/components/MoveModal";
+import { ClipboardProvider, useClipboardContext } from "@/features/clipboard/context/ClipboardContext";
+import { TreeProvider } from "@/features/tree/context/TreeContext";
 import { CourseDetails } from "@/components/page/CourseDetails";
 import { ExamDetails } from "@/components/page/ExamDetails";
 import { QuestionDetails } from "@/components/page/QuestionDetails";
@@ -51,86 +48,54 @@ const form = [
   { field: "description", type: "input" },
 ] as FieldForm[];
 
-function Home({ courses }: Props) {
+function HomeContent({ courses }: Props) {
   const user = useAuth();
   useEchoChannel(
     `users.${user.user?.id}`,
     ".exam.created",
-    (e: any) => {
-      toast.success(`Exam "${e.exam.name}" created`);
+    (e: unknown) => {
+      const data = e as { exam: ExamsData };
+      toast.success(`Exam "${data.exam.name}" created`);
       router.reload({
         only: ["courses"],
-        onSuccess: () => {
-          refreshTree();
-        },
       });
     },
-    [user.user?.id],
+    [user.user?.id]
   );
 
   useEchoChannel(
     `users.${user.user?.id}`,
     ".exam.updated",
-    (e: any) => {
-      toast.success(`Exam "${e.exam.name}" updated`);
+    (e: unknown) => {
+      const data = e as { exam: ExamsData };
+      toast.success(`Exam "${data.exam.name}" updated`);
       router.reload({
         only: ["courses"],
       });
     },
-    [user.user?.id],
+    [user.user?.id]
   );
-  // Stabilise the courses reference — prevents downstream memo invalidation
-  const safeCourses = useMemo((): CourseData[] => courses, [courses]);
 
-  useEffect(() => {
-    console.log("Courses updated", courses);
-  }, [courses]);
+  // Stabilise the courses reference
+  const safeCourses = useMemo((): CourseData[] => courses, [courses]);
 
   // Convert flat API data → TreeNode hierarchy
   const treeNodes = useMemo(
     () => TreeNormalizerService.normalizeCoursesToTree(safeCourses),
-    [safeCourses],
+    [safeCourses]
   );
-  useEffect(() => {
-    console.log("TREE COUNT", treeNodes.length);
-
-    treeNodes.forEach((node) => {
-      console.log(node.id, node.label, node.children?.length);
-    });
-  }, [treeNodes]);
 
   // Tree state management
-  const {
-    filteredNodes,
-    expandedKeys,
-    selectedNode,
-    toggleExpand,
-    setSelectedNode,
-    expandAll,
-    collapseAll,
-    searchQuery,
-    setSearchQuery,
-    scope,
-    setScope,
-    isPending,
-    setExpand,
-    refreshTree,
-  } = useTree(treeNodes);
+  const treeState = useTree(treeNodes);
 
   // Clipboard state management
   const {
-    clipboard,
-    moveTarget,
     moveOpen,
+    moveTarget,
     setMoveOpen,
     isClipboardProcessing,
-    handleCopy,
-    handlePaste,
-    handleDuplicate,
-    handleMove,
-    handleMoveConfirm,
-    handleDeleteQuestion,
-  } = useClipboard();
+    actions: clipboardActions,
+  } = useClipboardContext();
 
   // ── Modal open/close states ─────────────────────────────────
   const [courseCreateOpen, setCourseCreateOpen] = useState(false);
@@ -146,10 +111,7 @@ function Home({ courses }: Props) {
   const [activeCourse, setActiveCourse] = useState<CourseData | null>(null);
   const [activeExam, setActiveExam] = useState<ExamsData | null>(null);
 
-  // ── Handler callbacks — wrapped in useCallback so their identity is stable
-  // across re-renders, preventing the context value from being recreated every
-  // time an unrelated state changes. ─────────────────────────────────────────
-
+  // ── Handler callbacks
   const handleAddCourse = useCallback(() => {
     setCourseCreateOpen(true);
   }, []);
@@ -169,37 +131,37 @@ function Home({ courses }: Props) {
       setActiveCourse(course);
       setExamCreateOpen(true);
       if (course?.id) {
-        setExpand(`course-${course.id}`, true);
+        treeState.setExpand(`course-${course.id}`, true);
       }
     },
-    [setExpand],
+    [treeState.setExpand]
   );
 
   const handleEditExam = useCallback(
     (exam: ExamsData) => {
       setActiveExam(exam);
       const course = safeCourses.find(
-        (c) => String(c?.id) === String(exam?.course_id),
+        (c) => String(c?.id) === String(exam?.course_id)
       );
       setActiveCourse(course ?? null);
       setExamEditOpen(true);
       if (course?.id) {
-        setExpand(`course-${course.id}`, true);
+        treeState.setExpand(`course-${course.id}`, true);
       }
     },
-    [safeCourses, setExpand],
+    [safeCourses, treeState.setExpand]
   );
 
   const handleDeleteExam = useCallback(
     (exam: ExamsData) => {
       setActiveExam(exam);
       const course = safeCourses.find(
-        (c) => String(c?.id) === String(exam?.course_id),
+        (c) => String(c?.id) === String(exam?.course_id)
       );
       setActiveCourse(course ?? null);
       setExamDeleteOpen(true);
     },
-    [safeCourses],
+    [safeCourses]
   );
 
   const handleDownloadExam = useCallback((exam: ExamsData) => {
@@ -209,201 +171,208 @@ function Home({ courses }: Props) {
   }, []);
 
   // ── Derived selected-node data ──────────────────────────────
-
   const selectedNodeExams = useMemo(() => {
-    if (selectedNode?.type === "course") {
-      return (selectedNode.originalData as CourseData).exams;
+    if (treeState.selectedNode?.type === "course") {
+      return (treeState.selectedNode.originalData as CourseData).exams;
     }
     return [];
-  }, [selectedNode]);
+  }, [treeState.selectedNode]);
 
   const selectedNodeAnswers = useMemo(() => {
-    if (selectedNode?.type === "question") {
-      return (selectedNode.originalData as QuestionsData).answers;
+    if (treeState.selectedNode?.type === "question") {
+      return (treeState.selectedNode.originalData as QuestionsData).answers;
     }
     return [];
-  }, [selectedNode]);
+  }, [treeState.selectedNode]);
+
+  // ── Tree context value ────────────────────────────────────────
+  const treeContextValue = useMemo(() => ({
+    expandedKeys: treeState.expandedKeys,
+    selectedNode: treeState.selectedNode,
+    filteredNodes: treeState.filteredNodes,
+    searchQuery: treeState.searchQuery,
+    setSearchQuery: treeState.setSearchQuery,
+    scope: treeState.scope,
+    setScope: treeState.setScope,
+    isPending: treeState.isPending,
+    toggleExpand: treeState.toggleExpand,
+    expandAll: treeState.expandAll,
+    collapseAll: treeState.collapseAll,
+    setSelectedNode: treeState.setSelectedNode,
+    actions: {
+      addCourse: handleAddCourse,
+      addExam: handleAddExam,
+      editCourse: handleEditCourse,
+      deleteCourse: handleDeleteCourse,
+      editExam: handleEditExam,
+      deleteExam: handleDeleteExam,
+      downloadExam: handleDownloadExam,
+    },
+  }), [treeState, handleAddCourse, handleAddExam, handleEditCourse, handleDeleteCourse, handleEditExam, handleDeleteExam, handleDownloadExam]);
 
   // ── Render ──────────────────────────────────────────────────
-
   return (
-    <div className="flex flex-col gap-6 py-2">
-      <div>
-        <h3 className="text-2xl font-bold tracking-tight">
-          Courses Explorer
-        </h3>
-        <p className="text-muted-foreground mt-1">
-          Manage your courses, exams, and questions hierarchically.
-          Click nodes in the explorer to view detailed information.
-        </p>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
-        {/* ── Tree Explorer Panel ─────────────────────── */}
-        <div className="md:col-span-5 lg:col-span-4 h-full">
-          <TreeRoot
-            filteredNodes={filteredNodes}
-            expandedKeys={expandedKeys}
-            selectedNode={selectedNode}
-            toggleExpand={toggleExpand}
-            setSelectedNode={setSelectedNode}
-            expandAll={expandAll}
-            collapseAll={collapseAll}
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-            scope={scope}
-            setScope={setScope}
-            isPending={isPending}
-            onAddCourse={handleAddCourse}
-            onAddExam={handleAddExam}
-            onEditCourse={handleEditCourse}
-            onDeleteCourse={handleDeleteCourse}
-            onEditExam={handleEditExam}
-            onDeleteExam={handleDeleteExam}
-            onDownloadExam={handleDownloadExam}
-            clipboard={clipboard}
-            onCopy={handleCopy}
-            onPaste={handlePaste}
-            onMove={handleMove}
-            onDuplicate={handleDuplicate}
-            onDeleteQuestion={handleDeleteQuestion}
-          />
+    <TreeProvider value={treeContextValue}>
+      <div className="flex flex-col gap-6 py-2">
+        <div>
+          <h3 className="text-2xl font-bold tracking-tight">
+            Courses Explorer
+          </h3>
+          <p className="text-muted-foreground mt-1">
+            Manage your courses, exams, and questions hierarchically.
+            Click nodes in the explorer to view detailed information.
+          </p>
         </div>
 
-        {/* ── Detail Panel ────────────────────────────── */}
-        <div className="md:col-span-7 lg:col-span-8 flex flex-col gap-6">
-          {!selectedNode || selectedNode.id === "root" ? (
-            <ExplorerEmptyState onAddCourse={handleAddCourse} />
-          ) : selectedNode.type === "course" ? (
-            <CourseDetails
-              selectedNode={selectedNode}
-              selectedNodeExams={selectedNodeExams}
-              onEditCourse={handleEditCourse}
-              onDeleteCourse={handleDeleteCourse}
-              onAddExam={handleAddExam}
-              onDownloadExam={handleDownloadExam}
-            />
-          ) : selectedNode.type === "exam" ? (
-            <ExamDetails
-              selectedNode={selectedNode}
-              onEditExam={handleEditExam}
-              onDeleteExam={handleDeleteExam}
-              onDownloadExam={handleDownloadExam}
-            />
-          ) : (
-            <QuestionDetails
-              selectedNode={selectedNode}
-              selectedNodeAnswers={selectedNodeAnswers}
-            />
-          )}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
+          {/* ── Tree Explorer Panel ─────────────────────── */}
+          <div className="md:col-span-5 lg:col-span-4 h-full">
+            <TreeRoot />
+          </div>
+
+          {/* ── Detail Panel ────────────────────────────── */}
+          <div className="md:col-span-7 lg:col-span-8 flex flex-col gap-6">
+            {!treeState.selectedNode || treeState.selectedNode.id === "root" ? (
+              <ExplorerEmptyState onAddCourse={handleAddCourse} />
+            ) : treeState.selectedNode.type === "course" ? (
+              <CourseDetails
+                selectedNode={treeState.selectedNode}
+                selectedNodeExams={selectedNodeExams}
+                onEditCourse={handleEditCourse}
+                onDeleteCourse={handleDeleteCourse}
+                onAddExam={handleAddExam}
+                onDownloadExam={handleDownloadExam}
+              />
+            ) : treeState.selectedNode.type === "exam" ? (
+              <ExamDetails
+                selectedNode={treeState.selectedNode}
+                onEditExam={handleEditExam}
+                onDeleteExam={handleDeleteExam}
+                onDownloadExam={handleDownloadExam}
+              />
+            ) : (
+              <QuestionDetails
+                selectedNode={treeState.selectedNode}
+                selectedNodeAnswers={selectedNodeAnswers}
+              />
+            )}
+          </div>
         </div>
-      </div>
 
-      {/* ── Modals ─────────────────────────────────────── */}
+        {/* ── Modals ─────────────────────────────────────── */}
 
-      {courseCreateOpen && (
-        <ModalDynamic
-          open={courseCreateOpen}
-          setOpen={setCourseCreateOpen}
-          inputForm={form}
-          url={Routes.courses.store()}
-          title="Create Course"
-          description="Create a new course"
-          method="post"
-        />
-      )}
-
-      {activeCourse?.id && courseEditOpen && (
-        <ModalDynamic
-          open={courseEditOpen}
-          setOpen={setCourseEditOpen}
-          inputForm={form}
-          url={Routes.courses.update(activeCourse.id)}
-          title="Edit Course"
-          description="Edit the course details"
-          method="put"
-          dataForm={activeCourse}
-        />
-      )}
-
-      {activeCourse?.id && courseDeleteOpen && (
-        <ModalDynamic
-          open={courseDeleteOpen}
-          setOpen={setCourseDeleteOpen}
-          url={Routes.courses.destroy(activeCourse.id)}
-          title="Delete Course"
-          description={`Are you sure you want to delete Course "${activeCourse.name}"? This will delete all containing exams.`}
-          method="delete"
-        />
-      )}
-
-      {activeCourse?.id && examCreateOpen && (
-        <ModalDynamicAdvanced
-          open={examCreateOpen}
-          label="Create Exam"
-          onOpenChange={setExamCreateOpen}
-          className={
-            examModalStep === 1
-              ? "sm:max-w-5xl modal-large flex flex-col p-0 overflow-hidden"
-              : "sm:max-w-xl"
-          }
-        >
-          <ExamModalFormQuestions
-            label="Create"
+        {courseCreateOpen && (
+          <ModalDynamic
+            open={courseCreateOpen}
+            setOpen={setCourseCreateOpen}
+            inputForm={form}
+            url={Routes.courses.store()}
+            title="Create Course"
+            description="Create a new course"
             method="post"
-            url={Routes.exams.store(activeCourse.id)}
-            setOpen={setExamCreateOpen}
-            course={activeCourse}
-            onStepChange={setExamModalStep}
           />
-        </ModalDynamicAdvanced>
-      )}
+        )}
 
-      {activeCourse?.id && activeExam?.id && examEditOpen && (
-        <ModalDynamicAdvanced
-          open={examEditOpen}
-          label="Update Exam"
-          onOpenChange={setExamEditOpen}
-          className={
-            examModalStep === 1
-              ? "sm:max-w-5xl modal-large flex flex-col p-0 overflow-hidden"
-              : "sm:max-w-xl"
-          }
-        >
-          <ExamModalFormQuestions
-            label="Update"
+        {activeCourse?.id && courseEditOpen && (
+          <ModalDynamic
+            open={courseEditOpen}
+            setOpen={setCourseEditOpen}
+            inputForm={form}
+            url={Routes.courses.update(activeCourse.id)}
+            title="Edit Course"
+            description="Edit the course details"
             method="put"
-            url={Routes.exams.update(activeCourse.id, activeExam.id)}
-            setOpen={setExamEditOpen}
-            exam={activeExam}
-            course={activeCourse}
-            onStepChange={setExamModalStep}
+            dataForm={activeCourse}
           />
-        </ModalDynamicAdvanced>
-      )}
+        )}
 
-      {activeCourse?.id && activeExam?.id && examDeleteOpen && (
-        <ModalDynamic
-          open={examDeleteOpen}
-          setOpen={setExamDeleteOpen}
-          url={Routes.exams.destroy(activeCourse.id, activeExam.id)}
-          title="Delete Exam"
-          description={`Are you sure you want to delete Exam "${activeExam.name}"?`}
-          method="delete"
-        />
-      )}
+        {activeCourse?.id && courseDeleteOpen && (
+          <ModalDynamic
+            open={courseDeleteOpen}
+            setOpen={setCourseDeleteOpen}
+            url={Routes.courses.destroy(activeCourse.id)}
+            title="Delete Course"
+            description={`Are you sure you want to delete Course "${activeCourse.name}"? This will delete all containing exams.`}
+            method="delete"
+          />
+        )}
 
-      {moveOpen && (
-        <MoveModal
-          open={moveOpen}
-          onOpenChange={setMoveOpen}
-          nodeToMove={moveTarget}
-          courses={safeCourses}
-          onMoveConfirm={handleMoveConfirm}
-          processing={isClipboardProcessing}
-        />
-      )}
-    </div>
+        {activeCourse?.id && examCreateOpen && (
+          <ModalDynamicAdvanced
+            open={examCreateOpen}
+            label="Create Exam"
+            onOpenChange={setExamCreateOpen}
+            className={
+              examModalStep === 1
+                ? "sm:max-w-5xl modal-large flex flex-col p-0 overflow-hidden"
+                : "sm:max-w-xl"
+            }
+          >
+            <ExamWizard
+              label="Create"
+              method="post"
+              url={Routes.exams.store(activeCourse.id)}
+              setOpen={setExamCreateOpen}
+              course={activeCourse}
+              onStepChange={setExamModalStep}
+            />
+          </ModalDynamicAdvanced>
+        )}
+
+        {activeCourse?.id && activeExam?.id && examEditOpen && (
+          <ModalDynamicAdvanced
+            open={examEditOpen}
+            label="Update Exam"
+            onOpenChange={setExamEditOpen}
+            className={
+              examModalStep === 1
+                ? "sm:max-w-5xl modal-large flex flex-col p-0 overflow-hidden"
+                : "sm:max-w-xl"
+            }
+          >
+            <ExamWizard
+              label="Update"
+              method="put"
+              url={Routes.exams.update(activeCourse.id, activeExam.id)}
+              setOpen={setExamEditOpen}
+              exam={activeExam}
+              course={activeCourse}
+              onStepChange={setExamModalStep}
+            />
+          </ModalDynamicAdvanced>
+        )}
+
+        {activeCourse?.id && activeExam?.id && examDeleteOpen && (
+          <ModalDynamic
+            open={examDeleteOpen}
+            setOpen={setExamDeleteOpen}
+            url={Routes.exams.destroy(activeCourse.id, activeExam.id)}
+            title="Delete Exam"
+            description={`Are you sure you want to delete Exam "${activeExam.name}"?`}
+            method="delete"
+          />
+        )}
+
+        {moveOpen && (
+          <MoveModal
+            open={moveOpen}
+            onOpenChange={setMoveOpen}
+            nodeToMove={moveTarget}
+            courses={safeCourses}
+            onMoveConfirm={clipboardActions.moveConfirm}
+            processing={isClipboardProcessing}
+          />
+        )}
+      </div>
+    </TreeProvider>
+  );
+}
+
+function Home({ courses }: Props) {
+  return (
+    <ClipboardProvider>
+      <HomeContent courses={courses} />
+    </ClipboardProvider>
   );
 }
 

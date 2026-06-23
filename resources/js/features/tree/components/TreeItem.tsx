@@ -13,33 +13,35 @@
  * - TreeIcon
  * - DropdownMenu (Shadcn UI)
  * - Lucide icons
- * - useTreeContext
+ * - useClipboardContext
  *
- * Notes:
- * - Moved from components/tree to features/tree for feature-based organization
  */
 
-import React from 'react';
-import type { TreeNode as TreeNodeType } from '@/types';
-import { useTreeContext } from './TreeContext';
-import { TreeIcon } from './TreeIcon';
-import { cn } from '@/lib/utils';
+import React from "react";
+import type { TreeNode as TreeNodeType } from "@/types";
+import { useClipboardContext } from "../../clipboard/context/ClipboardContext";
+import { TreeIcon } from "./TreeIcon";
+import { cn } from "@/lib/utils";
 import {
-  MoreVertical, Copy, Move, CopyPlus, Trash,
-} from 'lucide-react';
+  MoreVertical,
+  Copy,
+  Move,
+  CopyPlus,
+  Trash,
+} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from "@/components/ui/dropdown-menu";
 
 interface TreeItemProps {
-  node:      TreeNodeType;
-  depth:     number;
+  node: TreeNodeType;
+  depth: number;
   isSelected: boolean;
-  onSelect:  (node: TreeNodeType) => void;
+  onSelect: (node: TreeNodeType) => void;
 }
 
 const TreeItemInner: React.FC<TreeItemProps> = ({
@@ -48,20 +50,21 @@ const TreeItemInner: React.FC<TreeItemProps> = ({
   isSelected,
   onSelect,
 }) => {
-  const { actions, clipboard } = useTreeContext();
+  const { clipboard, actions: clipboardActions } = useClipboardContext();
   const isCopied = clipboard?.id === node.id;
 
   return (
     <div
       onClick={() => onSelect(node)}
-      style={{ ['--depth' as any]: depth }}
+      style={{ ["--depth" as any]: depth }}
       className={cn(
         "flex items-center gap-2 py-1.5 pr-3 mx-1 my-0.5 rounded-md cursor-pointer transition-all duration-150 group text-sm select-none justify-between",
         "pl-[calc(var(--depth)*10px+12px)] md:pl-[calc(var(--depth)*16px+12px)]",
         isSelected
           ? "bg-primary/10 text-primary font-medium border-l-2 border-primary pl-[calc(var(--depth)*10px+10px)] md:pl-[calc(var(--depth)*16px+10px)]"
           : "text-foreground/80 hover:bg-foreground/5 hover:text-foreground",
-        isCopied && "opacity-60 border-2 border-dashed border-primary/45 bg-primary/5 animate-pulse",
+        isCopied &&
+          "opacity-60 border-2 border-dashed border-primary/45 bg-primary/5 animate-pulse",
       )}
     >
       <div className="flex items-center gap-2 truncate flex-1">
@@ -100,17 +103,17 @@ const TreeItemInner: React.FC<TreeItemProps> = ({
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-48">
-            <DropdownMenuItem onClick={() => actions.copy(node)}>
+            <DropdownMenuItem onClick={() => clipboardActions.copy(node)}>
               <Copy className="w-4 h-4 mr-2" />
               Copy Question
             </DropdownMenuItem>
 
-            <DropdownMenuItem onClick={() => actions.duplicate(node)}>
+            <DropdownMenuItem onClick={() => clipboardActions.duplicate(node)}>
               <CopyPlus className="w-4 h-4 mr-2" />
               Duplicate
             </DropdownMenuItem>
 
-            <DropdownMenuItem onClick={() => actions.move(node)}>
+            <DropdownMenuItem onClick={() => clipboardActions.move(node)}>
               <Move className="w-4 h-4 mr-2" />
               Move Question
             </DropdownMenuItem>
@@ -119,7 +122,7 @@ const TreeItemInner: React.FC<TreeItemProps> = ({
 
             <DropdownMenuItem
               variant="destructive"
-              onClick={() => actions.deleteQuestion(node)}
+              onClick={() => clipboardActions.deleteQuestion(node)}
             >
               <Trash className="w-4 h-4 mr-2" />
               Delete Question
@@ -134,8 +137,7 @@ const TreeItemInner: React.FC<TreeItemProps> = ({
 export const TreeItem = React.memo(
   TreeItemInner,
   (prev, next) =>
-    prev.node.id    === next.node.id &&
-    prev.isSelected === next.isSelected,
+    prev.node.id === next.node.id && prev.isSelected === next.isSelected,
 );
 
-TreeItem.displayName = 'TreeItem';
+TreeItem.displayName = "TreeItem";

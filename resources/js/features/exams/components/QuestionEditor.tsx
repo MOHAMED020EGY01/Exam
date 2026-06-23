@@ -1,5 +1,5 @@
 /**
- * exam-questions.tsx
+ * QuestionEditor.tsx
  *
  * Purpose:
  * Renders the question editing area: prompt and choice-mode.
@@ -14,7 +14,7 @@
  * - Input/Label components (Shadcn UI)
  *
  * Notes:
- * - Type-safe: Uses Question type from lib/questionHelpers
+ * - Type-safe: Uses Question type
  */
 
 import { Button } from "@/components/ui/button";
@@ -26,7 +26,7 @@ import { cn } from "@/lib/utils";
 import { X, HelpCircle, Layers, CheckSquare, List } from "lucide-react";
 import type { Question } from "@/types";
 
-interface ExamQuestionsProps {
+interface QuestionEditorProps {
     question: Question;
     questionIndex: number;
     updateQuestion: <K extends keyof Question>(
@@ -39,14 +39,14 @@ interface ExamQuestionsProps {
     setMultiChosen: (chosen: boolean) => void;
 }
 
-function ExamQuestions({
+export function QuestionEditor({
     question,
     questionIndex,
     updateQuestion,
     errors,
     multiChosen,
     setMultiChosen,
-}: ExamQuestionsProps) {
+}: QuestionEditorProps) {
     const removeImage = () => {
         updateQuestion(questionIndex, "image", null);
     };
@@ -167,5 +167,3 @@ function ExamQuestions({
         </div>
     );
 }
-
-export default ExamQuestions;

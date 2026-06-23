@@ -1,4 +1,4 @@
-import type { TreeOriginalData, NodeType } from './tree.types';
+import type { TreeOriginalData, NodeType } from '@/types';
 
 export interface ClipboardContent {
   readonly type: NodeType;

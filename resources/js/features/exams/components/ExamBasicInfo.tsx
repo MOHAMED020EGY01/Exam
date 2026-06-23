@@ -1,5 +1,5 @@
 /**
- * exam-data.tsx
+ * ExamBasicInfo.tsx
  *
  * Purpose:
  * Renders the basic exam configuration form inputs (Step 1).
@@ -14,7 +14,7 @@
  * - Lucide Book icon
  *
  * Notes:
- * - Type-safe: Uses CourseData from @/interface/global
+ * - Type-safe: Uses CourseData from @/types
  */
 
 import { Input } from "@/components/ui/input";
@@ -25,7 +25,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Book } from "lucide-react";
 import type { CourseData } from "@/types";
 
-interface ExamDataProps {
+interface ExamBasicInfoProps {
     data: {
         name: string;
         description: string;
@@ -34,7 +34,7 @@ interface ExamDataProps {
     setData: (key: "name" | "description", value: string) => void;
     course?: CourseData;
 }
-function ExamData({ errors, data, setData, course }: ExamDataProps) {
+export function ExamBasicInfo({ errors, data, setData, course }: ExamBasicInfoProps) {
     return (
         <div className="space-y-5 animate-in fade-in-5 duration-300">
             {/* 🔹 Related Course */}
@@ -113,5 +113,3 @@ function ExamData({ errors, data, setData, course }: ExamDataProps) {
         </div>
     );
 }
-
-export { ExamData };

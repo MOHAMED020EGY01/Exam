@@ -1,12 +1,12 @@
 import { useEffect } from "react";
 
-type EchoEventCallback<T = any> = (data: T) => void;
+type EchoEventCallback<T = unknown> = (data: T) => void;
 
-export function useEchoChannel<T = any>(
+export function useEchoChannel<T = unknown>(
     channelName: string,
     eventName: string,
     callback: EchoEventCallback<T>,
-    deps: any[] = [],
+    deps: unknown[] = [],
 ) {
     useEffect(() => {
         if (!window.Echo || !channelName || !eventName) return;

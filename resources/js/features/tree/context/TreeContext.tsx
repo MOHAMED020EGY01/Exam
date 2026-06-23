@@ -17,9 +17,8 @@
  */
 
 import React, { createContext, useContext } from "react";
-import type { CourseData, ExamsData, TreeNode } from "@/types";
-import type { SearchScope } from "@/types";
-import type { ClipboardContent } from "@/types";
+import type { CourseData, ExamsData, TreeNode } from "../../../types";
+import type { SearchScope } from "../../../types";
 
 // ─────────────────────────────────────────────────────────────
 // Types
@@ -33,11 +32,6 @@ export interface TreeActions {
   editExam: (exam: ExamsData) => void;
   deleteExam: (exam: ExamsData) => void;
   downloadExam: (exam: ExamsData) => void;
-  copy: (node: TreeNode) => void;
-  paste: (node: TreeNode) => void;
-  move: (node: TreeNode) => void;
-  duplicate: (node: TreeNode) => void;
-  deleteQuestion: (node: TreeNode) => void;
 }
 
 export interface TreeContextValue {
@@ -53,7 +47,6 @@ export interface TreeContextValue {
   expandAll: () => void;
   collapseAll: () => void;
   setSelectedNode: (node: TreeNode | string | null) => void;
-  clipboard?: ClipboardContent | null;
   actions: TreeActions;
 }
 
