@@ -24,7 +24,7 @@ import ImageCustom from "@/components/common/FileCustom";
 import ImagePreview from "@/components/common/ImagePreview";
 import { cn } from "@/lib/utils";
 import { X, HelpCircle, Layers, CheckSquare, List } from "lucide-react";
-import { Question } from "@/lib/questionHelpers/question";
+import type { Question } from "@/types";
 
 interface ExamQuestionsProps {
     question: Question;

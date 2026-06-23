@@ -23,7 +23,7 @@ import { cn } from "@/lib/utils";
 import React from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { Book } from "lucide-react";
-import { CourseData } from "@/interface/global";
+import type { CourseData } from "@/types";
 
 interface ExamDataProps {
     data: {

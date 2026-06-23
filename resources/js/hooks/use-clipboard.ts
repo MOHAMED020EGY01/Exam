@@ -10,164 +10,106 @@
  * - Dispatch copy, paste, duplicate, move, and question deletion API requests via Inertia
  *
  * Dependencies:
- * - Inertia router
- * - TreeNodeData interface
+ * - ClipboardService
+ * - Type definitions from @/types
  */
 
-import { useState } from "react";
-import { router } from "@inertiajs/react";
-import { QuestionsData, TreeNodeData } from "@/interface/global";
-
-// Declare route function for TS compilation
-declare function route(name: string, params?: any): string;
+import { useState, useCallback } from "react";
+import { ClipboardService } from "@/services";
+import type { ClipboardContent, TreeNode } from "@/types";
 
 export function useClipboard() {
-    const [clipboard, setClipboard] = useState<any>(null);
-    const [moveTarget, setMoveTarget] = useState<TreeNodeData | null>(null);
+    const [clipboard, setClipboard] = useState<ClipboardContent | null>(null);
+    const [moveTarget, setMoveTarget] = useState<TreeNode | null>(null);
     const [moveOpen, setMoveOpen] = useState(false);
     const [isClipboardProcessing, setIsClipboardProcessing] = useState(false);
 
-    //TODO Copy File Function
-
-    const handleCopy = (node: TreeNodeData) => {
+    const handleCopy = useCallback((node: TreeNode) => {
         setClipboard({
             type: node.type,
             id: node.id,
             originalId: node.originalId,
             parentId: node.parentId || "",
-            originalData: node.originalData,
+            originalData: node.originalData!,
         });
-    };
+    }, []);
 
-    //TODO Paste Function
-    const handlePaste = (destinationNode: TreeNodeData) => {
-        if (!clipboard) return;
+    const handlePaste = useCallback(
+        (destinationNode: TreeNode) => {
+            if (!clipboard) return;
+            setIsClipboardProcessing(true);
 
-        setIsClipboardProcessing(true);
+            if (clipboard.type === "exam") {
+                ClipboardService.pasteExam(clipboard, destinationNode, () =>
+                    setIsClipboardProcessing(false),
+                );
+            } else if (clipboard.type === "question") {
+                ClipboardService.pasteQuestion(clipboard, destinationNode, () =>
+                    setIsClipboardProcessing(false),
+                );
+            }
+        },
+        [clipboard],
+    );
 
-        if (clipboard.type === "exam") {
-            if (destinationNode.type !== "course") return;
-            router.post(
-                route("exams.paste"),
-                {
-                    exam_id: clipboard.originalId,
-                    destination_course_id: destinationNode.originalId,
-                },
-                {
-                    onFinish: () => setIsClipboardProcessing(false),
-                },
-            );
-        } else if (clipboard.type === "question") {
-            if (destinationNode.type !== "exam") return;
-            router.post(
-                route("questions.paste"),
-                {
-                    source_exam_id: clipboard.originalData.examId,
-                    question_index: clipboard.originalId,
-                    destination_exam_id: destinationNode.originalId,
-                },
-                {
-                    onFinish: () => setIsClipboardProcessing(false),
-                },
-            );
-        }
-    };
-
-    //TODO Duplicate Function
-    const handleDuplicate = (node: TreeNodeData) => {
+    const handleDuplicate = useCallback((node: TreeNode) => {
         setIsClipboardProcessing(true);
         if (node.type === "exam") {
-            router.post(
-                route("exams.duplicate"),
-                {
-                    exam_id: node.originalId,
-                },
-                {
-                    onFinish: () => setIsClipboardProcessing(false),
-                },
+            ClipboardService.duplicateExam(node, () =>
+                setIsClipboardProcessing(false),
             );
         } else if (node.type === "question") {
-            const exam_id = node.originalData as QuestionsData
-            router.post(
-                route("questions.duplicate"),
-                {
-                    exam_id: exam_id.examId,
-                    question_index: node.originalId,
-                },
-                {
-                    onFinish: () => setIsClipboardProcessing(false),
-                },
+            ClipboardService.duplicateQuestion(node, () =>
+                setIsClipboardProcessing(false),
             );
         }
-    };
+    }, []);
 
-    //TODO MOVE Function
-    const handleMove = (node: TreeNodeData) => {
+    const handleMove = useCallback((node: TreeNode) => {
         setMoveTarget(node);
         setMoveOpen(true);
-    };
+    }, []);
 
-    //TODO MOVE Confirm Function
-    const handleMoveConfirm = (destinationId: string | number) => {
-        if (!moveTarget) return;
+    const handleMoveConfirm = useCallback(
+        (destinationId: string | number) => {
+            if (!moveTarget) return;
+            setIsClipboardProcessing(true);
 
-        setIsClipboardProcessing(true);
+            const onSuccess = () => {
+                setMoveOpen(false);
+                setMoveTarget(null);
+            };
 
-        if (moveTarget.type === "exam") {
-            router.post(
-                route("exams.move"),
-                {
-                    exam_id: moveTarget.originalId,
-                    destination_course_id: destinationId,
-                },
-                {
-                    onSuccess: () => {
-                        setMoveOpen(false);
-                        setMoveTarget(null);
-                    },
-                    onFinish: () => setIsClipboardProcessing(false),
-                },
-            );
-        } else if (moveTarget.type === "question") {
-            const source_exam_id = moveTarget.originalData as QuestionsData;
+            const onFinish = () => setIsClipboardProcessing(false);
 
-            router.post(
-                route("questions.move"),
-                {
-                    source_exam_id: source_exam_id.examId,
-                    question_index: moveTarget.originalId,
-                    destination_exam_id: destinationId,
-                },
-                {
-                    onSuccess: () => {
-                        setMoveOpen(false);
-                        setMoveTarget(null);
-                    },
-                    onFinish: () => setIsClipboardProcessing(false),
-                },
-            );
-        }
-    };
+            if (moveTarget.type === "exam") {
+                ClipboardService.moveExam(
+                    moveTarget,
+                    destinationId,
+                    onSuccess,
+                    onFinish,
+                );
+            } else if (moveTarget.type === "question") {
+                ClipboardService.moveQuestion(
+                    moveTarget,
+                    destinationId,
+                    onSuccess,
+                    onFinish,
+                );
+            }
+        },
+        [moveTarget],
+    );
 
-    //TODO Delete Question
-    const handleDeleteQuestion = (node: TreeNodeData) => {
+    const handleDeleteQuestion = useCallback((node: TreeNode) => {
         if (confirm("Are you sure you want to delete this question?")) {
             setIsClipboardProcessing(true);
-            const exam_id = node.originalData as QuestionsData;
-            router.post(
-                route("questions.delete"),
-                {
-                    exam_id: exam_id.examId,
-                    question_index: node.originalId,
-                },
-                {
-                    onFinish: () => setIsClipboardProcessing(false),
-                },
+            ClipboardService.deleteQuestion(node, () =>
+                setIsClipboardProcessing(false),
             );
         }
-    };
+    }, []);
 
-    //TODO Return handle
     return {
         clipboard,
         moveTarget,

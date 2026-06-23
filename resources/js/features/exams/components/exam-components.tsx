@@ -25,18 +25,19 @@
 import { Button } from "@/components/ui/button";
 import { useEffect, useMemo, useState } from "react";
 import { useForm } from "@inertiajs/react";
-import { Answer, Question, Questions } from "@/lib/questionHelpers/question";
+import type { Answer, Question } from "@/types";
+import { QuestionService } from "@/services";
 import { ExamData } from "./exam-data";
 import { ExamFormQuestions } from "./exam-questions-main";
 import { Spinner } from "@/components/ui/spinner";
 import { cn } from "@/lib/utils";
-import { TypeMethodHTTP } from "@/interface/global";
-import {
+import type {
+    TypeMethodHTTP,
     CourseData,
     ExamsData,
     QuestionsData,
     AnswerData,
-} from "@/interface/global";
+} from "@/types";
 
 type FormData = {
     name: string;
@@ -98,24 +99,26 @@ function ExamModalFormQuestions({
         };
     }, [onStepChange]);
 
-    const questionsManager = useMemo(() => {
-        return new Questions(data.questions.map((q) => ({ ...q })));
-    }, [data.questions]);
-
     const addQuestion = () => {
-        setData("questions", questionsManager.addQuestion());
+        setData("questions", QuestionService.addQuestion(data.questions));
     };
 
     const removeQuestion = (qi: number) => {
-        setData("questions", questionsManager.removeQuestion(qi));
+        setData(
+            "questions",
+            QuestionService.removeQuestion(data.questions, qi),
+        );
     };
 
     const addAnswer = (qi: number) => {
-        setData("questions", questionsManager.addAnswer(qi));
+        setData("questions", QuestionService.addAnswer(data.questions, qi));
     };
 
     const removeAnswer = (qi: number, ai: number) => {
-        setData("questions", questionsManager.removeAnswer(qi, ai));
+        setData(
+            "questions",
+            QuestionService.removeAnswer(data.questions, qi, ai),
+        );
     };
 
     const updateQuestion = <K extends keyof Question>(
@@ -123,7 +126,10 @@ function ExamModalFormQuestions({
         key: K,
         value: Question[K],
     ) => {
-        setData("questions", questionsManager.updateQuestion(qi, key, value));
+        setData(
+            "questions",
+            QuestionService.updateQuestion(data.questions, qi, key, value),
+        );
     };
 
     const updateAnswer = <K extends keyof Answer>(
@@ -132,11 +138,17 @@ function ExamModalFormQuestions({
         key: K,
         value: Answer[K],
     ) => {
-        setData("questions", questionsManager.updateAnswer(qi, ai, key, value));
+        setData(
+            "questions",
+            QuestionService.updateAnswer(data.questions, qi, ai, key, value),
+        );
     };
 
     const toggleCorrect = (qi: number, ai: number) => {
-        setData("questions", questionsManager.toggleCorrect(qi, ai));
+        setData(
+            "questions",
+            QuestionService.toggleCorrect(data.questions, qi, ai),
+        );
     };
 
     /* ================= SUBMIT ================= */

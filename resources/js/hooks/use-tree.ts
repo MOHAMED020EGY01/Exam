@@ -4,20 +4,16 @@
  * Purpose:
  * Hook to manage all courses explorer tree state: expansion, selection, and search.
  *
- * Changes from previous version:
- * - useSearchScope logic merged directly here (useState + useTransition + debounce)
- *   so the separate use-search-scope.ts file is no longer needed.
- * - expandAll no longer requires nodes argument; it operates on safeInitialNodes internally.
- *
  * Responsibilities:
  * - Hold tree expanded folder keys and selected node
  * - Manage search query + scope with 200 ms debounce via useTransition
  * - Expose toggle / expand / collapse operations
- * - Compute filteredNodes via useMemo
+ * - Compute filtered nodes via useMemo
  * - Auto-expand matched folders when search query changes
  *
  * Dependencies:
- * - Tree helper functions (lib/treeHelpers)
+ * - TreeNormalizer service (lib/services)
+ * - Type definitions from @/types
  */
 
 import {
@@ -27,18 +23,17 @@ import {
     useEffect,
     useTransition,
 } from "react";
-import { filterTree, getFolderNodeIds } from "../lib/treeHelpers";
-import { TreeNodeData } from "@/interface/global";
-import { SearchScope } from "@/features/tree/SearchInput";
+import { TreeNormalizerService } from "@/services";
+import type { TreeNode, SearchScope } from "@/types";
 
-export function useTree(initialNodes: any) {
+export function useTree(initialNodes: unknown) {
     // ── Tree UI state ───────────────────────────────────────────
     const [expandedKeys, setExpandedKeys] = useState<Record<string, boolean>>(
         {},
     );
     const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
 
-    // ── Search state (previously in useSearchScope) ─────────────
+    // ── Search state ────────────────────────────────────────────
     const [searchQuery, setSearchQuery] = useState("");
     const [debouncedQuery, setDebouncedQuery] = useState("");
     const [scope, setScope] = useState<SearchScope>("all");
@@ -48,7 +43,7 @@ export function useTree(initialNodes: any) {
     const refreshTree = useCallback(() => {
         setTreeVersion((v) => v + 1);
     }, []);
-    /** 200 ms debounce — mirrors the old useSearchScope behaviour */
+
     useEffect(() => {
         const handler = setTimeout(() => {
             startTransition(() => {
@@ -59,7 +54,7 @@ export function useTree(initialNodes: any) {
     }, [searchQuery]);
 
     // ── Safe-guard initial nodes ────────────────────────────────
-    const safeInitialNodes = useMemo<TreeNodeData[]>(() => {
+    const safeInitialNodes = useMemo<TreeNode[]>(() => {
         return Array.isArray(initialNodes)
             ? initialNodes
             : initialNodes && typeof initialNodes === "object"
@@ -69,15 +64,8 @@ export function useTree(initialNodes: any) {
 
     // ── Recursive node finder ───────────────────────────────────
     const findNodeById = useCallback(
-        (nodes: TreeNodeData[], id: string): TreeNodeData | null => {
-            for (const node of nodes) {
-                if (node.id === id) return node;
-                if (node.children && node.children.length > 0) {
-                    const found = findNodeById(node.children, id);
-                    if (found) return found;
-                }
-            }
-            return null;
+        (nodes: TreeNode[], id: string): TreeNode | null => {
+            return TreeNormalizerService.findNodeById(nodes, id);
         },
         [],
     );
@@ -90,11 +78,14 @@ export function useTree(initialNodes: any) {
         [safeInitialNodes, selectedNodeId, findNodeById],
     );
 
-    const handleSetSelectedNode = useCallback((node: any) => {
-        if (!node) setSelectedNodeId(null);
-        else if (typeof node === "string") setSelectedNodeId(node);
-        else setSelectedNodeId(node.id);
-    }, []);
+    const handleSetSelectedNode = useCallback(
+        (node: TreeNode | string | null) => {
+            if (!node) setSelectedNodeId(null);
+            else if (typeof node === "string") setSelectedNodeId(node);
+            else setSelectedNodeId(node.id);
+        },
+        [],
+    );
 
     // ── Expansion helpers ───────────────────────────────────────
     const toggleExpand = useCallback((nodeId: string) => {
@@ -106,7 +97,8 @@ export function useTree(initialNodes: any) {
     }, []);
 
     const expandAll = useCallback(() => {
-        const folderIds = getFolderNodeIds(safeInitialNodes);
+        const folderIds =
+            TreeNormalizerService.getFolderNodeIds(safeInitialNodes);
         const next: Record<string, boolean> = {};
         folderIds.forEach((id) => {
             next[id] = true;
@@ -122,15 +114,20 @@ export function useTree(initialNodes: any) {
     const filteredNodes = useMemo(
         () =>
             debouncedQuery.trim()
-                ? filterTree(safeInitialNodes, debouncedQuery, scope)
+                ? TreeNormalizerService.filterTree(
+                      safeInitialNodes,
+                      debouncedQuery,
+                      scope,
+                  )
                 : safeInitialNodes,
-        [safeInitialNodes, debouncedQuery, scope,treeVersion],
+        [safeInitialNodes, debouncedQuery, scope, treeVersion],
     );
 
     // Auto-expand matched folders when query changes
     useEffect(() => {
         if (debouncedQuery.trim()) {
-            const folderIds = getFolderNodeIds(filteredNodes);
+            const folderIds =
+                TreeNormalizerService.getFolderNodeIds(filteredNodes);
             setExpandedKeys((prev) => {
                 const merged = { ...prev };
                 folderIds.forEach((id) => {

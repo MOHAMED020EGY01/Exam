@@ -36,7 +36,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Label } from "@/components/ui/label";
-import { Question, Answer } from "@/lib/questionHelpers/question";
+import type { Question, Answer } from "@/types";
 
 interface ExamFormQuestionsProps {
     backSelf: (step: number) => void;

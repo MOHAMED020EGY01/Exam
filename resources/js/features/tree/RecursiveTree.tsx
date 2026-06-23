@@ -18,11 +18,11 @@
  */
 
 import React from 'react';
-import { TreeNodeData } from '@/interface/global';
+import type { TreeNode as TreeNodeType } from '@/types';
 import { TreeNode } from './TreeNode';
 
 interface RecursiveTreeProps {
-  nodes: TreeNodeData[];
+  nodes: TreeNodeType[];
   depth: number;
 }
 

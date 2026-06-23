@@ -23,7 +23,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "../ui/button";
-import { DropdownItemInterface } from "@/interface/global";
+import type { DropdownItemInterface } from "@/types";
 import { Fragment, ReactNode } from "react";
 import { Link } from "@inertiajs/react";
 

@@ -13,63 +13,47 @@
  *
  * Dependencies:
  * - React context hooks
- * - Type definitions from @/interface/global
- *
- * Notes:
- * - Moved from components/tree to features/tree for feature-based organization
+ * - Type definitions from @/types
  */
 
-import React, { createContext, useContext } from 'react';
-import { CourseData, ExamsData, TreeNodeData } from '@/interface/global';
-import { SearchScope } from './SearchInput';
+import React, { createContext, useContext } from "react";
+import type { CourseData, ExamsData, TreeNode } from "@/types";
+import type { SearchScope } from "@/types";
+import type { ClipboardContent } from "@/types";
 
 // ─────────────────────────────────────────────────────────────
 // Types
 // ─────────────────────────────────────────────────────────────
 
-/**
- * All discrete CRUD / clipboard operations grouped in one object.
- * Components call e.g. `actions.copy(node)` instead of receiving
- * a separate `onCopy` prop.
- */
 export interface TreeActions {
-  addCourse:      ()                        => void;
-  addExam:        (course: CourseData)      => void;
-  editCourse:     (course: CourseData)      => void;
-  deleteCourse:   (course: CourseData)      => void;
-  editExam:       (exam: ExamsData)         => void;
-  deleteExam:     (exam: ExamsData)         => void;
-  downloadExam:   (exam: ExamsData)         => void;
-  copy:           (node: TreeNodeData)      => void;
-  paste:          (node: TreeNodeData)      => void;
-  move:           (node: TreeNodeData)      => void;
-  duplicate:      (node: TreeNodeData)      => void;
-  deleteQuestion: (node: TreeNodeData)      => void;
+  addCourse: () => void;
+  addExam: (course: CourseData) => void;
+  editCourse: (course: CourseData) => void;
+  deleteCourse: (course: CourseData) => void;
+  editExam: (exam: ExamsData) => void;
+  deleteExam: (exam: ExamsData) => void;
+  downloadExam: (exam: ExamsData) => void;
+  copy: (node: TreeNode) => void;
+  paste: (node: TreeNode) => void;
+  move: (node: TreeNode) => void;
+  duplicate: (node: TreeNode) => void;
+  deleteQuestion: (node: TreeNode) => void;
 }
 
 export interface TreeContextValue {
-  // ── Tree state ───────────────────────────────────────────
-  expandedKeys:   Record<string, boolean>;
-  selectedNode:   TreeNodeData | null;
-  filteredNodes:  TreeNodeData[];
-
-  // ── Search / filter state ────────────────────────────────
-  searchQuery:    string;
+  expandedKeys: Record<string, boolean>;
+  selectedNode: TreeNode | null;
+  filteredNodes: TreeNode[];
+  searchQuery: string;
   setSearchQuery: (query: string) => void;
-  scope:          SearchScope;
-  setScope:       (scope: SearchScope) => void;
-  isPending:      boolean;
-
-  // ── Tree manipulation helpers ────────────────────────────
-  toggleExpand:    (id: string)          => void;
-  expandAll:       ()                    => void;
-  collapseAll:     ()                    => void;
-  setSelectedNode: (node: TreeNodeData)  => void;
-
-  // ── Clipboard state ──────────────────────────────────────
-  clipboard?: any;
-
-  // ── Grouped action handlers ──────────────────────────────
+  scope: SearchScope;
+  setScope: (scope: SearchScope) => void;
+  isPending: boolean;
+  toggleExpand: (id: string) => void;
+  expandAll: () => void;
+  collapseAll: () => void;
+  setSelectedNode: (node: TreeNode | string | null) => void;
+  clipboard?: ClipboardContent | null;
   actions: TreeActions;
 }
 
@@ -98,14 +82,10 @@ export const TreeProvider: React.FC<TreeProviderProps> = ({ value, children }) =
 // Consumer hook
 // ─────────────────────────────────────────────────────────────
 
-/**
- * Must be used inside <TreeProvider>.
- * Throws a descriptive error if called outside the provider tree.
- */
 export function useTreeContext(): TreeContextValue {
   const ctx = useContext(TreeContext);
   if (!ctx) {
-    throw new Error('useTreeContext must be used inside a <TreeProvider>.');
+    throw new Error("useTreeContext must be used inside a <TreeProvider>.");
   }
   return ctx;
 }

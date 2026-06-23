@@ -23,11 +23,11 @@
  */
 
 import React, { useMemo } from "react";
-import { CourseData, ExamsData, TreeNodeData } from "@/interface/global";
+import type { CourseData, ExamsData, TreeNode as TreeNodeType, SearchScope } from "@/types";
 import { TreeProvider, TreeContextValue, useTreeContext } from "./TreeContext";
 import { RecursiveTree } from "./RecursiveTree";
 import { TreeIcon, ChevronIcon } from "./TreeIcon";
-import { SearchInput, SearchScope } from "./SearchInput";
+import { SearchInput } from "./SearchInput";
 import {
     Search,
     FolderPlus,
@@ -42,17 +42,17 @@ import {
 
 interface TreeRootProps {
     // Data from useTree hook
-    filteredNodes: TreeNodeData[];
+    filteredNodes: TreeNodeType[];
     expandedKeys: Record<string, boolean>;
-    selectedNode: TreeNodeData | null;
+    selectedNode: TreeNodeType | null;
     toggleExpand: (id: string) => void;
-    setSelectedNode: (node: TreeNodeData) => void;
+    setSelectedNode: (node: TreeNodeType | string | null) => void;
     expandAll: () => void;
     collapseAll: () => void;
     searchQuery: string;
     setSearchQuery: (query: string) => void;
-    scope: string;
-    setScope: (scope: any) => void;
+    scope: SearchScope;
+    setScope: (scope: SearchScope) => void;
     isPending: boolean;
 
     // Callback actions (passed from parent, forwarded into context)
@@ -66,11 +66,11 @@ interface TreeRootProps {
 
     // Clipboard & move operations
     clipboard?: any;
-    onCopy?: (node: TreeNodeData) => void;
-    onPaste?: (node: TreeNodeData) => void;
-    onMove?: (node: TreeNodeData) => void;
-    onDuplicate?: (node: TreeNodeData) => void;
-    onDeleteQuestion?: (node: TreeNodeData) => void;
+    onCopy?: (node: TreeNodeType) => void;
+    onPaste?: (node: TreeNodeType) => void;
+    onMove?: (node: TreeNodeType) => void;
+    onDuplicate?: (node: TreeNodeType) => void;
+    onDeleteQuestion?: (node: TreeNodeType) => void;
 }
 
 // ─────────────────────────────────────────────────────────────

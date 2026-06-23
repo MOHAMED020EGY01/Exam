@@ -25,11 +25,10 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { FileText, Calendar, Pen, Trash, Download } from "lucide-react";
-import { ExamsData, TreeNodeData } from "@/interface/global";
-
+import type { ExamsData, TreeNode as TreeNodeType } from "@/types";
 
 interface ExamDetailsProps {
-    selectedNode: TreeNodeData;
+    selectedNode: TreeNodeType;
     onEditExam: (exam: ExamsData) => void;
     onDeleteExam: (exam: ExamsData) => void;
     onDownloadExam: (exam: ExamsData) => void;
@@ -65,7 +64,9 @@ export const ExamDetails: React.FC<ExamDetailsProps> = ({
                             variant="outline"
                             size="sm"
                             onClick={() =>
-                                onEditExam(selectedNode.originalData as ExamsData)
+                                onEditExam(
+                                    selectedNode.originalData as ExamsData,
+                                )
                             }
                         >
                             <Pen className="w-4 h-4 mr-1.5" />
@@ -75,7 +76,9 @@ export const ExamDetails: React.FC<ExamDetailsProps> = ({
                             variant="destructive"
                             size="sm"
                             onClick={() =>
-                                onDeleteExam(selectedNode.originalData as ExamsData)
+                                onDeleteExam(
+                                    selectedNode.originalData as ExamsData,
+                                )
                             }
                         >
                             <Trash className="w-4 h-4 mr-1.5" />
@@ -127,7 +130,9 @@ export const ExamDetails: React.FC<ExamDetailsProps> = ({
                     <Button
                         variant="outline"
                         onClick={() =>
-                            onDownloadExam(selectedNode.originalData as ExamsData)
+                            onDownloadExam(
+                                selectedNode.originalData as ExamsData,
+                            )
                         }
                     >
                         <Download className="w-4 h-4 mr-2" /> Download Package

@@ -20,14 +20,8 @@ import { Header } from "./Header";
 import { Toaster } from "@/components/ui/sonner";
 import { SonnerTypes } from "../common/FlashHelper";
 import { TooltipProvider } from "../ui/tooltip";
-import { toast } from "sonner";
-import { useAuth } from "@/hooks/use-auth";
-import { router } from "@inertiajs/react";
-import { useEchoChannel } from "@/hooks/use-echo-channel";
 
 const DashboardLayout = ({ children }: { children: ReactNode }) => {
-
-
     return (
         <TooltipProvider>
             <Header />

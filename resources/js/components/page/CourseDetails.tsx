@@ -35,10 +35,10 @@ import {
     Eye,
     Download,
 } from "lucide-react";
-import { CourseData, ExamsData, TreeNodeData } from "@/interface/global";
+import type { CourseData, ExamsData, TreeNode as TreeNodeType } from "@/types";
 
 interface CourseDetailsProps {
-    selectedNode: TreeNodeData;
+    selectedNode: TreeNodeType;
     selectedNodeExams: ExamsData[];
     onEditCourse: (course: CourseData) => void;
     onDeleteCourse: (course: CourseData) => void;
@@ -78,7 +78,9 @@ export const CourseDetails: React.FC<CourseDetailsProps> = ({
                             variant="outline"
                             size="sm"
                             onClick={() =>
-                                onEditCourse(selectedNode.originalData as CourseData)
+                                onEditCourse(
+                                    selectedNode.originalData as CourseData,
+                                )
                             }
                         >
                             <Pen className="w-4 h-4 mr-1.5" />
@@ -88,7 +90,9 @@ export const CourseDetails: React.FC<CourseDetailsProps> = ({
                             variant="destructive"
                             size="sm"
                             onClick={() =>
-                                onDeleteCourse(selectedNode.originalData as CourseData)
+                                onDeleteCourse(
+                                    selectedNode.originalData as CourseData,
+                                )
                             }
                         >
                             <Trash className="w-4 h-4 mr-1.5" />
@@ -127,7 +131,11 @@ export const CourseDetails: React.FC<CourseDetailsProps> = ({
                         </h4>
                         <Button
                             size="xs"
-                            onClick={() => onAddExam(selectedNode.originalData as CourseData)}
+                            onClick={() =>
+                                onAddExam(
+                                    selectedNode.originalData as CourseData,
+                                )
+                            }
                         >
                             <Plus className="w-3.5 h-3.5 mr-1" /> Add Exam
                         </Button>

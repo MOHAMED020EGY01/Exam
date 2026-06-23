@@ -31,7 +31,7 @@ import { Label } from "@/components/ui/label";
 import { useForm } from "@inertiajs/react";
 import { cn } from "@/lib/utils";
 import { Spinner } from "../ui/spinner";
-import { ModalInterface } from "@/interface/modal-interface";
+import type { ModalInterface } from "@/types";
 import { Textarea } from "@/components/ui/textarea";
 import {
     Book,
@@ -40,6 +40,8 @@ import {
     Trash2,
     HelpCircle,
 } from "lucide-react";
+
+import type { FieldForm } from "@/types";
 
 const ModalDynamic = <T extends Record<string, any>>({
     open,
@@ -52,7 +54,7 @@ const ModalDynamic = <T extends Record<string, any>>({
     dataForm,
 }: ModalInterface<T>) => {
     const inputFormSlice = inputForm?.reduce(
-        (acc, key) => {
+        (acc: Record<string, any>, key: FieldForm) => {
             acc[key.field] = dataForm?.[key.field] ?? "";
             return acc;
         },
@@ -73,7 +75,7 @@ const ModalDynamic = <T extends Record<string, any>>({
 
     const handleSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
         e.preventDefault();
-        submit(method, url, {
+        submit(method as any, url, {
             onSuccess: () => {
                 reset();
                 setOpen(false);
@@ -99,9 +101,7 @@ const ModalDynamic = <T extends Record<string, any>>({
             return <Book className="w-5 h-5 icon-indigo shrink-0" />;
         }
         if (title.toLowerCase().includes("exam")) {
-            return (
-                <GraduationCap className="w-5 h-5 icon-amber shrink-0" />
-            );
+            return <GraduationCap className="w-5 h-5 icon-amber shrink-0" />;
         }
         return <HelpCircle className="w-5 h-5 text-primary shrink-0" />;
     };
@@ -140,75 +140,79 @@ const ModalDynamic = <T extends Record<string, any>>({
                     {inputForm && inputForm.length > 0 && (
                         <div className="px-6 py-5 space-y-4 max-h-[60vh] overflow-y-auto">
                             <FieldGroup className="space-y-4">
-                                {inputForm.map((item, index) => {
-                                    const hasError = !!errors[item.field];
-                                    const fieldLabel =
-                                        item.field.charAt(0).toUpperCase() +
-                                        item.field.slice(1).replace(/_/g, " ");
-                                    const isDescriptionField =
-                                        item.field.toLowerCase() ===
-                                        "description";
+                                {inputForm.map(
+                                    (item: FieldForm, index: number) => {
+                                        const hasError = !!errors[item.field];
+                                        const fieldLabel =
+                                            item.field.charAt(0).toUpperCase() +
+                                            item.field
+                                                .slice(1)
+                                                .replace(/_/g, " ");
+                                        const isDescriptionField =
+                                            item.field.toLowerCase() ===
+                                            "description";
 
-                                    return (
-                                        <Field
-                                            key={index}
-                                            className="space-y-1.5 flex flex-col"
-                                        >
-                                            <Label
-                                                htmlFor={item.field}
-                                                className="text-xs uppercase font-bold tracking-wider text-muted-foreground/80 select-none"
+                                        return (
+                                            <Field
+                                                key={index}
+                                                className="space-y-1.5 flex flex-col"
                                             >
-                                                {fieldLabel}
-                                            </Label>
+                                                <Label
+                                                    htmlFor={item.field}
+                                                    className="text-xs uppercase font-bold tracking-wider text-muted-foreground/80 select-none"
+                                                >
+                                                    {fieldLabel}
+                                                </Label>
 
-                                            {isDescriptionField ? (
-                                                <Textarea
-                                                    id={item.field}
-                                                    name={item.field}
-                                                    value={data[item.field]}
-                                                    placeholder={`Enter ${item.field.toLowerCase()}...`}
-                                                    rows={4}
-                                                    onChange={(e) => {
-                                                        setData(
-                                                            item.field,
-                                                            e.target.value,
-                                                        );
-                                                    }}
-                                                    className={cn(
-                                                        "min-h-[100px] resize-y transition-all focus-visible:ring-primary focus-visible:ring-2",
-                                                        hasError &&
-                                                            "border-destructive focus-visible:ring-destructive focus-visible:ring-2",
-                                                    )}
-                                                />
-                                            ) : (
-                                                <Input
-                                                    id={item.field}
-                                                    name={item.field}
-                                                    value={data[item.field]}
-                                                    placeholder={`Enter ${item.field.toLowerCase()}...`}
-                                                    onChange={(e) => {
-                                                        setData(
-                                                            item.field,
-                                                            e.target.value,
-                                                        );
-                                                    }}
-                                                    className={cn(
-                                                        "h-10 transition-all focus-visible:ring-primary focus-visible:ring-2",
-                                                        hasError &&
-                                                            "border-destructive focus-visible:ring-destructive focus-visible:ring-2",
-                                                    )}
-                                                />
-                                            )}
+                                                {isDescriptionField ? (
+                                                    <Textarea
+                                                        id={item.field}
+                                                        name={item.field}
+                                                        value={data[item.field]}
+                                                        placeholder={`Enter ${item.field.toLowerCase()}...`}
+                                                        rows={4}
+                                                        onChange={(e) => {
+                                                            setData(
+                                                                item.field,
+                                                                e.target.value,
+                                                            );
+                                                        }}
+                                                        className={cn(
+                                                            "min-h-[100px] resize-y transition-all focus-visible:ring-primary focus-visible:ring-2",
+                                                            hasError &&
+                                                                "border-destructive focus-visible:ring-destructive focus-visible:ring-2",
+                                                        )}
+                                                    />
+                                                ) : (
+                                                    <Input
+                                                        id={item.field}
+                                                        name={item.field}
+                                                        value={data[item.field]}
+                                                        placeholder={`Enter ${item.field.toLowerCase()}...`}
+                                                        onChange={(e) => {
+                                                            setData(
+                                                                item.field,
+                                                                e.target.value,
+                                                            );
+                                                        }}
+                                                        className={cn(
+                                                            "h-10 transition-all focus-visible:ring-primary focus-visible:ring-2",
+                                                            hasError &&
+                                                                "border-destructive focus-visible:ring-destructive focus-visible:ring-2",
+                                                        )}
+                                                    />
+                                                )}
 
-                                            {hasError && (
-                                                <p className="text-destructive text-xs font-semibold mt-1 flex items-center gap-1.5 animate-in fade-in slide-in-from-top-1 duration-150 select-none">
-                                                    <AlertCircle className="w-3.5 h-3.5 shrink-0" />
-                                                    {errors[item.field]}
-                                                </p>
-                                            )}
-                                        </Field>
-                                    );
-                                })}
+                                                {hasError && (
+                                                    <p className="text-destructive text-xs font-semibold mt-1 flex items-center gap-1.5 animate-in fade-in slide-in-from-top-1 duration-150 select-none">
+                                                        <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                                                        {errors[item.field]}
+                                                    </p>
+                                                )}
+                                            </Field>
+                                        );
+                                    },
+                                )}
                             </FieldGroup>
                         </div>
                     )}

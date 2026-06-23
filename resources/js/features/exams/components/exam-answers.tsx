@@ -24,7 +24,7 @@ import ImageCustom from "@/components/common/FileCustom";
 import ImagePreview from "@/components/common/ImagePreview";
 import { cn } from "@/lib/utils";
 import { Trash, X } from "lucide-react";
-import { Answer } from "@/lib/questionHelpers/question";
+import type { Answer } from "@/types";
 
 interface ExamAnswersProps {
     questionIndex: number;

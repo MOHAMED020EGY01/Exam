@@ -22,37 +22,37 @@
  */
 
 import React from "react";
-import { CourseData, ExamsData, TreeNodeData } from "@/interface/global";
+import type { CourseData, ExamsData, TreeNode as TreeNodeType } from "@/types";
 import { useTreeContext } from "./TreeContext";
 import { TreeIcon, ChevronIcon } from "./TreeIcon";
 import {
-    Plus,
-    Pen,
-    Trash,
-    Download,
-    Copy,
-    Clipboard,
-    Move,
-    CopyPlus,
-    MoreVertical,
+  Plus,
+  Pen,
+  Trash,
+  Download,
+  Copy,
+  Clipboard,
+  Move,
+  CopyPlus,
+  MoreVertical,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
 interface TreeFolderProps {
-    node: TreeNodeData;
-    depth: number;
-    isExpanded: boolean;
-    isSelected: boolean;
-    onToggle: (id: string) => void;
-    onSelect: (node: TreeNodeData) => void;
-    children?: React.ReactNode;
+  node: TreeNodeType;
+  depth: number;
+  isExpanded: boolean;
+  isSelected: boolean;
+  onToggle: (id: string) => void;
+  onSelect: (node: TreeNodeType) => void;
+  children?: React.ReactNode;
 }
 
 const TreeFolderInner: React.FC<TreeFolderProps> = ({

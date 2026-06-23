@@ -14,11 +14,12 @@
  * - useAuth hook
  */
 
-import { DropdownItemInterface } from "@/interface/global";
+import type { DropdownItemInterface } from "@/types";
 import { LogOut, PlusIcon, ShareIcon, User } from "lucide-react";
 import { Avatar, AvatarBadge, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { DropdownMenuDestructive } from "./DropdownMenu";
 import { useAuth } from "@/hooks/use-auth";
+import { Routes } from "@/services";
 
 export const AvatarBadgeIcon = () => {
     const item: DropdownItemInterface[] = [
@@ -26,23 +27,23 @@ export const AvatarBadgeIcon = () => {
             variant: "default",
             label: "profile",
             icon: <User />,
-            openModal: false
+            openModal: false,
         },
         {
             variant: "default",
             label: "Share",
             icon: <ShareIcon />,
-            openModal: false
+            openModal: false,
         },
         {
             variant: "destructive",
-            href: route('logout'),
+            href: Routes.auth.logout(),
             label: "logout",
             icon: <LogOut />,
             method: "delete",
             danger: true,
-            openModal: false
-        }
+            openModal: false,
+        },
     ];
     const user = useAuth();
     return (
@@ -50,7 +51,9 @@ export const AvatarBadgeIcon = () => {
             target={
                 <Avatar className="size-7 md:size-8">
                     <AvatarImage src={user.user?.avatar} alt="@pranathip" />
-                    <AvatarFallback className="text-[10px] md:text-xs">PP</AvatarFallback>
+                    <AvatarFallback className="text-[10px] md:text-xs">
+                        PP
+                    </AvatarFallback>
                     <AvatarBadge className="size-2 md:size-2.5 [&>svg]:size-1.5 md:[&>svg]:size-2">
                         <PlusIcon />
                     </AvatarBadge>

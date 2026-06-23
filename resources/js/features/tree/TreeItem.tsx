@@ -20,7 +20,7 @@
  */
 
 import React from 'react';
-import { TreeNodeData } from '@/interface/global';
+import type { TreeNode as TreeNodeType } from '@/types';
 import { useTreeContext } from './TreeContext';
 import { TreeIcon } from './TreeIcon';
 import { cn } from '@/lib/utils';
@@ -36,10 +36,10 @@ import {
 } from '@/components/ui/dropdown-menu';
 
 interface TreeItemProps {
-  node:      TreeNodeData;
+  node:      TreeNodeType;
   depth:     number;
   isSelected: boolean;
-  onSelect:  (node: TreeNodeData) => void;
+  onSelect:  (node: TreeNodeType) => void;
 }
 
 const TreeItemInner: React.FC<TreeItemProps> = ({

@@ -27,8 +27,7 @@ import {
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
 } from '@/components/ui/dropdown-menu';
-
-export type SearchScope = 'all' | 'course' | 'exam' | 'question';
+import type { SearchScope } from '@/types';
 
 interface SearchInputProps {
   searchQuery: string;

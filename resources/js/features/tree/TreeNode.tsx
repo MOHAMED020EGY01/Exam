@@ -20,14 +20,14 @@
  */
 
 import React from 'react';
-import { TreeNodeData } from '@/interface/global';
+import type { TreeNode as TreeNodeType } from '@/types';
 import { useTreeContext } from './TreeContext';
 import { TreeFolder } from './TreeFolder';
 import { TreeItem } from './TreeItem';
 import { RecursiveTree } from './RecursiveTree';
 
 interface TreeNodeProps {
-  node:  TreeNodeData;
+  node:  TreeNodeType;
   depth: number;
 }
 
