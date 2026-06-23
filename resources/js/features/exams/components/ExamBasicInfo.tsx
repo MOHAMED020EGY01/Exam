@@ -34,7 +34,12 @@ interface ExamBasicInfoProps {
     setData: (key: "name" | "description", value: string) => void;
     course?: CourseData;
 }
-export function ExamBasicInfo({ errors, data, setData, course }: ExamBasicInfoProps) {
+export function ExamBasicInfo({
+    errors,
+    data,
+    setData,
+    course,
+}: ExamBasicInfoProps) {
     return (
         <div className="space-y-5 animate-in fade-in-5 duration-300">
             {/* 🔹 Related Course */}
@@ -99,7 +104,7 @@ export function ExamBasicInfo({ errors, data, setData, course }: ExamBasicInfoPr
                         setData("description", e.target.value)
                     }
                     className={cn(
-                        "min-h-[100px] resize-y transition-all focus-visible:ring-primary",
+                        "min-h-100 resize-y transition-all focus-visible:ring-primary",
                         errors.description &&
                             "border-destructive focus-visible:ring-destructive",
                     )}

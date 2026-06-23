@@ -30,7 +30,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, Book, FileText, ArrowRight, Move } from "lucide-react";
 import { cn } from "@/lib/utils";
-import type { CourseData, TreeNode as TreeNodeType } from "@/types";
+import type { CourseData, ExamsData, TreeNode as TreeNodeType } from "@/types";
 
 interface MoveModalProps {
     open: boolean;
@@ -89,13 +89,13 @@ export const MoveModal: React.FC<MoveModalProps> = ({
                 meta: string;
             }> = [];
             courses.forEach((course) => {
-                const exams = Array.isArray(course.exams)
+                const exams = Array.isArray(course.exams as ExamsData[])
                     ? course.exams
                     : course.exams && typeof course.exams === "object"
                       ? Object.values(course.exams)
                       : [];
 
-                exams.forEach((exam) => {
+                exams.forEach((exam: ExamsData) => {
                     if (String(exam.id) !== currentExamId) {
                         allExams.push({
                             id: exam.id,
@@ -257,7 +257,7 @@ export const MoveModal: React.FC<MoveModalProps> = ({
                     <Button
                         onClick={handleConfirm}
                         disabled={selectedDestinationId === null || processing}
-                        className="btn-size-lg font-semibold text-xs min-w-[90px]"
+                        className="btn-size-lg font-semibold text-xs min-w-90"
                     >
                         {processing ? "Moving..." : "Confirm Move"}
                     </Button>

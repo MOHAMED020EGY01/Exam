@@ -368,7 +368,7 @@ export function ExamQuestionsEditor({
                                         size="sm"
                                         className="btn-size-default gap-1.5 text-xs font-semibold"
                                     >
-                                        <Plus className="size-3.5" /> Add Option
+                                        <Plus className="icon-sm" /> Add Option
                                     </Button>
                                 </div>
 
@@ -399,7 +399,7 @@ export function ExamQuestionsEditor({
                                     `questions.${questionCurrent}.answers`
                                 ] && (
                                     <p className="text-destructive text-xs font-medium flex items-center gap-1 mt-1">
-                                        <AlertCircle className="size-3.5 shrink-0" />
+                                        <AlertCircle className="icon-sm shrink-0" />
                                         {
                                             errors[
                                                 `questions.${questionCurrent}.answers`
