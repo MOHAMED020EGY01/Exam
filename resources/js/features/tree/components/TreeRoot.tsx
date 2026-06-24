@@ -103,7 +103,7 @@ const TreeContent: React.FC = () => {
     const isRootExpanded = expandedKeys["root"] !== false; // default true
 
     return (
-        <div className="flex-1 overflow-y-auto p-2 min-h-200 md:min-h-300">
+        <div className="flex-1 overflow-y-auto p-2">
             {/* Virtual Root Folder: Courses */}
             <div>
                 <div
@@ -152,7 +152,7 @@ const TreeContent: React.FC = () => {
 
 export const TreeRoot: React.FC = () => {
     return (
-        <div className="flex flex-col h-full bg-background border border-border rounded-xl shadow-sm min-h-200 md:min-h-300">
+        <div className="flex flex-col h-full bg-background border border-border rounded-xl shadow-sm">
             <TitleBar />
             <SearchBar />
             <TreeContent />
