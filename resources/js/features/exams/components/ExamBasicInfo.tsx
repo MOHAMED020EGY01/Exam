@@ -49,7 +49,7 @@ export function ExamBasicInfo({
                         Related Course
                     </Label>
                     <div className="flex items-center gap-3 p-3 rounded-lg border bg-muted/30 border-dashed">
-                        <Book className="w-5 h-5 icon-indigo shrink-0" />
+                        <Book className="icon-md icon-indigo shrink-0" />
                         <div className="flex-1 min-w-0">
                             <span className="font-semibold text-sm block truncate">
                                 {course.name}
@@ -104,7 +104,7 @@ export function ExamBasicInfo({
                         setData("description", e.target.value)
                     }
                     className={cn(
-                        "min-h-100 resize-y transition-all focus-visible:ring-primary",
+                        "textarea-min-height resize-y transition-all focus-visible:ring-primary",
                         errors.description &&
                             "border-destructive focus-visible:ring-destructive",
                     )}

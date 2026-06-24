@@ -224,7 +224,7 @@ export function ExamWizard({
                                 : "bg-muted-foreground/30",
                         )}
                     />
-                    <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider ml-1">
+                    <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider ml-1">
                         Step {activeStep + 1} of 2
                     </span>
                 </div>

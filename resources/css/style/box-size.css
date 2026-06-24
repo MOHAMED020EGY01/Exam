@@ -1,262 +1,270 @@
 .full-screen {
-  @apply w-full h-screen;
+    @apply w-full h-screen;
 }
 
 .page-container {
-  @apply w-full max-w-[1200px] mx-auto;
+    @apply w-full max-w-[1200px] mx-auto;
 }
 
 .modal-large {
-  @apply w-full h-[90vh] max-h-[900px];
+    @apply w-full h-[90vh] max-h-[900px];
 }
 
 .modal-medium {
-  @apply w-[80vw] max-w-[700px] h-[80vh];
+    @apply w-[80vw] max-w-[700px] h-[80vh];
 }
 
 /* Exam editor panel (step 2) */
 .exam-editor-panel {
-  @apply h-[80vh] md:h-[70vh] min-h-[500px];
+    @apply h-[80vh] md:h-[70vh] min-h-[500px];
 }
 
 /* Max-width containers */
 .content-sm {
-  @apply w-full max-w-sm mx-auto;
+    @apply w-full max-w-sm mx-auto;
 }
 
 .content-md {
-  @apply w-full max-w-md mx-auto;
+    @apply w-full max-w-md mx-auto;
 }
 
 .content-lg {
-  @apply w-full max-w-2xl mx-auto;
+    @apply w-full max-w-2xl mx-auto;
 }
 
 /* Login card */
 .login-card {
-  @apply max-w-[400px];
+    @apply max-w-[400px];
 }
 
 /* Logo/brand icon */
 .logo-icon {
-  @apply w-12 h-12;
+    @apply w-12 h-12;
 }
 
 /* Icon Sizing - Standard */
 .icon-sm {
-  @apply w-4 h-4;
+    @apply w-4 h-4;
 }
 
 .icon-md {
-  @apply w-5 h-5;
+    @apply w-5 h-5;
 }
 
 .icon-lg {
-  @apply w-6 h-6;
+    @apply w-6 h-6;
 }
 
 .icon-xl {
-  @apply w-7 h-7;
+    @apply w-7 h-7;
 }
 
 /* Icon with shrink-0 */
 .icon-fixed {
-  @apply shrink-0;
+    @apply shrink-0;
 }
 
 /* Button Sizing */
 .btn-size-xs {
-  @apply h-6;
+    @apply h-6;
 }
 
 .btn-size-sm {
-  @apply h-7;
+    @apply h-7;
 }
 
 .btn-size-default {
-  @apply h-8;
+    @apply h-8;
 }
 
 .btn-size-lg {
-  @apply h-9;
+    @apply h-9;
 }
 
 /* Icon Button Sizing */
 .btn-icon {
-  @apply size-8;
+    @apply size-8;
 }
 
 .btn-icon-sm {
-  @apply size-6;
+    @apply size-6;
 }
 
 .btn-icon-lg {
-  @apply size-9;
+    @apply size-9;
 }
 
 /* Input Field Sizing */
 .input-height {
-  @apply h-8;
+    @apply h-8;
 }
 
 .input-height-lg {
-  @apply h-10;
+    @apply h-10;
 }
 
 /* Badge Sizing */
 .badge-height {
-  @apply h-5;
+    @apply h-5;
 }
 
 .badge-width {
-  @apply w-fit;
+    @apply w-fit;
 }
 
 /* Textarea Sizing */
 .textarea-min-height {
-  @apply min-h-16;
+    @apply min-h-16;
 }
 
 /* Progress Bar Sizing */
 .progress-height {
-  @apply h-1;
+    @apply h-1;
 }
 
 .progress-full-width {
-  @apply w-full;
+    @apply w-full;
 }
 
 /* Avatar Sizing */
 .avatar-sm {
-  @apply size-6;
+    @apply size-6;
 }
 
 .avatar-default {
-  @apply size-8;
+    @apply size-8;
 }
 
 .avatar-lg {
-  @apply size-10;
+    @apply size-10;
 }
 
 /* Modal Content Sizing */
 .modal-content-max-width {
-  @apply max-w-md;
+    @apply max-w-md;
 }
 
 .modal-content-scroll {
-  @apply max-h-[60vh];
+    @apply max-h-[60vh];
 }
 
 /* Container Sizing */
 .container-full {
-  @apply w-full;
+    @apply w-full;
 }
 
 .container-fit {
-  @apply w-fit;
+    @apply w-fit;
 }
 
 /* Width Utilities */
 .w-pixel-divider {
-  @apply w-px;
+    @apply w-px;
 }
 
 /* Thin Line - Vertical Separator */
 .line-separator-v {
-  @apply w-px h-3.5 md:h-4;
+    @apply w-px h-3.5 md:h-4;
 }
 
 /* Full Dimensions */
 .dimensions-full {
-  @apply w-full h-full;
+    @apply w-full h-full;
 }
 
 /* Minimum Sizing */
 .min-width-reset {
-  @apply min-w-0;
+    @apply min-w-0;
 }
 
 /* Flex Width */
 .flex-width-full {
-  @apply w-full;
+    @apply w-full;
 }
 
 /* Move Modal sizing */
 .modal-move {
-  @apply max-h-[85vh];
+    @apply max-h-[85vh];
 }
 
 /* Options list in move modal */
 .options-list {
-  @apply min-h-[180px] max-h-[300px];
+    @apply min-h-[180px] max-h-[300px];
 }
 
 .square-sm {
-  @apply size-2;
+    @apply size-2;
 }
 
 .square-xs {
-  @apply size-2.5;
+    @apply size-2.5;
 }
 
 .square-md {
-  @apply size-3;
+    @apply size-3;
 }
 
 .square-lg {
-  @apply size-4;
+    @apply size-4;
 }
 
 .square-xl {
-  @apply size-5;
+    @apply size-5;
 }
 
 /* Additional size utilities */
 .min-h-200 {
-  min-height: 200px;
+    min-height: 200px;
 }
 
 .md\:min-h-300 {
-  @media (min-width: 768px) {
-    min-height: 300px;
-  }
+    @media (min-width: 768px) {
+        min-height: 300px;
+    }
 }
 
 .max-h-56 {
-  max-height: 56px;
+    max-height: 56px;
 }
 
 .min-w-120 {
-  min-width: 120px;
+    min-width: 120px;
 }
 
 .size-1\.5 {
-  width: 0.375rem;
-  height: 0.375rem;
+    width: 0.375rem;
+    height: 0.375rem;
 }
 
 .size-2\.5 {
-  width: 0.625rem;
-  height: 0.625rem;
+    width: 0.625rem;
+    height: 0.625rem;
 }
 
 .size-3\.5 {
-  width: 0.875rem;
-  height: 0.875rem;
+    width: 0.875rem;
+    height: 0.875rem;
 }
 
 .avatar-md {
-  width: 1.75rem;
-  height: 1.75rem;
+    width: 1.75rem;
+    height: 1.75rem;
 }
 
 .size-16 {
-  width: 4rem;
-  height: 4rem;
+    width: 4rem;
+    height: 4rem;
 }
 
 .size-32 {
-  width: 8rem;
-  height: 6rem;
+    width: 8rem;
+    height: 6rem;
+}
+
+.h-1\.5 {
+    height: 0.375rem;
+}
+
+.min-h-300 {
+    min-height: 300px;
 }

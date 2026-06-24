@@ -8,6 +8,7 @@ export class TreeNormalizerService {
             type: "course",
             originalId: course.id,
             originalData: course,
+            //Exam Data
             children: Array.isArray(course?.exams)
                 ? course.exams.map((exam: ExamsData) => ({
                       id: `exam-${exam.id}`,
@@ -19,6 +20,7 @@ export class TreeNormalizerService {
                           ...exam,
                           courseId: course.id,
                       },
+                      //questions_package Data
                       children: Array.isArray(exam?.questions_package)
                           ? exam.questions_package.map(
                                 (question: QuestionsData, index: number) => ({
@@ -37,9 +39,11 @@ export class TreeNormalizerService {
                                     },
                                 }),
                             )
-                          : [],
+                          : // questions_package Empty
+                            [],
                   }))
-                : [],
+                : // Exam Empty
+                  [],
         }));
     }
 

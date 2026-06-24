@@ -271,7 +271,7 @@ export function ExamQuestionsEditor({
                         type="button"
                         onClick={addQuestion}
                         variant="outline"
-                        className="w-full justify-center gap-2 h-9 border-dashed font-semibold text-xs"
+                        className="w-full justify-center gap-2 btn-size-lg border-dashed font-semibold text-xs"
                     >
                         <Plus className="icon-sm" /> Add Question
                     </Button>

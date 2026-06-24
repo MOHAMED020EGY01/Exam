@@ -78,12 +78,12 @@ export function AnswerEditor({
                     {letter}
                 </span>
 
-                <div className="flex items-center justify-center w-5 h-5 shrink-0">
+                <div className="flex items-center justify-center icon-md shrink-0">
                     {!multiChosen ? (
                         <RadioGroupItem
                             value={`${answerIndex}`}
                             id={`option-${questionIndex}-${answerIndex}`}
-                            className="w-4 h-4 text-emerald-500 focus-visible:ring-emerald-500 focus:ring-emerald-500 focus-within:ring-emerald-500"
+                            className="icon-sm text-emerald-500 focus-visible:ring-emerald-500 focus:ring-emerald-500 focus-within:ring-emerald-500"
                         />
                     ) : (
                         <Checkbox
@@ -97,7 +97,7 @@ export function AnswerEditor({
                                 )
                             }
                             id={`option-${questionIndex}-${answerIndex}`}
-                            className="w-4 h-4 data-[state=checked]:bg-emerald-500 data-[state=checked]:border-emerald-500 focus-visible:ring-emerald-500"
+                            className="icon-sm data-[state=checked]:bg-emerald-500 data-[state=checked]:border-emerald-500 focus-visible:ring-emerald-500"
                         />
                     )}
                 </div>
@@ -126,7 +126,7 @@ export function AnswerEditor({
                 {errors[
                     `questions.${questionIndex}.answers.${answerIndex}.text`
                 ] && (
-                    <p className="text-destructive text-[11px] font-medium mt-1">
+                    <p className="text-destructive text-xs font-medium mt-1">
                         {
                             errors[
                                 `questions.${questionIndex}.answers.${answerIndex}.text`
@@ -143,14 +143,14 @@ export function AnswerEditor({
                     <div className="relative shrink-0">
                         <ImagePreview
                             image={answer.image}
-                            className="w-10 h-10 object-cover rounded-md border"
+                            className="size-10 object-cover rounded-md border"
                         />
                         <Button
                             type="button"
                             onClick={removeImage}
-                            className="absolute -top-1.5 -right-1.5 bg-destructive text-destructive-foreground hover:bg-destructive/90 rounded-full w-4 h-4 p-0 flex items-center justify-center shadow-xs"
+                            className="absolute -top-1.5 -right-1.5 bg-destructive text-destructive-foreground hover:bg-destructive/90 rounded-full icon-sm p-0 flex items-center justify-center shadow-xs"
                         >
-                            <X className="icon-sm" />
+                            <X className="size-2.5" />
                         </Button>
                     </div>
                 )}
@@ -177,7 +177,7 @@ export function AnswerEditor({
                     type="button"
                     variant="ghost"
                     size="icon"
-                    className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-md w-7 h-7 shrink-0"
+                    className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-md icon-xl shrink-0"
                     onClick={() => removeAnswer(questionIndex, answerIndex)}
                 >
                     <Trash className="icon-sm" />

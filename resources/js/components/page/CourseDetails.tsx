@@ -103,6 +103,7 @@ export const CourseDetails: React.FC<CourseDetailsProps> = ({
             </CardHeader>
             <CardContent className="pt-6 space-y-6">
                 <div className="grid grid-cols-2 gap-4">
+                    {/* Number Exam in Course */}
                     <div className="p-3 bg-muted/20 border rounded-lg">
                         <span className="text-xs text-muted-foreground block">
                             Exams Count
@@ -111,6 +112,7 @@ export const CourseDetails: React.FC<CourseDetailsProps> = ({
                             {selectedNodeExams.length}
                         </span>
                     </div>
+                    {/* Courses Created At */}
                     <div className="p-3 bg-muted/20 border rounded-lg flex items-center gap-2">
                         <Calendar className="icon-sm text-muted-foreground" />
                         <div>
@@ -125,6 +127,7 @@ export const CourseDetails: React.FC<CourseDetailsProps> = ({
                 </div>
 
                 <div className="space-y-3">
+                    {/* Add Course Exams */}
                     <div className="flex justify-between items-center">
                         <h4 className="text-sm font-semibold text-foreground">
                             Course Exams ({selectedNodeExams.length})
@@ -140,6 +143,7 @@ export const CourseDetails: React.FC<CourseDetailsProps> = ({
                             <Plus className="icon-sm mr-1" /> Add Exam
                         </Button>
                     </div>
+                    {/* Exams List and buttom download or View (view not work now) */}
                     {selectedNodeExams.length > 0 ? (
                         <div className="border rounded-lg overflow-hidden divide-y">
                             {selectedNodeExams.map((exam: ExamsData) => (

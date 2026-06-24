@@ -99,12 +99,12 @@ export function QuestionEditor({
                     <div className="mt-3 relative inline-block">
                         <ImagePreview
                             image={question.image}
-                            className="w-32 h-24 object-contain rounded-lg border border-dashed p-1"
+                            className="size-32 object-contain rounded-lg border border-dashed p-1"
                         />
                         <Button
                             type="button"
                             onClick={removeImage}
-                            className="absolute -top-2 -right-2 bg-destructive text-destructive-foreground hover:bg-destructive/90 rounded-full w-5 h-5 p-0 flex items-center justify-center shadow-md"
+                            className="absolute -top-2 -right-2 bg-destructive text-destructive-foreground hover:bg-destructive/90 rounded-full icon-md p-0 flex items-center justify-center shadow-md"
                         >
                             <X className="icon-sm" />
                         </Button>

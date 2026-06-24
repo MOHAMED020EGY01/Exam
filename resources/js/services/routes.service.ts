@@ -8,12 +8,16 @@ export const Routes = {
     },
     exams: {
         store: (courseId: string | number) => route("exams.store", courseId),
+        
         update: (courseId: string | number, examId: string | number) =>
             route("exams.update", { course: courseId, exam: examId }),
+
         destroy: (courseId: string | number, examId: string | number) =>
             route("exams.destroy", { course: courseId, exam: examId }),
+
         download: (courseId: string | number, examId: string | number) =>
             route("exams.download", { course: courseId, exam: examId }),
+
         paste: () => route("exams.paste"),
         duplicate: () => route("exams.duplicate"),
         move: () => route("exams.move"),
