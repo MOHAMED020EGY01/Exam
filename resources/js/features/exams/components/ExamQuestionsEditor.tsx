@@ -74,43 +74,52 @@ export function ExamQuestionsEditor({
     toggleCorrect,
     addQuestion,
 }: ExamQuestionsEditorProps) {
-    const [questionCurrent, setQuestionCurrent] = useState(0);
+    // Current question index
+    const [questionCurrentIndex, setQuestionCurrentIndex] = useState(0);
 
+    // Questions list
     const questions = useMemo(() => {
         return Array.isArray(data?.questions) ? data.questions : [];
     }, [data?.questions]);
 
+    // Total questions
     const totalQuestions = questions.length;
-    const currentQuestion = questions[questionCurrent] || null;
+    // Current question Data
+    const currentQuestionData = questions[questionCurrentIndex] || null;
 
     const [multiChosen, setMultiChosen] = useState(
-        currentQuestion?.multiple || false,
+        currentQuestionData?.multiple || false,
     );
 
     // Sync multiChosen with current active question selection
     useEffect(() => {
-        if (currentQuestion) {
-            setMultiChosen(currentQuestion.multiple || false);
+        if (currentQuestionData) {
+            setMultiChosen(currentQuestionData.multiple || false);
         }
-    }, [questionCurrent, currentQuestion]);
+    }, [questionCurrentIndex, currentQuestionData]);
 
+    // Progress of questions
+    // 100% when all questions are edited
     const progressQuestions =
         totalQuestions > 0
-            ? Math.floor(((questionCurrent + 1) / totalQuestions) * 100)
+            ? Math.floor(((questionCurrentIndex + 1) / totalQuestions) * 100)
             : 0;
-
+    // Handle next question
     const handleNext = useCallback(() => {
-        if (questionCurrent + 1 < totalQuestions) {
-            setQuestionCurrent((prev) => prev + 1);
+        if (questionCurrentIndex + 1 < totalQuestions) {
+            setQuestionCurrentIndex((prev) => prev + 1);
         }
-    }, [questionCurrent, totalQuestions]);
+    }, [questionCurrentIndex, totalQuestions]);
 
+    // Handle previous question
     const handlePrevious = useCallback(() => {
-        if (questionCurrent > 0) {
-            setQuestionCurrent((prev) => prev - 1);
+        if (questionCurrentIndex > 0) {
+            setQuestionCurrentIndex((prev) => prev - 1);
         }
-    }, [questionCurrent]);
+    }, [questionCurrentIndex]);
 
+    // Handle keyboard hotkeys
+    // ArrowUp/ArrowDown for question navigation
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
             if (
@@ -144,7 +153,7 @@ export function ExamQuestionsEditor({
 
     const handleRemoveQuestion = (i: number) => {
         removeQuestion(i);
-        setQuestionCurrent((prev) => {
+        setQuestionCurrentIndex((prev) => {
             const nextLength = totalQuestions - 1;
             if (nextLength <= 0) return 0;
             if (prev > nextLength - 1) return nextLength - 1;
@@ -154,18 +163,18 @@ export function ExamQuestionsEditor({
     };
 
     useEffect(() => {
-        if (questionCurrent >= totalQuestions && totalQuestions > 0) {
-            setQuestionCurrent(totalQuestions - 1);
+        if (questionCurrentIndex >= totalQuestions && totalQuestions > 0) {
+            setQuestionCurrentIndex(totalQuestions - 1);
         }
         if (totalQuestions === 0) {
             backSelf(0);
         }
-    }, [totalQuestions, questionCurrent, backSelf]);
+    }, [totalQuestions, questionCurrentIndex, backSelf]);
 
-    if (!currentQuestion) return null;
+    if (!currentQuestionData) return null;
 
-    const answers = Array.isArray(currentQuestion.answers)
-        ? currentQuestion.answers
+    const answers = Array.isArray(currentQuestionData.answers)
+        ? currentQuestionData.answers
         : [];
 
     const answersList = (
@@ -173,7 +182,7 @@ export function ExamQuestionsEditor({
             {answers.map((answer: Answer, answerIndex: number) => (
                 <AnswerEditor
                     key={answerIndex}
-                    questionIndex={questionCurrent}
+                    questionIndex={questionCurrentIndex}
                     answer={answer}
                     answerIndex={answerIndex}
                     updateAnswer={updateAnswer}
@@ -198,11 +207,11 @@ export function ExamQuestionsEditor({
                 <div className="flex flex-row md:flex-col overflow-x-auto md:overflow-y-auto p-2 gap-1.5 md:space-y-1 max-h-56 md:max-h-none items-center scrollbar-none">
                     {questions.map((q: Question, idx: number) => {
                         const hasError = errorSet.has(idx);
-                        const isActive = idx === questionCurrent;
+                        const isActive = idx === questionCurrentIndex;
                         return (
                             <div
                                 key={idx}
-                                onClick={() => setQuestionCurrent(idx)}
+                                onClick={() => setQuestionCurrentIndex(idx)}
                                 className={cn(
                                     "group relative flex items-center justify-center md:justify-between w-9 h-9 md:w-full md:h-auto p-0 md:p-2.5 rounded-full md:rounded-lg cursor-pointer transition-all border text-sm shrink-0",
                                     isActive
@@ -285,7 +294,7 @@ export function ExamQuestionsEditor({
                     <div className="space-y-0.5">
                         <div className="flex items-center gap-2">
                             <span className="text-xs font-semibold text-muted-foreground">
-                                Question {questionCurrent + 1} of{" "}
+                                Question {questionCurrentIndex + 1} of{" "}
                                 {totalQuestions}
                             </span>
                         </div>
@@ -301,7 +310,7 @@ export function ExamQuestionsEditor({
                             variant="ghost"
                             size="icon"
                             onClick={() =>
-                                handleRemoveQuestion(questionCurrent)
+                                handleRemoveQuestion(questionCurrentIndex)
                             }
                             className="btn-size-default rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 md:hidden"
                             title="Delete Current Question"
@@ -313,7 +322,7 @@ export function ExamQuestionsEditor({
                             variant="ghost"
                             size="icon"
                             onClick={handlePrevious}
-                            disabled={questionCurrent === 0}
+                            disabled={questionCurrentIndex === 0}
                             className="btn-size-default rounded-md"
                         >
                             <ChevronLeft className="icon-sm" />
@@ -323,7 +332,9 @@ export function ExamQuestionsEditor({
                             variant="ghost"
                             size="icon"
                             onClick={handleNext}
-                            disabled={questionCurrent === totalQuestions - 1}
+                            disabled={
+                                questionCurrentIndex === totalQuestions - 1
+                            }
                             className="btn-size-default rounded-md"
                         >
                             <ChevronRight className="icon-sm" />
@@ -335,7 +346,7 @@ export function ExamQuestionsEditor({
                 <div className="flex-1 overflow-y-auto p-6">
                     <AnimatePresence mode="wait">
                         <motion.div
-                            key={questionCurrent}
+                            key={questionCurrentIndex}
                             initial={{ opacity: 0, y: 8 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -8 }}
@@ -344,8 +355,8 @@ export function ExamQuestionsEditor({
                         >
                             {/* Question details components */}
                             <QuestionEditor
-                                question={currentQuestion}
-                                questionIndex={questionCurrent}
+                                question={currentQuestionData}
+                                questionIndex={questionCurrentIndex}
                                 updateQuestion={updateQuestion}
                                 errors={errors}
                                 multiChosen={multiChosen}
@@ -362,7 +373,7 @@ export function ExamQuestionsEditor({
                                     <Button
                                         type="button"
                                         onClick={() =>
-                                            addAnswer(questionCurrent)
+                                            addAnswer(questionCurrentIndex)
                                         }
                                         variant="outline"
                                         size="sm"
@@ -381,7 +392,7 @@ export function ExamQuestionsEditor({
                                             .toString()}
                                         onValueChange={(value) =>
                                             toggleCorrect(
-                                                questionCurrent,
+                                                questionCurrentIndex,
                                                 Number(value),
                                             )
                                         }
@@ -396,13 +407,13 @@ export function ExamQuestionsEditor({
                                 )}
 
                                 {errors[
-                                    `questions.${questionCurrent}.answers`
+                                    `questions.${questionCurrentIndex}.answers`
                                 ] && (
                                     <p className="text-destructive text-xs font-medium flex items-center gap-1 mt-1">
                                         <AlertCircle className="icon-sm shrink-0" />
                                         {
                                             errors[
-                                                `questions.${questionCurrent}.answers`
+                                                `questions.${questionCurrentIndex}.answers`
                                             ]
                                         }
                                     </p>

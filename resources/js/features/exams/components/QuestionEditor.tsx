@@ -69,7 +69,7 @@ export function QuestionEditor({
                             "border-destructive focus-within:ring-destructive/20 focus-within:border-destructive",
                     )}
                 >
-                    <input
+                    <Input
                         id={`question-text-${questionIndex}`}
                         value={question?.text || ""}
                         placeholder="Type your question prompt here... (e.g. What is the capital of France?)"

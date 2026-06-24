@@ -25,6 +25,7 @@ import ImagePreview from "@/components/common/ImagePreview";
 import { cn } from "@/lib/utils";
 import { Trash, X } from "lucide-react";
 import type { Answer } from "@/types";
+import { Input } from "@/components/ui/input";
 
 interface AnswerEditorProps {
     questionIndex: number;
@@ -54,6 +55,7 @@ export function AnswerEditor({
         updateAnswer(questionIndex, answerIndex, "image", null);
     };
 
+    /* Option A.. Option B.. (etc) */
     const letter = String.fromCharCode(65 + answerIndex);
 
     return (
@@ -65,8 +67,9 @@ export function AnswerEditor({
                     : "border-border hover:border-muted-foreground/30",
             )}
         >
-            {/* Left Selection Controls */}
+            {/* Left Selection Controls Choose Answer Correct */}
             <div className="flex items-center gap-3 shrink-0 select-none">
+                {/* A B C ..(etc) */}
                 <span
                     className={cn(
                         "flex items-center justify-center w-6 h-6 rounded-full text-[10px] font-bold border transition-all duration-200",
@@ -77,7 +80,7 @@ export function AnswerEditor({
                 >
                     {letter}
                 </span>
-
+                {/* Selection Control  Single Answer or Multi-Choice */}
                 <div className="flex items-center justify-center icon-md shrink-0">
                     {!multiChosen ? (
                         <RadioGroupItem
@@ -97,13 +100,13 @@ export function AnswerEditor({
                                 )
                             }
                             id={`option-${questionIndex}-${answerIndex}`}
-                            className="icon-sm data-[state=checked]:bg-emerald-500 data-[state=checked]:border-emerald-500 focus-visible:ring-emerald-500"
+                            className="icon-xl data-[state=checked]:bg-emerald-500 data-[state=checked]:border-emerald-500 focus-visible:ring-emerald-500"
                         />
                     )}
                 </div>
             </div>
 
-            {/* Middle Option Text Input */}
+            {/*Form and Data Middle Option Text Input */}
             <div className="flex-1 min-w-0 flex flex-col justify-center">
                 <input
                     placeholder={`Option ${letter}...`}
@@ -136,7 +139,7 @@ export function AnswerEditor({
                 )}
             </div>
 
-            {/* Right Action Tools */}
+            {/* Right Action Tools Upload Image or Delete and Privew */}
             <div className="flex items-center justify-end gap-2.5 shrink-0 sm:border-l sm:pl-3 border-border">
                 {/* Answer Image Preview */}
                 {answer.image && (
