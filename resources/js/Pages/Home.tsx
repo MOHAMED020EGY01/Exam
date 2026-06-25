@@ -76,6 +76,19 @@ function HomeContent({ courses }: Props) {
     [user.user?.id]
   );
 
+    useEchoChannel(
+    `users.${user.user?.id}`,
+    ".exam.deleted",
+    (e: unknown) => {
+      const data = e as { exam: ExamsData };
+      toast.success(`Exam "${data.exam.name}" deleted`);
+      router.reload({
+        only: ["courses"],
+      });
+    },
+    [user.user?.id]
+  );
+
   // Stabilise the courses reference
   const safeCourses = useMemo((): CourseData[] => courses, [courses]);
 

@@ -14,7 +14,7 @@ class ExamDeleteEvent implements ShouldBroadcast
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public function __construct(
-        public Exam $exam,
+        public array $exam,
         public int $userId
     ) {
     }

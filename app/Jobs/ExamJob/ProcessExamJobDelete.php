@@ -7,10 +7,11 @@ use App\Models\Exam;
 use App\Services\ExamServices;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Queue\SerializesModels;
 
 class ProcessExamJobDelete implements ShouldQueue
 {
-    use Queueable;
+    use Queueable, SerializesModels;
 
     private Exam $exam;
     public function __construct(Exam $exam)
@@ -24,7 +25,9 @@ class ProcessExamJobDelete implements ShouldQueue
     public function handle(): void
     {
         ExamServices::deleteExamPackage($this->exam);
-
-        event(new ExamDeleteEvent($this->exam, $this->exam->user_id));
+        $oldExam = $this->exam->toArray();
+        $this->exam->delete($this->exam->id);
+        
+        event(new ExamDeleteEvent($oldExam, $oldExam['user_id']));
     }
 }

@@ -46,14 +46,13 @@ class ExamController extends Controller
 
     public function destroy(Course $course, Exam $exam)
     {
-        return DB::transaction(function () use ($course, $exam) {
-            
-            ProcessExamJobDelete::dispatch(
-                $exam,
-            );
-            $exam->delete($exam->id);
-            return redirect()->back()->with('success', "Delete Exam in Process {$exam->name} in course {$course->name} ");
-        });
+        $oldNameExam = $exam->name;
+        $oldNameCourses = $course->name;
+        ProcessExamJobDelete::dispatch(
+            $exam,
+        );
+        
+        return redirect()->back()->with('success', "Delete Exam in Process {$oldNameExam} in course {$oldNameCourses} ");
     }
 
     public function download(Course $course, Exam $exam)

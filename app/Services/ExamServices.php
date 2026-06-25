@@ -28,7 +28,7 @@ class ExamServices
         $qFiles = array_filter($allFiles, function ($file) {
             return preg_match('/\/q\d+\.json$/', $file);
         });
-        return $qFiles;
+        return array_values($qFiles);
     }
     public static function directoryFindOrCreate(string $path)
     {
