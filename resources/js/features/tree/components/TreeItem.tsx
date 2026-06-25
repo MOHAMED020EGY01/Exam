@@ -30,6 +30,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
 
 interface TreeItemProps {
     node: TreeNodeType;
@@ -89,12 +90,13 @@ const TreeItemInner: React.FC<TreeItemProps> = ({
             >
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                        <button
+                        <Button
                             className="p-1 hover:bg-foreground/10 rounded text-muted-foreground hover:text-foreground transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100 outline-none btn-size-xs btn-icon-sm flex items-center justify-center"
                             title="Actions..."
+                            variant={'ghost'}
                         >
                             <MoreVertical className="icon-sm" />
-                        </button>
+                        </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-48">
                         <DropdownMenuItem

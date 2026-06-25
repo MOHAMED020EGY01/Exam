@@ -17,8 +17,8 @@
  */
 
 import React, { createContext, useContext } from "react";
-import type { CourseData, ExamsData, TreeNode } from "../../../types";
-import type { SearchScope } from "../../../types";
+import type { CourseData, ExamsData, TreeNode } from "@/types";
+import type { SearchScope } from "@/types";
 
 // ─────────────────────────────────────────────────────────────
 // Types

@@ -81,6 +81,7 @@ export const MoveModal: React.FC<MoveModalProps> = ({
                 examId?: string | number;
             };
             const currentExamId = String(originalData.examId);
+            // Customized data exam Array list
             const allExams: Array<{
                 id: string | number;
                 name: string;
@@ -88,13 +89,9 @@ export const MoveModal: React.FC<MoveModalProps> = ({
                 type: "exam";
                 meta: string;
             }> = [];
-            courses.forEach((course) => {
-                const exams = Array.isArray(course.exams as ExamsData[])
-                    ? course.exams
-                    : course.exams && typeof course.exams === "object"
-                      ? Object.values(course.exams)
-                      : [];
 
+            courses.forEach((course) => {
+                const exams = course.exams;
                 exams.forEach((exam: ExamsData) => {
                     if (String(exam.id) !== currentExamId) {
                         allExams.push({
@@ -132,6 +129,7 @@ export const MoveModal: React.FC<MoveModalProps> = ({
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-md modal-move flex flex-col p-6 overflow-hidden">
+             {/* Header */}
                 <DialogHeader className="shrink-0 pb-2 border-b">
                     <DialogTitle className="text-xl font-bold flex items-center gap-2">
                         <Move className="icon-md text-primary" />
@@ -142,7 +140,6 @@ export const MoveModal: React.FC<MoveModalProps> = ({
                         in indexes will self-heal automatically.
                     </DialogDescription>
                 </DialogHeader>
-
                 {/* Dynamic path preview */}
                 <div className="shrink-0 flex items-center gap-3 p-3 bg-muted/40 rounded-lg border border-dashed text-xs my-3 select-none">
                     <div className="flex-1 min-w-0">
@@ -185,7 +182,6 @@ export const MoveModal: React.FC<MoveModalProps> = ({
                         className="pl-9 h-9"
                     />
                 </div>
-
                 {/* Options list container */}
                 <div className="flex-1 overflow-y-auto options-list border rounded-lg divide-y divide-border select-none">
                     {filteredOptions.length > 0 ? (
@@ -244,7 +240,7 @@ export const MoveModal: React.FC<MoveModalProps> = ({
                         </div>
                     )}
                 </div>
-
+                {/* Footer */}
                 <DialogFooter className="shrink-0 pt-4 border-t mt-4 flex gap-2 justify-end">
                     <Button
                         variant="outline"

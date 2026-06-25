@@ -1,4 +1,5 @@
 export type NodeType = 'course' | 'exam' | 'question';
+export type SearchScope = 'all' | 'course' | 'exam' | 'question';
 
 export interface CourseData {
   id: string;
