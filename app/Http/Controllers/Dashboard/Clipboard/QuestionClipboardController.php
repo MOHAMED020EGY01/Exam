@@ -30,7 +30,7 @@ class QuestionClipboardController extends Controller
         $user = Auth::user();
         ProcessJobPasteQuestion::dispatch($user, $validatedData);
 
-        return redirect()->back()->with('success', 'Question pasted successfully.');
+        return redirect()->back()->with('success', 'Question paste Processing...');
     }
 
     /**
@@ -44,7 +44,7 @@ class QuestionClipboardController extends Controller
         $validatedData = $request->validate($this->validatorQuestion);
         ProcessJobMoveQuestion::dispatch($user, $validatedData);
 
-        return redirect()->back()->with('success', 'Question moved successfully.');
+        return redirect()->back()->with('success', 'Question move Processing...');
     }
     /**
      * Duplicate a question inside the same exam.
@@ -56,7 +56,7 @@ class QuestionClipboardController extends Controller
         $validatedData = $request->validate($this->validatorQuestionExam_id);
         ProcessDuplicateQuestion::dispatch($user, $validatedData);
 
-        return redirect()->back()->with('success', 'Question duplicated successfully.');
+        return redirect()->back()->with('success', 'Question duplicate Processing...');
     }
 
     /**
@@ -70,7 +70,7 @@ class QuestionClipboardController extends Controller
         $user = Auth::user();
         ProcessDeleteQuestion::dispatch($user, $validatedData);
 
-        return redirect()->back()->with('success', 'Question deleted successfully.');
+        return redirect()->back()->with('success', 'Question delete Processing...');
     }
 
     /**

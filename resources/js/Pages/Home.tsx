@@ -35,8 +35,7 @@ import { QuestionDetails } from "@/components/page/QuestionDetails";
 import { ExplorerEmptyState } from "@/components/page/ExplorerEmptyState";
 import type { CourseData, ExamsData, QuestionsData } from "@/types";
 import { useAuth } from "@/hooks/use-auth";
-import { examCreateEvent, examDeleteEvent, examUpdateEvent } from "@/events";
-import { questionPasteEvent } from "@/events/clipboardEvent/Question/QuestionPasteEvent";
+import { examCreateEvent, examDeleteEvent, examUpdateEvent, questionDeleteEvent, questionDuplicateEvent, questionMoveEvent, questionPasteEvent } from "@/events";
 
 interface Props {
   courses: CourseData[];
@@ -55,6 +54,9 @@ function HomeContent({ courses }: Props) {
   examDeleteEvent()
 
   questionPasteEvent()
+  questionDuplicateEvent()
+  questionDeleteEvent()
+  questionMoveEvent()
 
 
 
