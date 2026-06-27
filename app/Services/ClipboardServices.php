@@ -3,14 +3,10 @@
 namespace App\Services;
 
 use App\Models\Exam;
-use Illuminate\Support\Facades\Storage;
+
 
 class ClipboardServices
 {
-    private static function disk()
-    {
-        return Storage::disk('local');
-    }
     public static function naturalSortFiles(array $files): array
     {
         natsort($files);
@@ -24,8 +20,8 @@ class ClipboardServices
         $destPath = $exam->questions_package . "/q{$nextIndex}.json";
 
         // Copy file content to destination
-        $content = self::disk()->get($questionFile);
-        self::disk()->put($destPath, $content);
+        $content = FileStorageServices::disk()->get($questionFile);
+        FileStorageServices::disk()->put($destPath, $content);
     }
     public static function rebuildExamFiles(Exam $exam)
     {
@@ -39,11 +35,11 @@ class ClipboardServices
 
         // 1. Copy to temporary files with correct sequential indices to avoid overwriting conflicts during move
         foreach ($questionFiles as $file) {
-            $content = self::disk()->get($file);
+            $content = FileStorageServices::disk()->get($file);
             $question = json_decode($content, true);
 
             $tempFilePath = $path . "/temp_q{$questionCounter}.json";
-            self::disk()->put($tempFilePath, json_encode($question, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+            FileStorageServices::disk()->put($tempFilePath, json_encode($question, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
             $tempFiles[] = $tempFilePath;
 
             // Accumulate answers map
@@ -61,27 +57,27 @@ class ClipboardServices
 
         // 2. Clear old sequential files
         foreach ($questionFiles as $file) {
-            self::disk()->delete($file);
+            FileStorageServices::disk()->delete($file);
         }
 
         // 3. Move temporary sequential files to real question files
         $counter = 1;
         foreach ($tempFiles as $tempFile) {
             $realFilePath = $path . "/q{$counter}.json";
-            self::disk()->move($tempFile, $realFilePath);
+            FileStorageServices::disk()->move($tempFile, $realFilePath);
             $counter++;
         }
 
         // 4. Save new answer.json and meta files
         $answerString = implode(';', $questionAnswerMap);
-        self::disk()->put(
+        FileStorageServices::disk()->put(
             $path . "/answer.json",
             json_encode($answerString, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR)
         );
 
         // Write meta file
         $bytes = pack("N", count($tempFiles));
-        self::disk()->put($path . "/meta", $bytes);
+        FileStorageServices::disk()->put($path . "/meta", $bytes);
 
         // 5. Update database questions count
         $exam->update([

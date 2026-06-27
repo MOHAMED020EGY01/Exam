@@ -35,9 +35,8 @@ import { QuestionDetails } from "@/components/page/QuestionDetails";
 import { ExplorerEmptyState } from "@/components/page/ExplorerEmptyState";
 import type { CourseData, ExamsData, QuestionsData } from "@/types";
 import { useAuth } from "@/hooks/use-auth";
-import { useEchoChannel } from "@/hooks/use-echo-channel";
-import { toast } from "sonner";
-import { router } from "@inertiajs/react";
+import { examCreateEvent, examDeleteEvent, examUpdateEvent } from "@/events";
+import { questionPasteEvent } from "@/events/clipboardEvent/Question/QuestionPasteEvent";
 
 interface Props {
   courses: CourseData[];
@@ -50,44 +49,15 @@ const form = [
 
 function HomeContent({ courses }: Props) {
   const user = useAuth();
-  useEchoChannel(
-    `users.${user.user?.id}`,
-    ".exam.created",
-    (e: unknown) => {
-      const data = e as { exam: ExamsData };
-      toast.success(`Exam "${data.exam.name}" created`);
-      router.reload({
-        only: ["courses"],
-      });
-    },
-    [user.user?.id]
-  );
 
-  useEchoChannel(
-    `users.${user.user?.id}`,
-    ".exam.updated",
-    (e: unknown) => {
-      const data = e as { exam: ExamsData };
-      toast.success(`Exam "${data.exam.name}" updated`);
-      router.reload({
-        only: ["courses"],
-      });
-    },
-    [user.user?.id]
-  );
+  examCreateEvent()
+  examUpdateEvent()
+  examDeleteEvent()
 
-    useEchoChannel(
-    `users.${user.user?.id}`,
-    ".exam.deleted",
-    (e: unknown) => {
-      const data = e as { exam: ExamsData };
-      toast.success(`Exam "${data.exam.name}" deleted`);
-      router.reload({
-        only: ["courses"],
-      });
-    },
-    [user.user?.id]
-  );
+  questionPasteEvent()
+
+
+
 
   // Stabilise the courses reference
   const safeCourses = useMemo((): CourseData[] => courses, [courses]);

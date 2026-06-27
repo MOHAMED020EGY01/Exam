@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CourseRequest;
 use App\Http\Resources\CoursesResource;
 use App\Models\Course;
+use App\Services\FileStorageServices;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -14,10 +15,6 @@ use Inertia\Inertia;
 
 class CourseController extends Controller
 {
-    private static function disk()
-    {
-        return Storage::disk('local');
-    }
     public function index()
     {
         $user = Auth::user();
@@ -67,8 +64,8 @@ class CourseController extends Controller
         if ($course->user_id !== $user->id) {
             return back()->with('error', 'You are not authorized to delete this course');
         }
-        if (self::disk()->exists($course->path)) {
-            self::disk()->deleteDirectory($course->path);
+        if (FileStorageServices::disk()->exists($course->path)) {
+            FileStorageServices::disk()->deleteDirectory($course->path);
         }
         $course->delete($course->id);
         return back()->with('success', 'Course deleted successfully');

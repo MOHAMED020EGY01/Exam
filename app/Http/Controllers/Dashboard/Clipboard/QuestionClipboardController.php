@@ -3,21 +3,15 @@
 namespace App\Http\Controllers\Dashboard\Clipboard;
 
 use App\Http\Controllers\Controller;
-use App\Models\Exam;
-use App\Services\ClipboardServices;
-use App\Services\ExamServices;
+use App\Jobs\ClipboardJob\ProcessDeleteQuestion;
+use App\Jobs\ClipboardJob\ProcessDuplicateQuestion;
+use App\Jobs\ClipboardJob\ProcessJobMoveQuestion;
+use App\Jobs\ClipboardJob\ProcessJobPasteQuestion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 
 class QuestionClipboardController extends Controller
 {
-    private static function disk()
-    {
-        return Storage::disk('local');
-    }
-
     private array $validatorQuestion = [
         'source_exam_id' => 'required|exists:exams,id',
         'question_index' => 'required|integer|min:0',
@@ -32,23 +26,9 @@ class QuestionClipboardController extends Controller
      */
     public function pasteQuestion(Request $request)
     {
-        $request->validate($this->validatorQuestion);
+        $validatedData = $request->validate($this->validatorQuestion);
         $user = Auth::user();
-        $sourceExam = Exam::where('id', '=', $request->source_exam_id, 'and')->where('user_id', $user->id)->firstOrFail();
-        $destinationExam = Exam::where('id', '=', $request->destination_exam_id, 'and')->where('user_id', $user->id)->firstOrFail();
-
-        // Retrieve source files
-        $sourceFiles = ExamServices::filterFilesQuestions($sourceExam->questions_package);
-        $sourceFiles = ClipboardServices::naturalSortFiles($sourceFiles);
-
-        $questionIndex = (int)$request->question_index;
-        if (!isset($sourceFiles[$questionIndex])) {
-            return back()->with('error', 'Question index out of bounds.');
-        }
-
-        ClipboardServices::addQuestionAfterChange($destinationExam, $sourceFiles, $questionIndex);
-        // Rebuild destination files
-        ClipboardServices::rebuildExamFiles($destinationExam);
+        ProcessJobPasteQuestion::dispatch($user, $validatedData);
 
         return redirect()->back()->with('success', 'Question pasted successfully.');
     }
@@ -61,26 +41,8 @@ class QuestionClipboardController extends Controller
         $request->validate($this->validatorQuestion);
 
         $user = Auth::user();
-        $sourceExam = Exam::where('id', '=', $request->source_exam_id, 'and')->where('user_id', $user->id)->firstOrFail();
-        $destinationExam = Exam::where('id', '=', $request->destination_exam_id, 'and')->where('user_id', $user->id)->firstOrFail();
-
-        if ($sourceExam->id === $destinationExam->id) {
-            return back()->with('error', 'Cannot move a question to the exact same exam.');
-        }
-
-        // Retrieve source files
-        $sourceFiles = ExamServices::filterFilesQuestions($sourceExam->questions_package);
-        natsort($sourceFiles);
-        $sourceFiles = array_values($sourceFiles);
-
-        $questionIndex = (int)$request->question_index;
-        if (!isset($sourceFiles[$questionIndex])) {
-            return back()->with('error', 'Question index out of bounds.');
-        }
-        ClipboardServices::addQuestionAfterChange($destinationExam, $sourceFiles, $questionIndex);
-        // Rebuild files for both exams (self-healing indices)
-        ClipboardServices::rebuildExamFiles($sourceExam);
-        ClipboardServices::rebuildExamFiles($destinationExam);
+        $validatedData = $request->validate($this->validatorQuestion);
+        ProcessJobMoveQuestion::dispatch($user, $validatedData);
 
         return redirect()->back()->with('success', 'Question moved successfully.');
     }
@@ -91,20 +53,8 @@ class QuestionClipboardController extends Controller
     {
         $request->validate($this->validatorQuestionExam_id);
         $user = Auth::user();
-        $exam = Exam::where('id', '=', $request->exam_id, 'and')->where('user_id', $user->id)->firstOrFail();
-
-        // Retrieve files
-        $files = ExamServices::filterFilesQuestions($exam->questions_package);
-        natsort($files);
-        $files = array_values($files);
-
-        $questionIndex = (int)$request->question_index;
-        if (!isset($files[$questionIndex])) {
-            return back()->with('error', 'Question index out of bounds.');
-        }
-        ClipboardServices::addQuestionAfterChange($exam, $files, $questionIndex);
-        // Rebuild files
-        ClipboardServices::rebuildExamFiles($exam);
+        $validatedData = $request->validate($this->validatorQuestionExam_id);
+        ProcessDuplicateQuestion::dispatch($user, $validatedData);
 
         return redirect()->back()->with('success', 'Question duplicated successfully.');
     }
@@ -115,21 +65,10 @@ class QuestionClipboardController extends Controller
     public function deleteQuestion(Request $request)
     {
         $request->validate($this->validatorQuestionExam_id);
+        $validatedData = $request->validate($this->validatorQuestionExam_id);
 
         $user = Auth::user();
-        $exam = Exam::where('id', '=', $request->exam_id, 'and')->where('user_id', $user->id)->firstOrFail();
-
-        // Retrieve files
-        $files = ExamServices::filterFilesQuestions($exam->questions_package);
-        $files = ClipboardServices::naturalSortFiles($files);
-
-        $questionIndex = (int)$request->question_index;
-        if (!isset($files[$questionIndex])) {
-            return back()->with('error', 'Question index out of bounds.');
-        }
-
-        self::disk()->delete($files[$questionIndex]);
-        ClipboardServices::rebuildExamFiles($exam);
+        ProcessDeleteQuestion::dispatch($user, $validatedData);
 
         return redirect()->back()->with('success', 'Question deleted successfully.');
     }

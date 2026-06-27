@@ -5,17 +5,13 @@ namespace App\Http\Controllers\Dashboard\Clipboard;
 use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Models\Exam;
+use App\Services\FileStorageServices;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 
 class ExamClipboardController extends Controller
 {
-    private static function disk()
-    {
-        return Storage::disk('local');
-    }
     /**
      * Copy an exam and paste it into a destination course.
      */
@@ -46,12 +42,12 @@ class ExamClipboardController extends Controller
         return DB::transaction(function () use ($sourceExam, $destinationCourse, $newName, $destinationPath) {
             // Copy physical files
             $sourcePath = $sourceExam->questions_package;
-            if (self::disk()->exists($sourcePath)) {
-                self::disk()->makeDirectory($destinationPath);
-                $files = self::disk()->allFiles($sourcePath);
+            if (FileStorageServices::disk()->exists($sourcePath)) {
+                FileStorageServices::disk()->makeDirectory($destinationPath);
+                $files = FileStorageServices::disk()->allFiles($sourcePath);
                 foreach ($files as $file) {
                     $relativeName = str_replace($sourcePath . '/', '', $file);
-                    self::disk()->copy($file, $destinationPath . '/' . $relativeName);
+                    FileStorageServices::disk()->copy($file, $destinationPath . '/' . $relativeName);
                 }
             } else {
                 return back()->with('error', 'Source exam question package files not found.');
@@ -106,9 +102,9 @@ class ExamClipboardController extends Controller
             $destinationPath = $destinationCourse->path . '/' . $examFolder;
 
             // Move directory physically
-            if (self::disk()->exists($sourcePath)) {
-                self::disk()->makeDirectory(dirname($destinationPath));
-                self::disk()->move($sourcePath, $destinationPath);
+            if (FileStorageServices::disk()->exists($sourcePath)) {
+                FileStorageServices::disk()->makeDirectory(dirname($destinationPath));
+                FileStorageServices::disk()->move($sourcePath, $destinationPath);
             }
 
             // Update Database record
