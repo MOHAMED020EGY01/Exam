@@ -15,17 +15,20 @@ class ProcessExamJobCreate implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
-    private Course $course;
-    private User $user;
-    private array $requestData;
-    private string $path;
-    public function __construct(array $requestData, Course $course, User $user, string $path)
-    {
-        $this->requestData = $requestData;
-        $this->course = $course;
-        $this->user = $user;
-        $this->path = $path;
-    }
+
+    /**
+     * Summary of __construct
+     * @param Course $course
+     * @param User $user
+     * @param array $requestData
+     * @param string $path
+     */
+    public function __construct(
+        private Course $course,
+        private User $user,
+        private array $requestData,
+        private string $path
+    ) {}
     /**
      * Execute the job.
      */

@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Http\Requests\Clipboard;
+namespace App\Http\Requests\Clipboard\Question;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class QuestionClipboardRequests extends FormRequest
+class DuplicateQuestionRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,8 @@ class QuestionClipboardRequests extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'exam_id' => 'required|exists:exams,id',
+            'question_index' => 'required|integer|min:0',
         ];
     }
 }

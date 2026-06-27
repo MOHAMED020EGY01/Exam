@@ -12,17 +12,18 @@ use Illuminate\Queue\SerializesModels;
 class DuplicateQuestionEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-    private StatusHttp $status;
-    private string $message;
 
-    private int $userId;
-
-    public function __construct(StatusHttp $status, string $message, int $userId)
-    {
-        $this->status = $status;
-        $this->message = $message;
-        $this->userId = $userId;
-    }
+    /**
+     * Summary of __construct
+     * @param StatusHttp $status
+     * @param string $message
+     * @param int $userId
+     */
+    public function __construct(
+        private StatusHttp $status,
+        private string $message,
+        private int $userId
+    ) {}
 
     public function broadcastOn(): array
     {
@@ -31,16 +32,16 @@ class DuplicateQuestionEvent implements ShouldBroadcast
         ];
     }
 
+    public function broadcastAs(): string
+    {
+        return 'question.duplicate';
+    }
+
     public function broadcastWith(): array
     {
         return [
             'status' => $this->status->value,
             'message' => $this->message,
         ];
-    }
-
-    public function broadcastAs(): string
-    {
-        return 'question.duplicate';
     }
 }

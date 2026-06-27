@@ -13,12 +13,13 @@ class ProcessExamJobDelete implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
-    private Exam $exam;
-    public function __construct(Exam $exam)
-    {
-        $this->exam = $exam;
-    }
-
+    /**
+     * Summary of __construct
+     * @param Exam $exam
+     */
+    public function __construct(
+        private Exam $exam
+    ) {}
     /**
      * Execute the job.
      */

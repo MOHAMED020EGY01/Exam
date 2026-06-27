@@ -15,14 +15,17 @@ use Illuminate\Queue\SerializesModels;
 
 class ProcessDeleteQuestion implements ShouldQueue
 {
-    use Queueable , SerializesModels;
-    private User $user;
-    private array $requestData;
-    public function __construct(User $user, array $requestData)
-    {
-        $this->user = $user;
-        $this->requestData = $requestData;
-    }
+    use Queueable, SerializesModels;
+
+    /**
+     * Summary of __construct
+     * @param User $user
+     * @param array $requestData
+     */
+    public function __construct(
+        private User $user,
+        private array $requestData
+    ) {}
     public function handle(): void
     {
         $exam = Exam::where('id', '=', $this->requestData['exam_id'], 'and')->where('user_id', $this->user->id)->firstOrFail();
@@ -42,6 +45,5 @@ class ProcessDeleteQuestion implements ShouldQueue
         ClipboardServices::rebuildExamFiles($exam);
 
         event(new  DeleteQuestionEvent(StatusHttp::SUCCESS, 'Question deleted successfully.', $this->user->id));
-
     }
 }

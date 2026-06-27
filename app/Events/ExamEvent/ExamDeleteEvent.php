@@ -14,8 +14,8 @@ class ExamDeleteEvent implements ShouldBroadcast
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public function __construct(
-        public array $exam,
-        public int $userId
+        private array $exam,
+        private int $userId
     ) {
     }
 
@@ -30,4 +30,12 @@ class ExamDeleteEvent implements ShouldBroadcast
     {
         return 'exam.deleted';
     }
+
+    // public function broadcastWith(): array
+    // {
+    //     return [
+    //         'status' => $this->status->value,
+    //         'message' => $this->message,
+    //     ];
+    // }
 }

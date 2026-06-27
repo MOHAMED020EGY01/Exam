@@ -13,18 +13,20 @@ use Illuminate\Support\Facades\DB;
 class ProcessExamJobUpdate implements ShouldQueue
 {
     use Queueable, SerializesModels;
-    private Exam $exam;
-    private array $requestData;
-    private string $path;
-    public function __construct(array $requestData, Exam $exam, string $path)
-    {
-        $this->requestData = $requestData;
-        $this->exam = $exam;
-        $this->path = $path;
-    }
+
     /**
-     * Execute the job.
+     * Summary of __construct
+     * @param array $requestData
+     * @param Exam $exam
+     * @param string $path
      */
+    public function __construct(
+        private array $requestData,
+        private Exam $exam,
+        private string $path
+    ) {}
+
+
     public function handle(): void
     {
 

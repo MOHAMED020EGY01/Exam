@@ -14,8 +14,8 @@ class ExamUpdatedEvent implements ShouldBroadcast
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public function __construct(
-        public Exam $exam,
-        public int $userId
+        private Exam $exam,
+        private int $userId
     ) {
     }
 
@@ -30,4 +30,12 @@ class ExamUpdatedEvent implements ShouldBroadcast
     {
         return 'exam.updated';
     }
+
+    // public function broadcastWith(): array
+    // {
+    //     return [
+    //         'status' => $this->status->value,
+    //         'message' => $this->message,
+    //     ];
+    // }
 }

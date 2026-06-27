@@ -3,77 +3,50 @@
 namespace App\Http\Controllers\Dashboard\Clipboard;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Clipboard\Question\DeleteQuestionRequest;
+use App\Http\Requests\Clipboard\Question\PasteQuestionRequest;
+use App\Http\Requests\Clipboard\Question\MoveQuestionRequest;
+use App\Http\Requests\Clipboard\Question\DuplicateQuestionRequest;
 use App\Jobs\ClipboardJob\ProcessDeleteQuestion;
 use App\Jobs\ClipboardJob\ProcessDuplicateQuestion;
 use App\Jobs\ClipboardJob\ProcessJobMoveQuestion;
 use App\Jobs\ClipboardJob\ProcessJobPasteQuestion;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class QuestionClipboardController extends Controller
 {
-    private array $validatorQuestion = [
-        'source_exam_id' => 'required|exists:exams,id',
-        'question_index' => 'required|integer|min:0',
-        'destination_exam_id' => 'required|exists:exams,id',
-    ];
-    private array $validatorQuestionExam_id = [
-        'exam_id' => 'required|exists:exams,id',
-        'question_index' => 'required|integer|min:0',
-    ];
-    /**
-     * Copy a question from a source exam and paste it into a destination exam.
-     */
-    public function pasteQuestion(Request $request)
+
+    public function pasteQuestion(PasteQuestionRequest $request)
     {
-        $validatedData = $request->validate($this->validatorQuestion);
         $user = Auth::user();
-        ProcessJobPasteQuestion::dispatch($user, $validatedData);
+        ProcessJobPasteQuestion::dispatch($user, $request->validated());
 
         return redirect()->back()->with('success', 'Question paste Processing...');
     }
 
-    /**
-     * Move a question from a source exam to a destination exam.
-     */
-    public function moveQuestion(Request $request)
+    public function moveQuestion(MoveQuestionRequest $request)
     {
-        $request->validate($this->validatorQuestion);
-
         $user = Auth::user();
-        $validatedData = $request->validate($this->validatorQuestion);
-        ProcessJobMoveQuestion::dispatch($user, $validatedData);
+        ProcessJobMoveQuestion::dispatch($user, $request->validated());
 
         return redirect()->back()->with('success', 'Question move Processing...');
     }
-    /**
-     * Duplicate a question inside the same exam.
-     */
-    public function duplicateQuestion(Request $request)
+
+    
+    public function duplicateQuestion(DuplicateQuestionRequest $request)
     {
-        $request->validate($this->validatorQuestionExam_id);
         $user = Auth::user();
-        $validatedData = $request->validate($this->validatorQuestionExam_id);
-        ProcessDuplicateQuestion::dispatch($user, $validatedData);
+        ProcessDuplicateQuestion::dispatch($user, $request->validated());
 
         return redirect()->back()->with('success', 'Question duplicate Processing...');
     }
 
-    /**
-     * Delete a question from an exam and re-index.
-     */
-    public function deleteQuestion(Request $request)
-    {
-        $request->validate($this->validatorQuestionExam_id);
-        $validatedData = $request->validate($this->validatorQuestionExam_id);
 
+    public function deleteQuestion(DeleteQuestionRequest $request)
+    {
         $user = Auth::user();
-        ProcessDeleteQuestion::dispatch($user, $validatedData);
+        ProcessDeleteQuestion::dispatch($user, $request->validated());
 
         return redirect()->back()->with('success', 'Question delete Processing...');
     }
-
-    /**
-     * Rebuild questions package indices, answer.json, and meta files, resolving any gaps.
-     */
 }
